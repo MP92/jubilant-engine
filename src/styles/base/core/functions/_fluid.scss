@@ -1,0 +1,150 @@
+@use 'sass:list';
+@use 'sass:math';
+@use 'sass:meta';
+@use 'sass:string';
+@use 'sass:map';
+@use './list' as list-fns;
+@use './utils' as utils-fns;
+@use '../../sass-vars' as project-vars;
+
+@function fluid(
+  $min-size,
+  $viewport-width-from,
+  $max-size,
+  $viewport-width-to
+) {
+  @if not
+    math.is-unitless($viewport-width-from) or not
+    math.is-unitless($viewport-width-to)
+  {
+    @error 'Viewport widths must be unitless numbers (representing pixels)';
+  }
+
+  $min-size: if(math.is-unitless($min-size), $min-size * 1px, $min-size);
+  $max-size: if(math.is-unitless($max-size), $max-size * 1px, $max-size);
+  $viewport-width-from: $viewport-width-from * 1px;
+  $viewport-width-to: $viewport-width-to * 1px;
+
+  @if $viewport-width-to == $viewport-width-from {
+    @return $min-size;
+  }
+
+  $slope: math.div(
+    ($max-size - $min-size),
+    ($viewport-width-to - $viewport-width-from)
+  );
+  $y-axis-intersection: -$viewport-width-from * $slope + $min-size;
+
+  @return clamp(
+    #{if($min-size < $max-size, $min-size, $max-size)},
+    #{$y-axis-intersection} + #{$slope * 100vw},
+    #{if($min-size < $max-size, $max-size, $min-size)}
+  );
+}
+
+@function _to-fluid-value($from, $to) {
+  $viewport-width-from: list-fns.last($from);
+  $viewport-width-to: list-fns.last($to);
+  $px-values-from: list-fns.list-remove-last($from);
+  $px-values-to: list-fns.list-remove-last($to);
+  $max-count: math.max(
+    list.length($px-values-from),
+    list.length($px-values-to)
+  );
+
+  @if $max-count > 4 {
+    @error 'Px values count > 4.';
+  }
+
+  $px-values-from: utils-fns.expand-px-values($px-values-from, $max-count);
+  $px-values-to: utils-fns.expand-px-values($px-values-to, $max-count);
+  $result: ();
+
+  @for $i from 1 through $max-count {
+    $current-from: list.nth($px-values-from, $i);
+    $current-to: list.nth($px-values-to, $i);
+    $fluid-value: $current-from;
+
+    @if $current-from != $current-to {
+      $fluid-value: fluid(
+        $current-from,
+        $viewport-width-from,
+        $current-to,
+        $viewport-width-to
+      );
+    }
+
+    $result: list.append($result, $fluid-value);
+  }
+
+  $result: list.append($result, $viewport-width-to);
+
+  @return $result;
+}
+
+@function _has-media-query($value) {
+  @if list.length($value) < 1 {
+    @error 'Value is empty.';
+  }
+
+  $has-media-query: math.is-unitless(list-fns.last($value));
+
+  @if $has-media-query and list.length($value) == 1 {
+    @error 'Value can\'t contain only media query.';
+  }
+
+  @return $has-media-query;
+}
+
+@function _add-missing-media-query($value, $media-query-value) {
+  @if not _has-media-query($value) {
+    $value: list.append($value, $media-query-value, space);
+  }
+
+  @return $value;
+}
+
+@function _remove-media-query($value) {
+  @if _has-media-query($value) {
+    $value: list-fns.list-remove-last($value);
+  }
+
+  @return $value;
+}
+
+@function to-fluid-values($args...) {
+  @if list.length($args) < 2 {
+    @error '$args count must be > 1.';
+  }
+
+  $first-media-query-default: utils-fns.strip-unit(
+    project-vars.$container-max-width + (2 * project-vars.$container-padding-l)
+  );
+  $first-value: _add-missing-media-query(
+    list.nth($args, 1),
+    $first-media-query-default
+  );
+  $second-value: list.nth($args, 2);
+  $rest-values: list-fns.list-remove($args, 1);
+  $values: list.append((), _to-fluid-value($second-value, $first-value), comma);
+
+  @for $i from 1 to list.length($rest-values) {
+    $value-to: list.nth($rest-values, $i);
+    $value-from: list.nth($rest-values, $i + 1);
+    $values: list.append(
+      $values,
+      _to-fluid-value($value-from, $value-to),
+      comma
+    );
+  }
+
+  @if not _has-media-query(list.nth($args, 1)) {
+    $values: list.set-nth(
+      $values,
+      1,
+      _remove-media-query(list.nth($values, 1))
+    );
+  }
+
+  @return $values;
+}

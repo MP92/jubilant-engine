@@ -1,0 +1,37 @@
+@forward './bgi';
+@forward './border';
+@forward './box';
+@forward './flex-grid';
+@forward './font';
+@forward './position';
+@use '../utils' as utils-mixins;
+
+@mixin display($args...) {
+  @include utils-mixins.adaptive-props(display, $args) {
+    @content;
+  }
+}
+
+@mixin var($name, $args...) {
+  @include utils-mixins.adaptive-props($name, $args) {
+    @content;
+  }
+}
+
+@mixin var-fluid($name, $args...) {
+  @include utils-mixins.adaptive-props-fluid($name, $args...) {
+    @content;
+  }
+}
+
+@mixin content($args...) {
+  @include utils-mixins.adaptive-props(content, $args) {
+    @content;
+  }
+}
+
+@mixin overflow($args...) {
+  @include utils-mixins.adaptive-props(overflow, $args) {
+    @content;
+  }
+}

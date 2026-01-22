@@ -1,0 +1,37 @@
+@use '../utils' as utils-mixins;
+
+@mixin border-radius($args...) {
+  @include utils-mixins.adaptive-props(border-radius, $args) {
+    @content;
+  }
+}
+
+@mixin border($args...) {
+  @include utils-mixins.adaptive-props(border, $args) {
+    @content;
+  }
+}
+
+@mixin border-top($args...) {
+  @include utils-mixins.adaptive-props(border-top, $args) {
+    @content;
+  }
+}
+
+@mixin border-right($args...) {
+  @include utils-mixins.adaptive-props(border-right, $args) {
+    @content;
+  }
+}
+
+@mixin border-bottom($args...) {
+  @include utils-mixins.adaptive-props(border-bottom, $args) {
+    @content;
+  }
+}
+
+@mixin border-left($args...) {
+  @include utils-mixins.adaptive-props(border-left, $args) {
+    @content;
+  }
+}

@@ -1,0 +1,47 @@
+@use 'sass:string';
+@use './utils' as utils-fns;
+
+@function _remove-suffix($url-str, $suffixes) {
+  @each $suffix in $suffixes {
+    $suffix-idx: string.index($url-str, $suffix);
+
+    @if $suffix-idx {
+      $ext-idx: string.index($url-str, '.');
+
+      @if $ext-idx > $suffix-idx {
+        /* stylelint-disable-next-line scss/operator-no-newline-after */
+        $url-str: string.slice($url-str, 1, $suffix-idx - 1) +
+          string.slice($url-str, $ext-idx);
+      }
+    }
+  }
+
+  @return $url-str;
+}
+
+@function _add-suffix($url-str, $suffix) {
+  $last-dot-index: utils-fns.str-last-index($url-str, '.');
+
+  @if $last-dot-index {
+    $head: string.slice($url-str, 1, $last-dot-index - 1);
+    $ext: string.slice($url-str, $last-dot-index);
+
+    @return $head + $suffix + $ext;
+  }
+
+  @return $url-str;
+}
+
+@function get-img-url-adaptive($url-str, $size) {
+  $sizes: ('_lg', '_md', '_sm');
+  $url-str: _remove-suffix($url-str, $sizes);
+
+  @return _add-suffix($url-str, '_#{$size}');
+}
+
+@function retina-2x($url-str) {
+  $scales: ('@2x', '@3x', '@4x');
+  $url-str: _remove-suffix($url-str, $scales);
+
+  @return _add-suffix($url-str, '@2x');
+}

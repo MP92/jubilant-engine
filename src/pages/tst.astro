@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const sliderOptions = {
+  slides: {
+    spacing: 24,
+    perView: 'auto',
+  },
+  breakpoints: {
+    '(max-width: 768px)': {
+      slides: {
+        spacing: 16,
+        perView: 'auto',
+      },
+    },
+  },
+  // adjacentSlidesScale: 0.9375, // active height / adjacent height
+};
+---
+
+<Layout title="My Astro HTML Template | Index Page">
+  <div class="tst">
+    <div
+      class="tst__slider container"
+      data-js-slider
+      data-js-slider-visible-bullets="5"
+      data-js-slider-options={JSON.stringify(sliderOptions)}
+    >
+      <div class="tst__header">
+        <h2 class="tst__title h4">Slider</h2>
+        <div
+          class="keen-slider-bullets keen-slider-bullets--right"
+          data-js-slider-bullets
+        >
+          <button class="tst__bullet" type="button"></button>
+        </div>
+      </div>
+
+      <div class="tst__slides keen-slider" data-js-slider-slides>
+        {
+          Array.from({ length: 10 }, (_, i) => (
+            <div class="keen-slider__slide">
+              <div class="tst__slide-card">
+                <span class="tst__slide-card-text">{i + 1}</span>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .tst {
+    &__slider {
+      @include padding-block-fluid(48px, 32px $tablet-s);
+
+      overflow: hidden;
+    }
+
+    &__header {
+      @include flex-between-center;
+      gap: 1rem;
+      @include margin-bottom-fluid(48px, 40px $tablet-s);
+    }
+
+    &__title {
+      font-size: 54px;
+    }
+
+    &__slide-card {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 200px;
+      height: 250px;
+
+      background-color: orange;
+    }
+
+    &__slide-card-text {
+      font-size: 42px;
+    }
+  }
+</style>

@@ -1,0 +1,8 @@
+@use 'sass:color';
+@use '@styles/base/sass-vars' as project-vars;
+
+:root {
+  --color-white: #fff;
+  --color-black: #000;
+  --color-text: var(--color-black);
+}

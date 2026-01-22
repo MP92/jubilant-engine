@@ -1,0 +1,38 @@
+@use '../base' as base-mixins;
+
+@mixin underline($beforeOrAfter: after, $offset-v: 0px, $hover-only: false) {
+  position: relative;
+
+  text-decoration: none;
+
+  &::#{$beforeOrAfter} {
+    content: '';
+
+    position: absolute;
+    inset: 0;
+    top: unset;
+    margin-bottom: calc(-1 * #{$offset-v});
+
+    background-color: currentColor;
+    opacity: 0;
+    transition-duration: var(--transition-duration);
+
+    @if not $hover-only {
+      height: 1px;
+      opacity: 1;
+    }
+  }
+
+  @if $hover-only {
+    @include base-mixins.hover {
+      &::#{$beforeOrAfter} {
+        height: 1px;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+@mixin underline-hover($beforeOrAfter: after, $offset-v: 0px) {
+  @include underline($beforeOrAfter, $offset-v, true);
+}

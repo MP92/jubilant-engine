@@ -1,0 +1,336 @@
+@use 'sass:list';
+@use 'sass:math';
+@use 'sass:meta';
+@use '../utils' as utils-mixins;
+
+@mixin width($args...) {
+  @include utils-mixins.adaptive-props(width, $args) {
+    @content;
+  }
+}
+
+@mixin width-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(width, $args...) {
+    @content;
+  }
+}
+
+@mixin height($args...) {
+  @include utils-mixins.adaptive-props(height, $args) {
+    @content;
+  }
+}
+
+@mixin height-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(height, $args...) {
+    @content;
+  }
+}
+
+@mixin min-width($args...) {
+  @include utils-mixins.adaptive-props(min-width, $args) {
+    @content;
+  }
+}
+
+@mixin max-width-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(max-width, $args...) {
+    @content;
+  }
+}
+
+@mixin max-width($args...) {
+  @include utils-mixins.adaptive-props(max-width, $args) {
+    @content;
+  }
+}
+
+@mixin min-height($args...) {
+  @include utils-mixins.adaptive-props(min-height, $args) {
+    @content;
+  }
+}
+
+@mixin min-height-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(min-height, $args...) {
+    @content;
+  }
+}
+
+@mixin max-height($args...) {
+  @include utils-mixins.adaptive-props(max-height, $args) {
+    @content;
+  }
+}
+
+@mixin max-height-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(max-height, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding, $args...) {
+    @content;
+  }
+}
+
+@mixin padding($args...) {
+  @include utils-mixins.adaptive-props(padding, $args) {
+    @content;
+  }
+}
+
+@mixin padding-top-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding-top, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-top($args...) {
+  @include utils-mixins.adaptive-props(padding-top, $args) {
+    @content;
+  }
+}
+
+@mixin padding-right-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding-right, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-right($args...) {
+  @include utils-mixins.adaptive-props(padding-right, $args) {
+    @content;
+  }
+}
+
+@mixin padding-bottom-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding-bottom, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-bottom($args...) {
+  @include utils-mixins.adaptive-props(padding-bottom, $args) {
+    @content;
+  }
+}
+
+@mixin padding-left-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding-left, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-left($args...) {
+  @include utils-mixins.adaptive-props(padding-left, $args) {
+    @content;
+  }
+}
+
+@mixin padding-block-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding-block, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-block($args...) {
+  @include utils-mixins.adaptive-props(padding-block, $args) {
+    @content;
+  }
+}
+
+@mixin padding-block-start-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding-block-start, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-block-start($args...) {
+  @include utils-mixins.adaptive-props(padding-block-start, $args) {
+    @content;
+  }
+}
+
+@mixin padding-block-end-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding-block-end, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-block-end($args...) {
+  @include utils-mixins.adaptive-props(padding-block-end, $args) {
+    @content;
+  }
+}
+
+@mixin padding-inline-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding-inline, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-inline($args...) {
+  @include utils-mixins.adaptive-props(padding-inline, $args) {
+    @content;
+  }
+}
+
+@mixin padding-inline-start-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding-inline-start, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-inline-start($args...) {
+  @include utils-mixins.adaptive-props(padding-inline-start, $args) {
+    @content;
+  }
+}
+
+@mixin padding-inline-end-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(padding-inline-end, $args...) {
+    @content;
+  }
+}
+
+@mixin padding-inline-end($args...) {
+  @include utils-mixins.adaptive-props(padding-inline-end, $args) {
+    @content;
+  }
+}
+
+@mixin margin($args...) {
+  @include utils-mixins.adaptive-props(margin, $args) {
+    @content;
+  }
+}
+
+@mixin margin-top-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(margin-top, $args...) {
+    @content;
+  }
+}
+
+@mixin margin-top($args...) {
+  @include utils-mixins.adaptive-props(margin-top, $args) {
+    @content;
+  }
+}
+
+@mixin margin-right-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(margin-right, $args...) {
+    @content;
+  }
+}
+
+@mixin margin-right($args...) {
+  @include utils-mixins.adaptive-props(margin-right, $args) {
+    @content;
+  }
+}
+
+@mixin margin-bottom-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(margin-bottom, $args...) {
+    @content;
+  }
+}
+
+@mixin margin-bottom($args...) {
+  @include utils-mixins.adaptive-props(margin-bottom, $args) {
+    @content;
+  }
+}
+
+@mixin margin-left-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(margin-left, $args...) {
+    @content;
+  }
+}
+
+@mixin margin-left($args...) {
+  @include utils-mixins.adaptive-props(margin-left, $args) {
+    @content;
+  }
+}
+
+@mixin margin-block-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(margin-block, $args...) {
+    @content;
+  }
+}
+
+@mixin margin-block($args...) {
+  @include utils-mixins.adaptive-props(margin-block, $args) {
+    @content;
+  }
+}
+
+@mixin margin-block-start-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(margin-block-start, $args...) {
+    @content;
+  }
+}
+
+@mixin margin-block-start($args...) {
+  @include utils-mixins.adaptive-props(margin-block-start, $args) {
+    @content;
+  }
+}
+
+@mixin margin-block-end-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(margin-block-end, $args...) {
+    @content;
+  }
+}
+
+@mixin margin-block-end($args...) {
+  @include utils-mixins.adaptive-props(margin-block-end, $args) {
+    @content;
+  }
+}
+
+@mixin margin-inline-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(margin-inline, $args...) {
+    @content;
+  }
+}
+
+@mixin margin-inline($args...) {
+  @include utils-mixins.adaptive-props(margin-inline, $args) {
+    @content;
+  }
+}
+
+@mixin scroll-margin-top($args...) {
+  @include utils-mixins.adaptive-props(scroll-margin-top, $args) {
+    @content;
+  }
+}
+
+@mixin box($args...) {
+  @include utils-mixins.adaptive-props(width height, $args) {
+    @content;
+  }
+}
+
+@mixin box-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(width height, $args...) {
+    @content;
+  }
+}
+
+@mixin circle($args...) {
+  @include box($args...) {
+    border-radius: 50%;
+    @content;
+  }
+}
+
+@mixin circle-fluid($args...) {
+  @include box-fluid($args...) {
+    border-radius: 50%;
+    @content;
+  }
+}

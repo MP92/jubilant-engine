@@ -1,0 +1,13 @@
+/* Common non-project-specific sass variables */
+$mobile-s: 360; // 360x800
+$mobile-m: 480;
+$mobile-l: 576;
+$tablet-s: 768; // 768x1024
+$tablet: 1024; // 1024x1366
+$laptop-s: 1280; // 1280x720 - desktop, 1280x800 - tablet
+$laptop: 1440; // 1440x900
+$desktop-s: 1536; // 1536x864
+$desktop: 1920; // 1920x1080
+$z-index-above-overlay: 3;
+$z-index-overlay: 2;
+$z-index-under-overlay: 1;

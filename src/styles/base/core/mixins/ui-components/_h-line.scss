@@ -1,0 +1,34 @@
+@mixin h-line($pseudo: after, $offset: 0px, $width: null) {
+  @if $pseudo != 'before' and $pseudo != 'after' {
+    @error 'Invalid argument value';
+  }
+
+  position: relative;
+
+  &::#{$pseudo} {
+    content: '';
+
+    position: absolute;
+
+    @if not $width {
+      left: 0;
+      right: 0;
+    } @else {
+      width: $width;
+      left: 50%;
+      translate: -50%;
+    }
+
+    @if $pseudo == 'after' {
+      top: calc(100% + $offset);
+    } @else if $pseudo == 'before' {
+      bottom: calc(100% + $offset);
+    }
+
+    display: block;
+    height: 1px;
+    background-color: var(--h-line-color, #777);
+
+    @content;
+  }
+}

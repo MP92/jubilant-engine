@@ -1,0 +1,29 @@
+@use '../flex-grid' as *;
+@use '../visibility' as *;
+@use '../../sass-vars' as core-vars;
+
+@mixin overlay($side: right) {
+  position: fixed;
+  inset: 0;
+  z-index: core-vars.$z-index-overlay;
+
+  @include flex-column-center;
+
+  padding: 1rem;
+  row-gap: 40px;
+
+  background-color: var(--overlay-bg-color);
+  transition-duration: var(
+    --overlay-transition-duration,
+    var(--transition-duration, 0.2s)
+  );
+
+  overflow: auto;
+
+  &:not(.is-active) {
+    @include hide;
+    translate: if($side == left, -100%, 100%);
+  }
+
+  @content;
+}

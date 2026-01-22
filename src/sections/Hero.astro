@@ -1,0 +1,75 @@
+---
+import { MyImage, MyPicture } from '@/core';
+---
+
+<section class="hero">
+  <header class="hero__header">
+    <h2 class="hero__title">HERO SECTION</h2>
+
+    <MyPicture
+      class="hero__bg"
+      src="@img/hero-bg.jpg"
+      formats={['avif', 'webp']}
+      alt=""
+      priority
+    />
+  </header>
+
+  <div class="hero__body">
+    <MyImage class="hero__img" src="@img/hero-card.png" alt="" />
+  </div>
+</section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .hero {
+    @include padding-block-end-fluid(181px, 90px $tablet-s);
+
+    &__header {
+      position: relative;
+
+      @include margin-inline-fluid(50px, 15px $tablet-s);
+      @include margin-inline(0 $tablet-s);
+
+      text-align: center;
+    }
+
+    &__title {
+      position: absolute;
+      inset: 0;
+      @include flex-column-center-x;
+      @include padding-block-start-fluid(104px, 52px $tablet-s);
+      @include padding-block-start-fluid(82px $tablet-s, 42px $mobile-s);
+      @include padding-inline(60px, 1rem $tablet-s);
+      @include row-gap-fluid(32px, 14px $mobile-s);
+
+      font-size: 36px;
+      color: white;
+    }
+
+    &__bg {
+      width: 100%;
+      @include border-radius(20px, 0 $tablet-s);
+    }
+
+    &__body {
+      position: relative;
+
+      display: grid;
+      justify-items: center;
+      @include margin-top-fluid(-57px);
+    }
+
+    &__img {
+      img {
+        width: 214px;
+        height: 142px;
+      }
+    }
+
+    &__metrics {
+      @include margin-bottom(69px);
+    }
+  }
+</style>

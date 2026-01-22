@@ -1,0 +1,55 @@
+@use '../base' as base-mixins;
+@use './cross' as *;
+@use '../../sass-vars' as core-vars;
+
+@mixin burger(
+  $inner-size: 24px,
+  $padding-size: 2px,
+  $line-height: 3px,
+  $lines-gap: 5px
+) {
+  @include base-mixins.reset-btn;
+
+  position: relative;
+  z-index: core-vars.$z-index-above-overlay;
+
+  display: grid;
+  align-content: center;
+  row-gap: $lines-gap;
+  width: $inner-size + (2 * $padding-size);
+  height: $inner-size + (2 * $padding-size);
+  padding: $padding-size;
+
+  span,
+  &::before,
+  &::after {
+    width: $inner-size;
+    height: $line-height;
+
+    background-color: var(--line-color, #fff);
+
+    border-radius: 2px;
+
+    transition-duration: var(
+      --burger-transition-duration,
+      var(--transition-duration)
+    );
+  }
+
+  &::before,
+  &::after {
+    content: '';
+  }
+
+  @include base-mixins.hover {
+    span,
+    &::before,
+    &::after {
+      background-color: var(--line-color-hover, var(--line-color));
+    }
+  }
+
+  &.is-active {
+    @include cross;
+  }
+}

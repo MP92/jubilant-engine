@@ -1,0 +1,339 @@
+@use 'sass:meta';
+@use './sass-vars' as core-vars;
+@use '../sass-vars' as project-vars;
+
+@mixin lte($width) {
+  @media (max-width: $width) {
+    @content;
+  }
+}
+
+@mixin lt($width) {
+  @media (max-width: ($width - 0.1px)) {
+    @content;
+  }
+}
+
+@mixin gte($width) {
+  @media (min-width: $width) {
+    @content;
+  }
+}
+
+@mixin gt($width) {
+  @media (min-width: ($width + 0.1px)) {
+    @content;
+  }
+}
+
+/**********************
+*  Named breakpoints  *
+***********************/
+
+@mixin higher-view-l {
+  @include gt(project-vars.$view-l-px) {
+    @content;
+  }
+}
+
+@mixin laptop-and-lower {
+  @include lte(core-vars.$laptop * 1px) {
+    @content;
+  }
+}
+
+@mixin lower-laptop {
+  @include lt(core-vars.$laptop * 1px) {
+    @content;
+  }
+}
+
+@mixin laptop-and-higher {
+  @include gte(core-vars.$laptop * 1px) {
+    @content;
+  }
+}
+
+@mixin higher-laptop {
+  @include gt(core-vars.$laptop * 1px) {
+    @content;
+  }
+}
+
+@mixin laptop-s-and-lower {
+  @include lte(core-vars.$laptop-s * 1px) {
+    @content;
+  }
+}
+
+@mixin tablet-and-lower {
+  @include lte(core-vars.$tablet * 1px) {
+    @content;
+  }
+}
+
+@mixin higher-tablet {
+  @include gt(core-vars.$tablet * 1px) {
+    @content;
+  }
+}
+
+@mixin tablet-s-and-lower {
+  @include lte(core-vars.$tablet-s * 1px) {
+    @content;
+  }
+}
+
+@mixin higher-tablet-s {
+  @include gt(core-vars.$tablet-s * 1px) {
+    @content;
+  }
+}
+
+/******************
+*  Desktop first  *
+*******************/
+
+@mixin lte-1920 {
+  @include lte(1920px) {
+    @content;
+  }
+}
+
+@mixin lt-1920 {
+  @include lt(1920px) {
+    @content;
+  }
+}
+
+@mixin lte-1680 {
+  @include lte(1680px) {
+    @content;
+  }
+}
+
+@mixin lt-1680 {
+  @include lt(1680px) {
+    @content;
+  }
+}
+
+@mixin lte-1536 {
+  @include lte(1536px) {
+    @content;
+  }
+}
+
+@mixin lt-1536 {
+  @include lt(1536px) {
+    @content;
+  }
+}
+
+@mixin lte-1440 {
+  @include lte(1440px) {
+    @content;
+  }
+}
+
+@mixin lt-1440 {
+  @include lt(1440px) {
+    @content;
+  }
+}
+
+@mixin lte-1280 {
+  @include lte(1280px) {
+    @content;
+  }
+}
+
+@mixin lt-1280 {
+  @include lt(1280px) {
+    @content;
+  }
+}
+
+@mixin lte-1024 {
+  @include lte(1024px) {
+    @content;
+  }
+}
+
+@mixin lt-1024 {
+  @include lt(1024px) {
+    @content;
+  }
+}
+
+@mixin lte-768 {
+  @include lte(768px) {
+    @content;
+  }
+}
+
+@mixin lt-768 {
+  @include lt(768px) {
+    @content;
+  }
+}
+
+@mixin lte-600 {
+  @include lte(600px) {
+    @content;
+  }
+}
+
+@mixin lt-600 {
+  @include lt(600px) {
+    @content;
+  }
+}
+
+@mixin lte-576 {
+  @include lte(576px) {
+    @content;
+  }
+}
+
+@mixin lt-576 {
+  @include lt(576px) {
+    @content;
+  }
+}
+
+@mixin lte-480 {
+  @include lte(480px) {
+    @content;
+  }
+}
+
+@mixin lt-480 {
+  @include lt(480px) {
+    @content;
+  }
+}
+
+/*****************
+*  Mobile first  *
+******************/
+
+@mixin gte-1920 {
+  @include gte(1920px) {
+    @content;
+  }
+}
+
+@mixin gt-1920 {
+  @include gt(1920px) {
+    @content;
+  }
+}
+
+@mixin gte-1680 {
+  @include gte(1680px) {
+    @content;
+  }
+}
+
+@mixin gt-1680 {
+  @include gt(1680px) {
+    @content;
+  }
+}
+
+@mixin gte-1536 {
+  @include gte(1536px) {
+    @content;
+  }
+}
+
+@mixin gt-1536 {
+  @include gt(1536px) {
+    @content;
+  }
+}
+
+@mixin gte-1440 {
+  @include gte(1440px) {
+    @content;
+  }
+}
+
+@mixin gt-1440 {
+  @include gt(1440px) {
+    @content;
+  }
+}
+
+@mixin gte-1280 {
+  @include gte(1280px) {
+    @content;
+  }
+}
+
+@mixin gt-1280 {
+  @include gt(1280px) {
+    @content;
+  }
+}
+
+@mixin gte-1024 {
+  @include gte(1024px) {
+    @content;
+  }
+}
+
+@mixin gt-1024 {
+  @include gt(1024px) {
+    @content;
+  }
+}
+
+@mixin gte-768 {
+  @include gte(768px) {
+    @content;
+  }
+}
+
+@mixin gt-768 {
+  @include gt(768px) {
+    @content;
+  }
+}
+
+@mixin gte-600 {
+  @include gte(600px) {
+    @content;
+  }
+}
+
+@mixin gt-600 {
+  @include gt(600px) {
+    @content;
+  }
+}
+
+@mixin gte-576 {
+  @include gte(576px) {
+    @content;
+  }
+}
+
+@mixin gt-576 {
+  @include gt(576px) {
+    @content;
+  }
+}
+
+@mixin gte-480 {
+  @include gte(480px) {
+    @content;
+  }
+}
+
+@mixin gt-480 {
+  @include gt(480px) {
+    @content;
+  }
+}

@@ -1,0 +1,222 @@
+---
+import type {
+  GetImageResult,
+  ImageOutputFormat,
+  UnresolvedImageTransform,
+} from 'astro';
+import type { HTMLAttributes } from 'astro/types';
+import { getImage, imageConfig } from 'astro:assets';
+import { AstroError } from 'astro/errors';
+import * as mime from 'mrmime';
+import type {
+  ImageParams,
+  EmptyAt,
+  ImgSource,
+  MyPictureProps,
+} from './myPicture';
+import {
+  EMPTY_SRC,
+  resolveFallbackFormat,
+  resolveEmptyAt,
+  filterSrcSet,
+  resolveMediaAttr,
+  srcSetToString,
+  resolveImageParams,
+} from './myPicture';
+import { resolveImgSrc, resolveImgWidth } from './utils';
+
+export type Props = MyPictureProps;
+
+const defaultFormats = ['webp'];
+
+const resolvedImgSrc = resolveImgSrc(Astro.props.src);
+
+const {
+  formats = defaultFormats,
+  pictureAttributes = {},
+  fallbackFormat,
+  imgClass = null,
+  srcMd: srcMdProp = null,
+  srcSm: srcSmProp = null,
+  maxWidthMd = null,
+  maxWidthSm = null,
+  emptyAt: emptyAtStr,
+  ...props
+} = {
+  ...Astro.props,
+  src: resolvedImgSrc,
+  srcMd: Astro.props.srcMd && resolveImgSrc(Astro.props.srcMd),
+  srcSm: Astro.props.srcSm && resolveImgSrc(Astro.props.srcSm),
+  width: await resolveImgWidth(resolvedImgSrc, Astro.props.width),
+} as Props;
+
+if (props.alt === undefined || props.alt === null) {
+  throw new AstroError(
+    'Image missing "alt" property. "alt" text is required to describe important images on the page.',
+    'Use an empty string ("") for decorative images.',
+  );
+}
+
+props.quality = props.quality || 'high';
+
+const pictureClass = `${props.class} ${pictureAttributes.class || ''}`.trim();
+
+const layout = props.layout ?? imageConfig.layout ?? 'none';
+const useResponsive = layout !== 'none';
+
+if (useResponsive) {
+  // Apply defaults from imageConfig if not provided
+  props.layout ??= imageConfig.layout;
+  props.fit ??= imageConfig.objectFit ?? 'cover';
+  props.position ??= imageConfig.objectPosition ?? 'center';
+}
+
+for (const key in props) {
+  if (key.startsWith('data-astro-cid')) {
+    // @ts-expect-error This is for island props so they're not properly typed
+    pictureAttributes[key] = props[key];
+  }
+}
+
+const emptyAt = resolveEmptyAt(emptyAtStr ?? '');
+
+const imageParams = await resolveImageParams({
+  props,
+  srcMdProp,
+  srcSmProp,
+  maxWidthMd,
+  maxWidthSm,
+  emptyAt,
+});
+
+const resultFallbackFormat = resolveFallbackFormat(
+  imageParams.src,
+  fallbackFormat,
+);
+
+const resolveSrcSetAttr = (image: GetImageResult) => {
+  const srcSetStr = srcSetToString(image);
+
+  return props.densities ||
+    (!props.densities && !props.widths && !useResponsive)
+    ? `${image.src}${image.srcSet.values.length > 0 ? ', ' + srcSetStr : ''}`
+    : srcSetStr;
+};
+
+const getImgSourcesData = async (
+  imageParams: ImageParams,
+  formats: ImageOutputFormat[],
+  emptyAt: EmptyAt | null,
+) =>
+  Promise.all(
+    formats.map((format) => getImgSourceData(imageParams, format, emptyAt)),
+  );
+
+const getImgSourceData = async (
+  { src, widths, maxWidth }: ImageParams,
+  format: ImageOutputFormat,
+  emptyAt: EmptyAt | null,
+) => {
+  const image = await getImage({
+    ...props,
+    src,
+    format,
+    widths,
+    densities: props.densities,
+  } as UnresolvedImageTransform);
+
+  if (emptyAt) {
+    filterSrcSet(image, emptyAt);
+  }
+
+  const srcset = resolveSrcSetAttr(image);
+
+  const imgSource = {
+    src: image.src,
+    srcset,
+    attributes: image.attributes,
+  } as ImgSource;
+
+  const withTypeAttr = ['avif', 'webp'].includes(format);
+  if (withTypeAttr) {
+    imgSource.type =
+      mime.lookup(image.options.format ?? image.src) ??
+      `image/${image.options.format}`;
+  }
+
+  const mediaAttr = resolveMediaAttr(emptyAt, maxWidth);
+  if (mediaAttr) {
+    imgSource.media = mediaAttr;
+  }
+
+  return imgSource;
+};
+
+const allFormats = formats.includes(resultFallbackFormat)
+  ? formats
+  : [...formats, resultFallbackFormat];
+
+const smImgSourcesData = imageParams.sm
+  ? await getImgSourcesData(imageParams.sm, allFormats, emptyAt)
+  : [];
+const mdImgSourcesData = imageParams.md
+  ? await getImgSourcesData(imageParams.md, allFormats, emptyAt)
+  : [];
+const imgSourcesData = await getImgSourcesData(imageParams, formats, emptyAt);
+const fallbackImgSourceData = await getImgSourceData(
+  imageParams,
+  resultFallbackFormat,
+  emptyAt,
+);
+
+if (emptyAt) {
+  imgSourcesData.push(fallbackImgSourceData);
+}
+
+const allImgSourcesData = [
+  ...smImgSourcesData,
+  ...mdImgSourcesData,
+  ...imgSourcesData,
+];
+
+const imgAdditionalAttributes: HTMLAttributes<'img'> = {};
+const sourceAdditionalAttributes: HTMLAttributes<'source'> = {};
+
+// Propagate the `sizes` attribute to the `source` elements
+if (props.sizes) {
+  sourceAdditionalAttributes.sizes = props.sizes;
+}
+
+if (!emptyAt && fallbackImgSourceData.srcset) {
+  imgAdditionalAttributes.srcset = fallbackImgSourceData.srcset;
+}
+
+if (import.meta.env.DEV) {
+  imgAdditionalAttributes['data-image-component'] = 'true';
+}
+
+const { class: className, ...attributes } = {
+  ...imgAdditionalAttributes,
+  ...fallbackImgSourceData.attributes,
+};
+
+const fallbackSrc = emptyAt ? EMPTY_SRC : fallbackImgSourceData.src;
+---
+
+<picture {...pictureAttributes} class={pictureClass}>
+  {
+    allImgSourcesData.map((sourceData) => {
+      return (
+        <source
+          srcset={sourceData.srcset}
+          {...(sourceData.type && { type: sourceData.type })}
+          {...(sourceData.media && { media: sourceData.media })}
+        />
+      );
+    })
+  }
+  {
+    /* Applying class outside of the spread prevents it from applying unnecessary astro-* classes */
+  }
+  <img src={fallbackSrc} {...attributes} class={imgClass} />
+</picture>

@@ -1,0 +1,26 @@
+---
+const { class: className, rating, ...rest } = Astro.props;
+---
+
+<div class:list={['rating', className]} {...rest}>
+  {rating >= 1 && <div class="rating__star" />}
+  {rating >= 2 && <div class="rating__star" />}
+  {rating >= 3 && <div class="rating__star" />}
+  {rating >= 4 && <div class="rating__star" />}
+  {rating >= 5 && <div class="rating__star" />}
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .rating {
+    @include flex-center-v;
+    @include column-gap(2px);
+
+    &__star {
+      @include box(16px);
+
+      @include bgi('@img/icons/star.svg', 14px);
+    }
+  }
+</style>

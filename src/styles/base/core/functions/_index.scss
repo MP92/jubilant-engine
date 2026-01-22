@@ -1,0 +1,60 @@
+@forward './fluid';
+@forward './img';
+@forward './list';
+@forward './utils';
+@use 'sass:string';
+@use 'sass:meta';
+@use 'sass:math';
+@use 'sass:list';
+@use 'sass:map';
+
+@function set-query-param($url-str, $key, $value: null) {
+  // Split URL into base and query parts
+  $parts: string.split($url-str, '?');
+  $base: list.nth($parts, 1);
+  $existing-query: if(list.length($parts) > 1, list.nth($parts, 2), '');
+
+  // Parse existing query into key-value pairs
+  $params: ();
+
+  @if $existing-query != '' {
+    $pairs: string.split($existing-query, '&');
+
+    @each $pair in $pairs {
+      $kv: string.split($pair, '=');
+      $k: list.nth($kv, 1);
+      $params: map.merge(
+        $params,
+        (
+          $k: if(list.length($kv) > 1, list.nth($kv, 2), null),
+        )
+      );
+    }
+  }
+
+  // Update or add the new parameter
+  $params: map.merge(
+    $params,
+    (
+      $key: $value,
+    )
+  );
+
+  // Rebuild the query string
+  $new-query: '';
+
+  @each $k, $v in $params {
+    @if $new-query != '' {
+      $new-query: $new-query + '&';
+    }
+
+    $new-query: $new-query + $k;
+
+    @if $v {
+      $new-query: $new-query + '=' + $v;
+    }
+  }
+
+  // Combine base URL with new query
+  @return if($new-query != '', $base + '?' + $new-query, $base);
+}

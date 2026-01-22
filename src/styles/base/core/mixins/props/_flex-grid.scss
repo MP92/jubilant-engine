@@ -1,0 +1,103 @@
+@use '../utils' as utils-mixins;
+
+@mixin flex-direction($args...) {
+  @include utils-mixins.adaptive-props(flex-direction, $args) {
+    @content;
+  }
+}
+
+@mixin flex-wrap($args...) {
+  @include utils-mixins.adaptive-props(flex-wrap, $args) {
+    @content;
+  }
+}
+
+@mixin flex-grow($args...) {
+  @include utils-mixins.adaptive-props(flex-grow, $args) {
+    @content;
+  }
+}
+
+@mixin grid-template-columns($args...) {
+  @include utils-mixins.adaptive-props(grid-template-columns, $args) {
+    @content;
+  }
+}
+
+@mixin grid-column($args...) {
+  @include utils-mixins.adaptive-props(grid-column, $args) {
+    @content;
+  }
+}
+
+@mixin gap($args...) {
+  @include utils-mixins.adaptive-props(gap, $args) {
+    @content;
+  }
+}
+
+@mixin gap-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(gap, $args...) {
+    @content;
+  }
+}
+
+@mixin row-gap($args...) {
+  @include utils-mixins.adaptive-props(row-gap, $args) {
+    @content;
+  }
+}
+
+@mixin row-gap-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(row-gap, $args...) {
+    @content;
+  }
+}
+
+@mixin column-gap($args...) {
+  @include utils-mixins.adaptive-props(column-gap, $args) {
+    @content;
+  }
+}
+
+@mixin column-gap-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(column-gap, $args...) {
+    @content;
+  }
+}
+
+@mixin justify-content($args...) {
+  @include utils-mixins.adaptive-props(justify-content, $args) {
+    @content;
+  }
+}
+
+@mixin justify-items($args...) {
+  @include utils-mixins.adaptive-props(justify-items, $args) {
+    @content;
+  }
+}
+
+@mixin justify-self($args...) {
+  @include utils-mixins.adaptive-props(justify-self, $args) {
+    @content;
+  }
+}
+
+@mixin align-items($args...) {
+  @include utils-mixins.adaptive-props(align-items, $args) {
+    @content;
+  }
+}
+
+@mixin align-self($args...) {
+  @include utils-mixins.adaptive-props(align-self, $args) {
+    @content;
+  }
+}
+
+@mixin order($args...) {
+  @include utils-mixins.adaptive-props(order, $args) {
+    @content;
+  }
+}

@@ -1,0 +1,91 @@
+---
+// import pathe from 'pathe';
+import '../styles/common.scss';
+import '../styles/base/core/_utils.scss';
+import AstroFont from '@plugins/astro-font/AstroFont.astro';
+import { localizedHTML as favicons } from 'astro-favicons/middleware';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <Fragment set:html={favicons(Astro.currentLocale)} />
+    <meta name="generator" content={Astro.generator} />
+    {description && <meta name="description" content={description} />}
+    <title>{title}</title>
+    <AstroFont
+      config={[
+        {
+          name: 'Poppins',
+          preload: false,
+          fallback: 'sans-serif',
+          fallbackName: 'Poppins-fallback',
+          googleFontsURL:
+            'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;1,400;1,700&display=swap',
+          subsets: ['latin'],
+        },
+        /* {
+          name: 'Inter',
+          preload: false,
+          fallback: 'sans-serif',
+          fallbackName: 'Inter-fallback',
+          googleFontsURL:
+          'https://fonts.bunny.net/css?family=inter:400,500,600&display=swap',
+          subsets: ['latin'],
+        }, */
+        /* {
+          name: 'Eudoxus Sans',
+          preload: false,
+          fallback: 'sans-serif',
+          src: [
+            {
+              style: 'normal',
+              weight: '500',
+              path: pathe.join(process.cwd(), 'src', 'fonts', 'EudoxusSans-Medium-subset.woff2')
+            }
+          ],
+        } */
+      ]}
+    />
+    <!-- Fonts containing only a few letters (Logo text): -->
+    <!-- 1. Get font link like `https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap&text=Logo` -->
+    <!-- 2. Get inline code: https://amio.github.io/embedded-google-fonts/ -->
+    <!--    <style>
+      @font-face {
+        font-family: 'Space Grotesk';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url(data:font/woff2;base64,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) format('woff2');
+      }
+    </style>-->
+    <script>
+      window.addEventListener('load', function () {
+        document.body.classList.add('loaded');
+      });
+    </script>
+    <script src="../js/base.ts"></script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  #group-mq {
+    top: 0;
+  }
+</style>

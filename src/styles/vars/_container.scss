@@ -1,0 +1,11 @@
+@use '@styles/base' as *;
+
+:root {
+  --container-width: #{$container-max-width};
+
+  @include var-fluid(
+    --container-padding-x,
+    $container-padding-l,
+    $container-padding-s $tablet
+  );
+}

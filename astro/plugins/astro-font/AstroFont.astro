@@ -1,0 +1,44 @@
+---
+import type { Props, Config } from './types';
+import {
+  generateFonts,
+  getPreloadType,
+  createPreloads,
+  createBaseCSS,
+  createFontCSS,
+} from './utils';
+import { commonFontConfig } from './config';
+const { config: customConfig } = Astro.props as Props;
+
+const config = customConfig.map((configEntry) => ({
+  ...commonFontConfig,
+  ...configEntry,
+})) as Config[];
+
+const resolvedConfig = await generateFonts(config);
+
+const preloads = resolvedConfig.map(createPreloads);
+const styles = Promise.all([
+  ...resolvedConfig.map(createBaseCSS),
+  ...resolvedConfig.map(createFontCSS),
+]);
+---
+
+{
+  preloads
+    .flat()
+    .map((content) => (
+      <link
+        as="font"
+        crossorigin
+        rel="preload"
+        href={content}
+        type={getPreloadType(content)}
+      />
+    ))
+}
+{
+  styles
+    .then((res) => <style set:html={res.flat().join(' ')} is:inline />)
+    .catch(console.log)
+}

@@ -1,0 +1,16 @@
+export const FONT_THIN_100 = 100;
+export const FONT_EXTRA_LIGHT_200 = 200;
+export const FONT_ULTRA_LIGHT_200 = 200;
+export const FONT_LIGHT_300 = 300;
+export const FONT_NORMAL_400 = 400;
+export const FONT_REGULAR_400 = 400;
+export const FONT_MEDIUM_500 = 500;
+export const FONT_SEMI_BOLD_600 = 600;
+export const FONT_DEMI_BOLD_600 = 600;
+export const FONT_BOLD_700 = 700;
+export const FONT_EXTRA_BOLD_800 = 800;
+export const FONT_ULTRA_BOLD_800 = 800;
+export const FONT_BLACK_900 = 900;
+export const FONT_HEAVY_900 = 900;
+export const FONT_EXTRA_BLACK_950 = 950;
+export const FONT_ULTRA_BLACK_950 = 950;

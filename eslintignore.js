@@ -1,0 +1,20 @@
+export default [
+  '.idea/',
+  'node_modules/',
+  'vendor/',
+  'dist/',
+  '**/*.log',
+  '**/logs/',
+  // Diagnostic reports (https://nodejs.org/api/report.html)
+  '**/report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json',
+  '.npm',
+  '.eslintcache',
+  '.stylelintcache',
+  '.env',
+  '.env.development.local',
+  '.env.test.local',
+  '.env.production.local',
+  '.env.local',
+  '.temp',
+  '.astro',
+];

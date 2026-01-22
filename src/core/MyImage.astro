@@ -1,0 +1,22 @@
+---
+import {
+  Image,
+  type LocalImageProps,
+  type RemoteImageProps,
+} from 'astro:assets';
+import { resolveImgSrc, resolveImgWidth } from './utils';
+import type { MyLocalImageProps } from './myPicture';
+
+type Props = MyLocalImageProps | RemoteImageProps;
+
+const resolvedImgSrc = resolveImgSrc(Astro.props.src);
+
+const props = {
+  ...Astro.props,
+  quality: Astro.props.quality || 'high',
+  src: resolvedImgSrc,
+  width: await resolveImgWidth(resolvedImgSrc, Astro.props.width),
+};
+---
+
+<Image {...props as LocalImageProps | RemoteImageProps} />

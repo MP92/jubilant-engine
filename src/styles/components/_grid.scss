@@ -1,0 +1,21 @@
+@use '@styles/base' as *;
+
+.grid {
+  display: grid;
+  @include grid-template-columns(repeat(var(--grid-items-count), 1fr));
+  max-width: calc(
+    var(--grid-items-count) *
+      (var(--grid-item-width) + var(--grid-gap)) - var(--grid-gap)
+  );
+  @include gap(var(--grid-gap));
+  margin-inline: auto;
+
+  &__item {
+    display: flex;
+    justify-content: center;
+
+    & > * {
+      max-width: var(--grid-item-width);
+    }
+  }
+}

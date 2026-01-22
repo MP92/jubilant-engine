@@ -1,0 +1,9 @@
+@mixin fullwidth {
+  position: relative;
+  left: 50%;
+  right: 50%;
+
+  width: calc(var(--vw, 1vw) * 100);
+  margin-left: calc(var(--vw, 1vw) * -50);
+  margin-right: calc(var(--vw, 1vw) * -50);
+}

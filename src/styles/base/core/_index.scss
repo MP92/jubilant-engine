@@ -1,0 +1,17 @@
+@forward './sass-vars';
+@forward './mixins';
+@forward './media';
+@forward './functions';
+@forward './breakpoints';
+@forward './utils';
+
+.link-box {
+  position: relative;
+
+  &__link::after {
+    content: '';
+
+    position: absolute;
+    inset: 0;
+  }
+}

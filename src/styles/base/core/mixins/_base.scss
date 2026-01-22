@@ -1,0 +1,27 @@
+@mixin reset-btn {
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+@mixin not-last-child() {
+  &:where(:not(:last-child)) {
+    @content;
+  }
+}
+
+@mixin hover($active-mobile: true) {
+  @media (any-hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+
+  @if $active-mobile {
+    @media (any-hover: none) {
+      &:active {
+        @content;
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+@mixin sticky-header($animated: null) {
+  position: sticky;
+  top: var(--sticky-header-top, 0);
+  z-index: var(--sticky-header-z-index, 1);
+  box-shadow: var(--sticky-header-shadow);
+
+  @if $animated == animated {
+    animation-name: header-shadow;
+    animation-fill-mode: both;
+    animation-timeline: scroll();
+    animation-range: var(--sticky-header-animation-start, 0)
+      var(--sticky-header-animation-end, 200px);
+    animation-duration: 1ms; /* Firefox requires this to apply the animation */
+
+    @keyframes header-shadow {
+      from {
+        box-shadow: var(--sticky-header-shadow);
+      }
+
+      to {
+        box-shadow: var(
+          --sticky-header-end-shadow,
+          var(--sticky-header-shadow)
+        );
+      }
+    }
+  }
+}

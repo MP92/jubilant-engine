@@ -1,0 +1,40 @@
+@use '../base' as base-mixins;
+@use '../position' as *;
+
+@mixin cross {
+  background: none;
+  border: none;
+
+  position: relative;
+
+  display: block;
+  width: var(--cross-outer-size, 36px);
+  height: var(--cross-outer-size, 36px);
+
+  border-radius: 2px;
+
+  &::before,
+  &::after {
+    content: '';
+
+    @include pos-center;
+    rotate: -45deg;
+
+    width: var(--cross-size, 75%);
+    height: 2px;
+
+    background-color: var(--cross-color, #fff);
+    border-radius: 4px;
+  }
+
+  &::after {
+    rotate: 45deg;
+  }
+
+  @include base-mixins.hover {
+    &::before,
+    &::after {
+      background-color: var(--cross-color-hover, var(--cross-color, #fff));
+    }
+  }
+}

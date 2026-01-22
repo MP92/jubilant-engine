@@ -1,0 +1,10 @@
+@forward './colors';
+@forward './container';
+@use '@styles/base' as *;
+
+:root {
+  --font-family: Poppins, sans-serif;
+  --transition-duration: 0.2s;
+
+  // --100vw: calc(100vw - var(--scrollbar-width));
+}

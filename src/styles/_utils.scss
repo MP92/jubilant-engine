@@ -1,0 +1,18 @@
+// project util classes
+@use 'base' as *;
+
+.sm-hide {
+  @include tablet-s-and-lower {
+    display: none !important;
+  }
+}
+
+.sm-only {
+  @include higher-tablet-s {
+    display: none !important;
+  }
+}
+
+.nowrap {
+  white-space: nowrap;
+}

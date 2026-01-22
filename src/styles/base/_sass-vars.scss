@@ -1,0 +1,12 @@
+@use './core/sass-vars' as core-vars;
+
+/* Project specific sass variables */
+$view-l-px: core-vars.$desktop * 1px;
+$view-l: core-vars.$desktop;
+$view-m-px: core-vars.$laptop * 1px;
+$view-m: core-vars.$laptop;
+$view-s-px: core-vars.$mobile-s * 1px;
+$view-s: core-vars.$mobile-s;
+$container-max-width: 1596px;
+$container-padding-l: 80px;
+$container-padding-s: 16px;

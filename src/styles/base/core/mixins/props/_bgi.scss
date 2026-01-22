@@ -1,0 +1,319 @@
+@use 'sass:list';
+@use '../../functions' as fns;
+@use '../utils' as utils-mixins;
+
+@function _expand-size-args($args) {
+  $result: ();
+
+  @if list.length($args) <= 0 {
+    @return $result;
+  }
+
+  @for $i from 1 through list.length($args) {
+    $values: list.nth($args, $i);
+    $media-query-width: utils-mixins.get-media-query-width($values);
+    $expanded-values: if(
+      $media-query-width != null,
+      fns.list-remove-last($values),
+      $values
+    );
+
+    @if list.length($expanded-values) == 1 {
+      $expanded-values: list.join($expanded-values, $expanded-values, 'space');
+    }
+
+    @if $media-query-width {
+      $expanded-values: list.append(
+        $expanded-values,
+        $media-query-width,
+        'space'
+      );
+    }
+
+    $result: list.append($result, $expanded-values, 'comma');
+  }
+
+  @return $result;
+}
+
+@mixin bgi($url-str, $args...) {
+  $args: _expand-size-args($args);
+
+  background-image: url($url-str);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  @include utils-mixins.adaptive-props(background-size, $args) {
+    @content;
+  }
+}
+
+@mixin _bgi-pseudo($url-str, $args...) {
+  content: '';
+
+  display: block;
+  flex-shrink: 0;
+
+  @if $url-str {
+    background-image: url($url-str);
+  }
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  @include utils-mixins.adaptive-props-fluid(width height, $args...) {
+    @content;
+  }
+}
+
+/**
+ * @example
+ * @include bgi-before('/img/icons/site-logo.png', 63px 56px, 43px 38px $tablet)
+ */
+@mixin bgi-before($url-str, $args...) {
+  &::before {
+    @include _bgi-pseudo($url-str, $args...) {
+      @content;
+    }
+  }
+}
+
+/**
+ * @example
+ * @include bgi-after('/img/icons/site-logo.png', 63px 56px, 43px 38px $tablet)
+ */
+@mixin bgi-after($url-str, $args...) {
+  &::after {
+    @include _bgi-pseudo($url-str, $args...) {
+      @content;
+    }
+  }
+}
+
+@mixin bgi-mask($url-str, $args...) {
+  $args: _expand-size-args($args);
+
+  mask: url($url-str) no-repeat center;
+
+  @include utils-mixins.adaptive-props(mask-size, $args) {
+    @content;
+  }
+}
+
+@function _to-image-set($url-str, $size: null) {
+  $url-str: if(
+    $size != null,
+    fns.get-img-url-adaptive($url-str, $size),
+    $url-str
+  );
+  $url-2x: fns.retina-2x($url-str);
+  $url-webp: fns.set-query-param($url-str, 'as', 'webp');
+  $url-webp-2x: fns.retina-2x($url-webp);
+  $image-set: image-set(
+    url($url-webp-2x) type('image/webp') 2x,
+    url($url-webp) type('image/webp') 1x,
+    url($url-2x) 2x,
+    url($url-str) 1x
+  );
+
+  @return $image-set;
+}
+
+@function _get-media-query-params(
+  $size-lg: null,
+  $params-md: null,
+  $params-sm: null
+) {
+  @if $params-md {
+    @if $params-sm {
+      @return utils-mixins.get-media-query-width($params-md)
+        utils-mixins.get-media-query-width($params-sm);
+    }
+
+    @return utils-mixins.get-media-query-width($params-md);
+  }
+
+  @return ();
+}
+
+@function _resolve-image-set-values($url-str, $args) {
+  $media-query-params: _get-media-query-params($args...);
+
+  @return _resolve-image-set-values-inner($url-str, $media-query-params...);
+}
+
+@function _resolve-image-set-values-inner(
+  $url-str,
+  $viewport-md: null,
+  $viewport-sm: null
+) {
+  $args: (_to-image-set($url-str));
+
+  @if $viewport-md {
+    $args: list.append(
+      $args,
+      (_to-image-set($url-str, 'md') $viewport-md),
+      'comma'
+    );
+  }
+
+  @if $viewport-sm {
+    $args: list.append(
+      $args,
+      (_to-image-set($url-str, 'sm') $viewport-sm),
+      'comma'
+    );
+  }
+
+  @return $args;
+}
+
+/**
+ * Генерирует `background-image: image-set(...)` для 1x и 2x плотностей пикселей.
+ * Обязательно наличие картинки с суффиксом `@2x`.
+ *
+ * @example
+ * Без указания размеров (background-size: contain).
+ * Требуются файлы: `bg.jpg`, `bg@2x.jpg`.
+ * @include bgi-1x2x('@img/bg.jpg');
+ *
+ * // С указанием размеров (background-size: 400px 350px).
+ * Требуются файлы: `card.jpg`, `card@2x.jpg`.
+ * @include bgi-1x2x('@img/card.jpg', 400px 350px);
+ */
+@mixin bgi-1x2x($url-str, $args...) {
+  @include _bgi-1x2x($url-str);
+
+  @if list.length($args) > 0 {
+    @include utils-mixins.adaptive-props(background-size, $args);
+  } @else {
+    background-size: contain;
+  }
+
+  @content;
+}
+
+@mixin _bgi-1x2x($url-str) {
+  background-image: _to-image-set($url-str);
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+@mixin _bgi-1x2x-pseudo($url-str, $args) {
+  content: '';
+  display: block;
+  flex-shrink: 0;
+
+  @include _bgi-1x2x($url-str);
+  background-size: contain;
+
+  @include utils-mixins.adaptive-props-fluid(width height, $args...) {
+    @content;
+  }
+}
+
+@mixin bgi-1x2x-before($url-str, $args...) {
+  &::before {
+    @include _bgi-1x2x-pseudo($url-str, $args) {
+      @content;
+    }
+  }
+}
+
+@mixin bgi-1x2x-after($url-str, $args...) {
+  &::after {
+    @include _bgi-1x2x-pseudo($url-str, $args) {
+      @content;
+    }
+  }
+}
+
+/**
+ * Генерирует `background-image: image-set(...)` для адаптивных картинок (с суффиксами `-md`, `-sm`).
+ * Обязательно наличие файла с суффиксом `@2x` для каждой картинки.
+ *
+ * @example
+ * // Адаптивная картинка для -md разрешения
+ * // Требуются файлы: `card.jpg`, `card@2x.jpg`, `card_md.jpg`, `card_md@2x.jpg`.
+ * @include bgi-md-sm('@img/card.jpg', 400px 350px, 200px 150px $tablet);
+ *
+ * // Адаптивная картинка для -md и -sm разрешений
+ * // Требуются файлы: `card.jpg`, `card@2x.jpg`, `card_md.jpg`, `card_md@2x.jpg`, `card_sm.jpg`, `card_sm@2x.jpg`.
+ * @include bgi-md-sm('@img/card.jpg', 400px 350px, 200px 150px $tablet, 100px 70px $mobile);
+ */
+@mixin bgi-md-sm($url-str, $args...) {
+  @include _bgi-md-sm($url-str, $args...);
+
+  @if list.length($args) > 0 {
+    @include utils-mixins.adaptive-props(background-size, $args);
+  } @else {
+    background-size: contain;
+  }
+
+  @content;
+}
+
+@mixin _bgi-md-sm($url-str, $args...) {
+  $args: _expand-size-args($args);
+
+  background-repeat: no-repeat;
+  background-position: center;
+
+  @include utils-mixins.adaptive-props(
+    background-image,
+    _resolve-image-set-values($url-str, $args)
+  );
+}
+
+@mixin _bgi-md-sm-pseudo($url-str, $args) {
+  content: '';
+  display: block;
+  flex-shrink: 0;
+
+  @include _bgi-md-sm($url-str, $args...);
+  background-size: contain;
+
+  @include utils-mixins.adaptive-props-fluid(width height, $args...) {
+    @content;
+  }
+}
+
+@mixin bgi-md-sm-before($url-str, $args...) {
+  &::before {
+    @include _bgi-md-sm-pseudo($url-str, $args) {
+      @content;
+    }
+  }
+}
+
+@mixin bgi-md-sm-after($url-str, $args...) {
+  &::after {
+    @include _bgi-md-sm-pseudo($url-str, $args) {
+      @content;
+    }
+  }
+}
+
+/**
+ * @example
+ * @include bgi-size-override(63px 56px);
+ */
+@mixin bgi-size-override($args...) {
+  @include utils-mixins.adaptive-props(width height, $args);
+
+  @include utils-mixins.adaptive-props(background-size, $args) {
+    @content;
+  }
+}
+
+@mixin background-position($name, $args) {
+  @include utils-mixins.adaptive-props(background-position, $args) {
+    @content;
+  }
+}
+
+@mixin background-position-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(background-position, $args...);
+}

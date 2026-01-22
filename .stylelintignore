@@ -1,0 +1,4 @@
+node_modules
+public
+vendor
+src/styles/_normalize.scss

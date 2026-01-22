@@ -1,0 +1,27 @@
+@mixin v-line($pseudo: after, $offset: 0px) {
+  @if $pseudo != 'before' and $pseudo != 'after' {
+    @error 'Invalid argument value';
+  }
+
+  position: relative;
+
+  &::#{$pseudo} {
+    content: '';
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+
+    @if $pseudo == 'after' {
+      left: calc(100% + $offset);
+    } @else if $pseudo == 'before' {
+      right: calc(100% + $offset);
+    }
+
+    display: block;
+    width: 1px;
+    background-color: var(--v-line-color, #777);
+
+    @content;
+  }
+}

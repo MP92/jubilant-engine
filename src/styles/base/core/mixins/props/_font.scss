@@ -1,0 +1,37 @@
+@use 'sass:string';
+@use 'sass:list';
+@use '../utils' as utils-mixins;
+
+@mixin font-size($args...) {
+  letter-spacing: var(--letter-spacing, normal);
+  @content;
+
+  @include utils-mixins.adaptive-props(font-size, $args);
+}
+
+@mixin font-size-fluid($args...) {
+  letter-spacing: var(--letter-spacing, normal);
+  @content;
+
+  @include utils-mixins.adaptive-props-fluid(font-size, $args...);
+}
+
+@mixin line-height($args...) {
+  @include utils-mixins.adaptive-props(line-height, $args);
+}
+
+@mixin line-height-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(line-height, $args...);
+}
+
+@mixin letter-spacing($args...) {
+  @include utils-mixins.adaptive-props(letter-spacing, $args);
+}
+
+@mixin text-align($args...) {
+  @include utils-mixins.adaptive-props(text-align, $args);
+}
+
+@mixin white-space($args...) {
+  @include utils-mixins.adaptive-props(white-space, $args);
+}

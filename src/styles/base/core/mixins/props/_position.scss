@@ -1,0 +1,31 @@
+@use '../utils' as utils-mixins;
+
+@mixin left($args...) {
+  @include utils-mixins.adaptive-props(left, $args) {
+    @content;
+  }
+}
+
+@mixin left-top($args...) {
+  @include utils-mixins.adaptive-props(left top, $args) {
+    @content;
+  }
+}
+
+@mixin left-top-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(left top, $args...) {
+    @content;
+  }
+}
+
+@mixin right-bottom-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(right bottom, $args...) {
+    @content;
+  }
+}
+
+@mixin z-index($args...) {
+  @include utils-mixins.adaptive-props(z-index, $args) {
+    @content;
+  }
+}

@@ -1,0 +1,7 @@
+@use '@styles/base' as *;
+
+body {
+  font-family: var(--font-family);
+  color: var(--color-text);
+  @include font-size-fluid(16px, 14px $tablet-s);
+}

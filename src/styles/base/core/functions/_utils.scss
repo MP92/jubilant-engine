@@ -1,0 +1,70 @@
+@use 'sass:list';
+@use 'sass:string';
+@use 'sass:meta';
+@use 'sass:math';
+
+@function expand-px-values($values, $target-length) {
+  $len: list.length($values);
+
+  @if $len >= $target-length {
+    @return $values;
+  }
+
+  @if $len == 1 {
+    @if $target-length == 2 {
+      @return list.nth($values, 1) list.nth($values, 1);
+    } @else if $target-length == 3 {
+      @return list.nth($values, 1) list.nth($values, 1) list.nth($values, 1);
+    } @else if $target-length == 4 {
+      @return list.nth($values, 1) list.nth($values, 1) list.nth($values, 1)
+        list.nth($values, 1);
+    }
+  }
+
+  @if $len == 2 {
+    @if $target-length == 3 {
+      @return list.nth($values, 1) list.nth($values, 2) list.nth($values, 1);
+    } @else if $target-length == 4 {
+      @return list.nth($values, 1) list.nth($values, 2) list.nth($values, 1)
+        list.nth($values, 2);
+    }
+  }
+
+  @if $len == 3 and $target-length == 4 {
+    @return list.nth($values, 1) list.nth($values, 2) list.nth($values, 3)
+      list.nth($values, 2);
+  }
+
+  @return $values;
+}
+
+/// Return last index of `$needle` in `$string`.
+/// @access private
+/// @param {String} $string - string to search in
+/// @param {String} $needle - substring to search for
+/// @return {Number}
+@function str-last-index($string, $needle) {
+  $index: string.index($string, $needle);
+  $result: $index;
+
+  @if $index {
+    @for $i from $index + string.length($needle) through string.length($string)
+    {
+      @if string.slice($string, $i, $i + string.length($needle) - 1) == $needle
+      {
+        $result: $i;
+      }
+    }
+  }
+
+  @return $result;
+}
+
+@function is-unitless-int($value) {
+  @return meta.type-of($value) == number and math.is-unitless($value) and
+    math.round($value) == $value;
+}
+
+@function strip-unit($value) {
+  @return math.div($value, ($value * 0 + 1));
+}

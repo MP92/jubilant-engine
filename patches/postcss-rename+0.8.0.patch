@@ -1,0 +1,40 @@
+diff --git a/node_modules/postcss-rename/build/src/minimal-renamer.js b/node_modules/postcss-rename/build/src/minimal-renamer.js
+index cddd59c..2c3f56b 100644
+--- a/node_modules/postcss-rename/build/src/minimal-renamer.js
++++ b/node_modules/postcss-rename/build/src/minimal-renamer.js
+@@ -50,13 +50,14 @@ function toShortName(index) {
+     }
+     return result.join('');
+ }
++
++/** The next index to pass to `toShortName()`. */
++let nextIndex = 0;
++/** A map from original CSS names to their renamed equivalents. */
++const renames = new Map();
+ /** Renames CSS names to the smallest valid identifiers. */
+ class MinimalRenamer {
+     skip;
+-    /** The next index to pass to `toShortName()`. */
+-    nextIndex = 0;
+-    /** A map from original CSS names to their renamed equivalents. */
+-    renames = new Map();
+     /**
+      * Creates a new MinimalSubstitutionMap that generates CSS names from the
+      * specified set of characters.
+@@ -68,13 +69,13 @@ class MinimalRenamer {
+         this.skip = skip;
+     }
+     rename(key) {
+-        let value = this.renames.get(key);
++        let value = renames.get(key);
+         if (value)
+             return value;
+         do {
+-            value = toShortName(this.nextIndex++);
++            value = toShortName(nextIndex++);
+         } while (this.skip(value));
+-        this.renames.set(key, value);
++        renames.set(key, value);
+         return value;
+     }
+ }

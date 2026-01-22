@@ -1,0 +1,105 @@
+@use 'sass:list';
+@use 'sass:math';
+@use 'sass:meta';
+@use '../functions' as fns;
+@use '../breakpoints' as breakpoints;
+
+@mixin inc($mixin-name) {
+  $mixin: meta.get-mixin($mixin-name);
+
+  @include meta.apply($mixin) {
+    @content;
+  }
+}
+
+@mixin lte-optional($value: null, $viewport-width: null) {
+  @if $value {
+    @if not $viewport-width {
+      @error 'Missing viewport width argument';
+    }
+
+    @include breakpoints.lte($viewport-width) {
+      @content;
+    }
+  }
+}
+
+@function get-media-query-width($values) {
+  @if list.length($values) < 2 {
+    @return null;
+  }
+
+  $last-value: fns.last($values);
+
+  @return if(
+    fns.is-unitless-int($last-value) and $last-value > 0,
+    $last-value,
+    null
+  );
+}
+
+@mixin _props($prop-names, $values) {
+  $props-count: list.length($prop-names);
+  $values-count: list.length($values);
+
+  @if $props-count == 0 {
+    @error ('Missing prop names.');
+  }
+
+  @if $values-count == 0 {
+    @error ('Missing prop values.');
+  }
+
+  @if $props-count > 1 and $values-count > 1 {
+    @if $props-count != $values-count {
+      @error ('Props "#{$prop-names}" count (#{$props-count}) must match values "#{$values}" count (#{$values-count}).');
+    }
+
+    $props: list.zip($prop-names, $values);
+
+    @each $prop-name, $prop-value in $props {
+      #{$prop-name}: $prop-value;
+    }
+  } @else {
+    @each $prop-name in $prop-names {
+      #{$prop-name}: $values;
+    }
+  }
+}
+
+@mixin adaptive-props($prop-names, $args) {
+  @for $i from 0 to list.length($args) {
+    $values: list.nth($args, $i + 1);
+    $media-query-width: get-media-query-width($values);
+
+    @if $i > 0 and not $media-query-width {
+      @error ('Argument "#{$values}" must contain media query width');
+    }
+
+    @if $media-query-width {
+      $values: fns.list-remove-last($values);
+
+      @include breakpoints.lte(#{$media-query-width}px) {
+        @include _props($prop-names, $values);
+      }
+    } @else {
+      @include _props($prop-names, $values);
+    }
+  }
+
+  @content;
+}
+
+@mixin adaptive-props-fluid($prop-name, $args...) {
+  @if list.length($args) < 1 {
+    @error 'Missing $args.';
+  }
+
+  @if list.length($args) > 1 {
+    $args: fns.to-fluid-values($args...);
+  }
+
+  @include adaptive-props($prop-name, $args) {
+    @content;
+  }
+}
