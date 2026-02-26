@@ -1,22 +1,35 @@
 import type { KeenSliderInstance, KeenSliderPlugin } from 'keen-slider';
+import './bulletsPlugin.scss';
 
-const DEFAULT_BULLET_CLASS_NAME = 'keen-slider-bullet';
+const DEFAULT_BULLET_CLASS_NAME = 'keen-slider-bullets__item';
+const ACTIVE_CLASS = 'is-active';
+const HIDDEN_CLASS = 'hidden';
 
-export const resolveBulletsPlugin = (
+const ADJACENT_BULLETS_COUNT_DEFAULT = 3;
+
+const resolveBulletClassNames = (bulletsEl: HTMLElement) => {
+  const bulletClassNames = [DEFAULT_BULLET_CLASS_NAME];
+
+  const customBulletClassName = bulletsEl.children[0]?.classList.item(0);
+
+  if (customBulletClassName) {
+    bulletClassNames.push(customBulletClassName);
+  }
+
+  return bulletClassNames;
+};
+
+const resolveAdjacentBulletsCount = (visibleBulletsCount?: number | null) =>
+  visibleBulletsCount
+    ? Math.floor(visibleBulletsCount / 2)
+    : ADJACENT_BULLETS_COUNT_DEFAULT;
+
+export default (
   bulletsEl: HTMLElement,
-  adjacentBulletsCount: number,
+  visibleBulletsCount?: number | null,
 ) => {
-  const resolveBulletClassNames = () => {
-    const bulletClassNames = [DEFAULT_BULLET_CLASS_NAME];
-
-    const customBulletClassName = bulletsEl.children[0]?.classList.item(0);
-
-    if (customBulletClassName) {
-      bulletClassNames.push(customBulletClassName);
-    }
-
-    return bulletClassNames;
-  };
+  const bulletClassNames = resolveBulletClassNames(bulletsEl);
+  const adjacentBulletsCount = resolveAdjacentBulletsCount(visibleBulletsCount);
 
   const resolveShiftRatio = (activeSlide: number, maxSlide: number) => {
     if (bulletsEl.classList.contains('keen-slider-bullets--left')) {
@@ -34,8 +47,6 @@ export const resolveBulletsPlugin = (
   };
 
   return function (slider: KeenSliderInstance) {
-    const bulletClassNames = resolveBulletClassNames();
-
     let lastMaxIdx = -1;
 
     const updateClasses = () => {
@@ -51,8 +62,8 @@ export const resolveBulletsPlugin = (
       Array.from(bulletsEl.children).forEach((bullet, idx) => {
         const diff = Math.abs(idx - activeSlide);
 
-        bullet.classList.toggle('active', diff === 0);
-        bullet.classList.toggle('hidden', diff > adjacentBulletsCount);
+        bullet.classList.toggle(ACTIVE_CLASS, diff === 0);
+        bullet.classList.toggle(HIDDEN_CLASS, diff > adjacentBulletsCount);
       });
     };
 

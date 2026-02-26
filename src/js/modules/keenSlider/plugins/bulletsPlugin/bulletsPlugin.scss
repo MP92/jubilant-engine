@@ -1,0 +1,41 @@
+.keen-slider-bullets {
+  --bullet-size: 16px;
+  --bullets-gap: 8px;
+  --bullet-color: #ccc;
+  --bullet-active-color: #007aff;
+
+  display: flex;
+  align-items: center;
+  gap: var(--bullets-gap);
+  width: calc(var(--bullet-size) + var(--bullets-gap));
+  padding-left: calc(var(--bullets-gap) / 2);
+  transition:
+    0.2s transform,
+    0.2s margin-left,
+    0.2s margin-right;
+
+  &__item {
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+
+    width: var(--bullet-size);
+    height: var(--bullet-size);
+
+    background-color: var(--bullet-color);
+    border-radius: 50%;
+
+    &.is-active {
+      background-color: var(--bullet-active-color);
+    }
+
+    &.hidden {
+      transform: scale(0);
+      visibility: hidden;
+    }
+
+    &:only-child {
+      display: none !important;
+    }
+  }
+}

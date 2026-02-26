@@ -21,7 +21,7 @@ const resolveTransformOrigin = (activeSlideAbs: number, slideAbs: number) => {
   );
 };
 
-export const scaleAdjacentSlides = (rawScaleValue: unknown) => {
+export default (rawScaleValue: unknown) => {
   const scaleValue = parseScaleValue(rawScaleValue);
 
   return function (slider: KeenSliderInstance) {

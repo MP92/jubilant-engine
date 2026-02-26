@@ -1,9 +1,6 @@
 import type { KeenSliderInstance, KeenSliderPlugin } from 'keen-slider';
 
-export const resolveArrowsPlugin = (
-  arrowPrevEl: HTMLElement,
-  arrowNextEl: HTMLElement,
-) => {
+export default (arrowPrevEl: HTMLElement, arrowNextEl: HTMLElement) => {
   return function (slider: KeenSliderInstance) {
     const updateClasses = () => {
       const slide = slider.track.details.rel;

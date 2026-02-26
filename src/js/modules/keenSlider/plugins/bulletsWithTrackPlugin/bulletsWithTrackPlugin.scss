@@ -1,0 +1,51 @@
+.keen-slider-bullets {
+  --bullet-size: 16px;
+  --bullet-height: var(--bullet-size);
+  --bullet-active-size: var(--bullet-size);
+  --bullet-active-height: var(--bullet-height);
+  --bullets-gap: 8px;
+  --bullet-color: #ccc;
+  --bullet-active-color: #007aff;
+
+  transition:
+    0.2s transform,
+    0.2s margin-left,
+    0.2s margin-right;
+
+  overflow: hidden;
+
+  &__track {
+    display: flex;
+    align-items: center;
+    gap: var(--bullets-gap);
+
+    transition-duration: 0.2s;
+  }
+
+  &__item {
+    flex-shrink: 0;
+    padding: 0;
+    border: none;
+
+    width: var(--bullet-size);
+    height: var(--bullet-height);
+
+    background-color: var(--bullet-color);
+
+    &.is-active {
+      width: var(--bullet-active-size);
+      height: var(--bullet-active-height);
+
+      background-color: var(--bullet-active-color);
+    }
+
+    &.hidden {
+      transform: scale(0);
+      visibility: hidden;
+    }
+
+    &:only-child {
+      display: none !important;
+    }
+  }
+}

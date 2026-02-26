@@ -1,0 +1,30 @@
+.keen-slider:where(:not([data-keen-slider-disabled])) {
+  align-content: flex-start;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  width: 100%;
+
+  &[data-keen-slider-reverse] {
+    flex-direction: row-reverse;
+  }
+
+  &[data-keen-slider-v] {
+    flex-wrap: wrap;
+  }
+}
+
+:where(.keen-slider:not([data-keen-slider-disabled])) .keen-slider__slide {
+  position: relative;
+
+  width: 100%;
+  max-width: var(--keen-slide-width, fit-content);
+  min-height: 100%;
+  flex-shrink: 0;
+
+  overflow: hidden;
+}

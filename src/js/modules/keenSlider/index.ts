@@ -1,9 +1,10 @@
 import KeenSlider from 'keen-slider';
 import type { KeenSliderInstance, KeenSliderPlugin } from 'keen-slider';
 import type { KeenSliderOptions } from './types';
-import { resolveBulletsPlugin } from './plugins/bulletsPlugin';
-import { resolveArrowsPlugin } from './plugins/arrowsPlugin';
-import { scaleAdjacentSlides } from './plugins/scaleAdjacentSlides';
+// import bulletsPlugin from './plugins/bulletsPlugin';
+import bulletsWithTrackPlugin from './plugins/bulletsWithTrackPlugin';
+import arrowsPlugin from './plugins/arrowsPlugin';
+import scaleAdjacentSlides from './plugins/scaleAdjacentSlides';
 import './keen-slider.scss';
 
 class KeenSliderWrapper {
@@ -44,10 +45,10 @@ class KeenSliderWrapper {
     } as KeenSliderOptions;
   }
 
-  resolveAdjacentBulletsCount() {
-    const visibleBulletsCount = this.rootEl.dataset.jsSliderVisibleBullets ?? 3;
-
-    return Math.floor(+visibleBulletsCount / 2);
+  resolveVisibleBulletsCount() {
+    return this.rootEl.dataset.jsSliderVisibleBullets
+      ? +this.rootEl.dataset.jsSliderVisibleBullets
+      : null;
   }
 
   initSlider() {
@@ -56,13 +57,12 @@ class KeenSliderWrapper {
     const plugins: KeenSliderPlugin[] = [];
 
     if (this.bulletsEl) {
-      const adjacentBulletsCount = this.resolveAdjacentBulletsCount();
-
-      plugins.push(resolveBulletsPlugin(this.bulletsEl, adjacentBulletsCount));
+      const visibleBulletsCount = this.resolveVisibleBulletsCount();
+      plugins.push(bulletsWithTrackPlugin(this.bulletsEl, visibleBulletsCount));
     }
 
     if (this.arrowPrevEl && this.arrowNextEl) {
-      plugins.push(resolveArrowsPlugin(this.arrowPrevEl, this.arrowNextEl));
+      plugins.push(arrowsPlugin(this.arrowPrevEl, this.arrowNextEl));
     }
 
     if (sliderOptions.adjacentSlidesScale) {
