@@ -1,8 +1,9 @@
 import { relative, join } from 'pathe';
 import { fontsDir } from './config';
-import type { Config, Source } from './types';
+import type { Config } from './types';
 import { getFallbackFont } from './fallback';
 import { getFontBuffer, getFS, ifFSOSWrites } from './common-utils';
+import { getGoogleFontsParams } from './google-fonts';
 
 const extToPreload = {
   ttf: 'font/ttf',
@@ -75,67 +76,6 @@ async function createFontFiles(
   return [i, j, path];
 }
 
-const fontFaceWithSubsetCommentRegex = /\/\*(.*?)\*\/\s*@font-face\s*{[^}]*}/gi;
-
-function filterGoogleFonts(cssContent: string, { subsets }: Config) {
-  if (!subsets?.length) {
-    return cssContent;
-  }
-
-  let newCssContent = '';
-
-  const fontFaceWithSubsetCommentMatches = cssContent.matchAll(
-    fontFaceWithSubsetCommentRegex,
-  );
-
-  for (const fontFaceWithSubsetCommentMatch of fontFaceWithSubsetCommentMatches) {
-    if (subsets.includes(fontFaceWithSubsetCommentMatch[1].trim())) {
-      newCssContent += fontFaceWithSubsetCommentMatch[0].trim() + '\n';
-    }
-  }
-
-  return newCssContent.trim();
-}
-
-// Custom script to parseGoogleCSS
-function parseGoogleCSS(tmp: string) {
-  let match;
-  const fontFaceMatches = [];
-  const fontFaceRegex = /@font-face\s*{([^}]+)}/g;
-  while ((match = fontFaceRegex.exec(tmp)) !== null) {
-    const fontFaceRule = match[1];
-    const fontFaceObject = {} as Source;
-    fontFaceRule.split(';').forEach((property) => {
-      if (property.includes('src') && property.includes('url')) {
-        try {
-          fontFaceObject['path'] =
-            property
-              .trim()
-              .split(/\(|\)|(url\()/)
-              .find((each) => each.trim().includes('https:'))
-              ?.trim() ?? '';
-        } catch {
-          // NOP
-        }
-      }
-      if (property.includes('-style')) {
-        fontFaceObject['style'] = property.split(':').map((i) => i.trim())[1];
-      }
-      if (property.includes('-weight')) {
-        fontFaceObject['weight'] = property.split(':').map((i) => i.trim())[1];
-      }
-      if (property.includes('unicode-range')) {
-        if (!fontFaceObject['css']) fontFaceObject['css'] = {};
-        fontFaceObject['css']['unicode-range'] = property
-          .split(':')
-          .map((i) => i.trim())[1];
-      }
-    });
-    fontFaceMatches.push(fontFaceObject);
-  }
-  return fontFaceMatches;
-}
-
 // Function to generate the final destination of the fonts and consume further
 export async function generateFonts(
   fontCollection: Config[],
@@ -143,21 +83,13 @@ export async function generateFonts(
   const duplicatedCollection = [...fontCollection];
   // Pre-operation to parse and insert google fonts in the src array
   await Promise.all(
-    duplicatedCollection.map((config) =>
-      config.googleFontsURL
-        ? fetch(config.googleFontsURL, {
-            headers: {
-              'User-Agent':
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-            },
-          })
-            .then((res) => res.text())
-            .then((res) => filterGoogleFonts(res, config))
-            .then((res) => {
-              config.src = parseGoogleCSS(res);
-            })
-        : {},
-    ),
+    duplicatedCollection.map(async (config) => {
+      const googleFontsParams = await getGoogleFontsParams(config);
+
+      if (googleFontsParams) {
+        config.src = googleFontsParams;
+      }
+    }),
   );
   const indicesMatrix: [number, number, string, string][] = [];
   duplicatedCollection.forEach((config, i) => {
