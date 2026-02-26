@@ -11,5 +11,3 @@ export const RE_VAR_REF_HTML_ATTR_NO_QUOTE =
 
 export const RE_VAR_DEF_HTML_ATTR =
   /[^\s"'></=\p{C}]+\s*=\s*(["'])((?:(?!\1).)*--[\w-]+(?=\s*:)(?:(?!\1).)+)\1/gu;
-
-export const RE_VAR_REF_JS = /(['"`])--([\w-]+)\1/g;

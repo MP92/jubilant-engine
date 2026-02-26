@@ -50,7 +50,20 @@ export default defineConfig({
       iconDir: 'src/sprite-icons',
     }),
     astroRename({
-      except: ['scrollbar-width', 'vw', 'keen-slider', 'keen-slider__slide'],
+      postcss: {
+        except: [
+          'scrollbar-width',
+          'vw',
+          'keen-slider',
+          'keen-slider__slide',
+          'swiper',
+          'swiper-wrapper',
+          'swiper-slide',
+        ],
+      },
+      forceRename: [
+        /*'slider-navigation__bullet', 'slider-navigation__bullet--active', 'slider__scrollbar-drag'*/
+      ],
     }),
     astroCssImages(rootPath),
     // astroCritical(),

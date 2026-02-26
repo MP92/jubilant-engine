@@ -1,7 +1,7 @@
 import postcss from 'postcss';
-import type { RenamingMap } from './types.ts';
-import type { PostcssRenameOptions as RenamingOptions } from './postcss-rename-wrapper.ts';
-import { postcssRename, postcssVarRename } from './postcss-rename-wrapper.ts';
+import type { AstroRenameOptions, RenamingMap } from './types';
+import type { PostcssRenameOptions as RenamingOptions } from './postcss-rename-wrapper';
+import { postcssRename, postcssVarRename } from './postcss-rename-wrapper';
 import {
   RE_CLASS_HTML,
   RE_VAR_DEF,
@@ -9,14 +9,20 @@ import {
   RE_VAR_REF,
   RE_VAR_REF_HTML_ATTR,
   RE_VAR_REF_HTML_ATTR_NO_QUOTE,
-  RE_VAR_REF_JS,
-} from './regex.ts';
-import JsRenamer from './JsRenamer.ts';
+} from './regex';
+import JsRenamer from './JsRenamer';
 
 export default class Renamer {
+  private postcssRenameOptions: RenamingOptions;
+  private forceRename: string[];
+
   renamingMap: RenamingMap = {};
 
-  constructor(private postcssRenameOptions: RenamingOptions = {}) {}
+  constructor(options: AstroRenameOptions) {
+    this.postcssRenameOptions = options.postcss;
+
+    this.forceRename = options.forceRename ?? [];
+  }
 
   private outputMapCallback = (map: RenamingMap) => {
     this.renamingMap = {
@@ -50,7 +56,7 @@ export default class Renamer {
   }
 
   renameClassesInHtml(html: string): string {
-    return html.replace(RE_CLASS_HTML, (_, quote, classes) => {
+    const resultHtml = html.replace(RE_CLASS_HTML, (_, quote, classes) => {
       const shortened = classes
         .trim()
         .split(/\s+/)
@@ -60,6 +66,8 @@ export default class Renamer {
 
       return `class=${quote}${shortened}${quote}`;
     });
+
+    return this.forceRenameClassesAndVars(resultHtml);
   }
 
   private renameVarRefs(css: string) {
@@ -110,15 +118,39 @@ export default class Renamer {
     );
   }
 
+  private forceRenameClassesAndVars(str: string) {
+    if (this.forceRename.length === 0) {
+      return str;
+    }
+
+    const escapedKeys = Object.keys(this.renamingMap)
+      .map((key) => key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      .sort((a, b) => {
+        if (b.length !== a.length) {
+          return b.length - a.length;
+        }
+        return b.localeCompare(a);
+      });
+
+    const pattern = new RegExp(`\\b(${escapedKeys.join('|')})\\b`, 'g');
+
+    return str.replace(pattern, (match) =>
+      this.forceRename.includes(match) ? this.renamingMap[match] : match,
+    );
+  }
+
   renameClassesAndVarsInJs(js: string): string {
     js = this.renameVarDefs(js).replace(
-      RE_VAR_REF_JS,
-      (m, _: string, name: string) =>
-        m.replace(name, this.renamingMap[name] || name),
+      RE_VAR_REF,
+      (m, _: string, name: string) => {
+        return m.replace(name, this.renamingMap[name] || name);
+      },
     );
 
     const jsRenamer = new JsRenamer(this.renamingMap, js);
 
-    return jsRenamer.renameClasses().renameCssVars().toSourceCode();
+    js = jsRenamer.renameClasses().renameCssVars().toSourceCode();
+
+    return this.forceRenameClassesAndVars(js);
   }
 }

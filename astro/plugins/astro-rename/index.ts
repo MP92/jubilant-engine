@@ -3,7 +3,7 @@ import { rmSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { AstroIntegration } from 'astro';
-import type { PostcssRenameOptions as RenamingOptions } from './postcss-rename-wrapper';
+import type { AstroRenameOptions } from './types';
 import { walkFiles } from '../utils';
 import Renamer from './Renamer';
 import pluginCssAndSvgRename from './plugin-css-and-svg-rename';
@@ -33,11 +33,11 @@ const renameInlinedJs = (renamer: Renamer, content: string) =>
   );
 
 export default function astroRename(
-  options: RenamingOptions = {},
+  options: AstroRenameOptions = { postcss: {} },
 ): AstroIntegration {
-  options = {
+  options.postcss = {
     strategy: import.meta.env.PROD ? 'minimal' : 'debug',
-    ...options,
+    ...options.postcss,
   };
 
   const renamer = new Renamer(options);

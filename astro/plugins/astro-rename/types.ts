@@ -5,6 +5,12 @@ import type {
   ASTPath,
 } from 'jscodeshift';
 import type { ExpressionKind, TSTypeKind } from 'ast-types/gen/kinds';
+import type { PostcssRenameOptions } from './postcss-rename-wrapper';
+
+export type AstroRenameOptions = {
+  postcss: PostcssRenameOptions;
+  forceRename?: string[];
+};
 
 export type RenamingMap = { [originalName: string]: string };
 

@@ -139,6 +139,16 @@ export function replaceClassNames(
     .join(' ');
 }
 
+export function renameCssVar(cssVar: string, renamingMap: RenamingMap) {
+  if (!cssVar.startsWith('--')) {
+    throw new Error(`Css variable '${cssVar}' must start with '--'`);
+  }
+
+  const renamedCssVarName = renamingMap[cssVar.replace(/^--/, '')];
+
+  return renamedCssVarName ? '--' + renamedCssVarName : cssVar;
+}
+
 export function findClassLists(j: JSCodeshift, root: Collection) {
   return root.find(j.CallExpression, {
     callee: {
@@ -646,14 +656,60 @@ export function getFunctionReturnValues(
     } else if (funcNode.body.type === 'BlockStatement') {
       const returnStatements = j(funcNode).find(j.ReturnStatement);
 
-      return returnStatements
-        .paths()
-        .filter((path) => !!path.node.argument)
-        .map((path) => path.node.argument!);
+      // `return clsName` | `return { clsName }` | `return [ clsName ]`
+      const expandedValues: ExpressionKind[] = [];
+
+      returnStatements.forEach((path) => {
+        const argument = path.node.argument;
+        if (!argument) return;
+
+        // Handle sequence expressions: return expr1, expr2, expr3;
+        if (j.SequenceExpression.check(argument)) {
+          // Take only the last expression in the sequence
+          const expressions = argument.expressions;
+          if (expressions.length > 0) {
+            processReturnExpression(
+              j,
+              expressions[expressions.length - 1],
+              expandedValues,
+            );
+          }
+        } else {
+          processReturnExpression(j, argument, expandedValues);
+        }
+      });
+
+      return expandedValues;
     }
   }
 
   return [];
+}
+
+function processReturnExpression(
+  j: JSCodeshift,
+  expr: ExpressionKind,
+  result: ExpressionKind[],
+) {
+  if (j.ObjectExpression.check(expr)) {
+    // If it returns an object, collect all property values
+    expr.properties.forEach((prop) => {
+      if (j.Property.check(prop) || j.ObjectProperty.check(prop)) {
+        if (prop.value) {
+          result.push(prop.value as ExpressionKind);
+        }
+      }
+    });
+  } else if (j.ArrayExpression.check(expr)) {
+    // If it returns an array, collect all elements
+    expr.elements.forEach((element) => {
+      if (element && !j.SpreadElement.check(element)) {
+        result.push(element as ExpressionKind);
+      }
+    });
+  } else {
+    result.push(expr);
+  }
 }
 
 export function findVarDeclarator(
@@ -707,4 +763,87 @@ export function findArrayIndexAssignments(
       },
     },
   });
+}
+
+export function findAssignmentsToVar(
+  j: JSCodeshift,
+  varName: string,
+  scope: Scope,
+) {
+  return j(scope.path).find(j.AssignmentExpression, {
+    left: (left) => {
+      // Handle direct assignment: clsName = value
+      if (left.type === 'Identifier' && left.name === varName) {
+        return true;
+      }
+
+      // Handle destructuring assignment: { clsName } = value
+      if (left.type === 'ObjectPattern' && left.properties) {
+        return left.properties.some(
+          (prop) =>
+            prop.type === 'ObjectProperty' &&
+            prop.value.type === 'Identifier' &&
+            prop.value.name === varName,
+        );
+      }
+
+      // Handle array destructuring assignment: [clsName] = value
+      if (left.type === 'ArrayPattern' && left.elements) {
+        return left.elements.some(
+          (element) =>
+            element?.type === 'Identifier' && element.name === varName,
+        );
+      }
+
+      return false;
+    },
+  });
+}
+
+export function findVarDeclaratorInDestructuring(
+  j: JSCodeshift,
+  varName: string,
+  scope: Scope,
+) {
+  //  ObjectPattern destructuring: `const { clsName } = getClasses()`
+  const objectPatternDeclarators = j(scope.path).find(j.VariableDeclarator, {
+    id: {
+      type: 'ObjectPattern',
+      properties: (properties) =>
+        properties.some(
+          (prop) =>
+            'value' in prop &&
+            prop.value &&
+            prop.value.type === 'Identifier' &&
+            prop.value.name === varName,
+        ),
+    },
+  });
+
+  for (const path of objectPatternDeclarators.paths()) {
+    if (path.scope === scope) {
+      return path.value;
+    }
+  }
+
+  //  ArrayPattern destructuring: `const [clsName] = getClasses()`
+  const arrayPatternDeclarators = j(scope.path).find(j.VariableDeclarator, {
+    id: {
+      type: 'ArrayPattern',
+      elements: (elements) => {
+        return elements.some(
+          (element) =>
+            element?.type === 'Identifier' && element.name === varName,
+        );
+      },
+    },
+  });
+
+  for (const path of arrayPatternDeclarators.paths()) {
+    if (path.scope === scope) {
+      return path.value;
+    }
+  }
+
+  return null;
 }

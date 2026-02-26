@@ -29,6 +29,9 @@ import {
   findVarDeclarator,
   findArrayModifyMethodCalls,
   findArrayIndexAssignments,
+  findVarDeclaratorInDestructuring,
+  findAssignmentsToVar,
+  renameCssVar,
 } from './jscodeshift-utils';
 import { escapeRegExp } from '../utils';
 
@@ -53,8 +56,7 @@ export default class JsRenamer {
   }
 
   renameCssVars() {
-    // replace only template strings containing interpolated variables like `--${primaryColor}`
-
+    // replace template strings containing interpolated variables like `--${primaryColor}`
     this.root.find(j.TemplateLiteral).forEach((path) => {
       const quasis = path.node.quasis;
       const exprs = path.node.expressions;
@@ -76,6 +78,24 @@ export default class JsRenamer {
         }
       });
     });
+
+    // cases like:
+    // element.style.setProperty('--active-btn-width', '100px');
+    // element.style.setProperty(cssVars.activeBtnWidth, '100px');
+    this.root
+      .find(j.CallExpression, {
+        callee: {
+          type: 'MemberExpression',
+          property: { type: 'Identifier', name: 'setProperty' },
+        },
+      })
+      .forEach((path) => {
+        this.renameArgClasses(path.node.arguments[0], {
+          type: ValueType.CLASS_STRING,
+          scope: path.scope,
+          cond: (val) => val.startsWith('--'),
+        });
+      });
 
     return this;
   }
@@ -219,12 +239,7 @@ export default class JsRenamer {
   }
 
   private renameVarAssignments(varName: string, argParams: RenameArgParams) {
-    const varAssignments = j(argParams.scope.path).find(
-      j.AssignmentExpression,
-      {
-        left: { type: 'Identifier', name: varName },
-      },
-    );
+    const varAssignments = findAssignmentsToVar(j, varName, argParams.scope);
 
     varAssignments.forEach((path) =>
       this.renameArgClasses(path.node.right, argParams),
@@ -268,6 +283,27 @@ export default class JsRenamer {
     return !!varDeclarator;
   }
 
+  private replaceDestructuredVarClassNames(
+    varOrArgName: string,
+    scope: Scope,
+    argParams: RenameArgParams,
+  ) {
+    const destructuredDeclarator = findVarDeclaratorInDestructuring(
+      j,
+      varOrArgName,
+      scope,
+    );
+
+    if (destructuredDeclarator?.init) {
+      this.renameArgClasses(destructuredDeclarator.init, {
+        ...argParams,
+        scope,
+      });
+    }
+
+    return !!destructuredDeclarator;
+  }
+
   private replaceVarOrFuncArgClassNames(
     varOrArgName: string,
     argParams: RenameArgParams,
@@ -284,7 +320,13 @@ export default class JsRenamer {
         scope,
       });
 
-      if (varRenamed || assignmentsRenamed) {
+      const destructuredVarRenamed = this.replaceDestructuredVarClassNames(
+        varOrArgName,
+        scope,
+        argParams,
+      );
+
+      if (varRenamed || assignmentsRenamed || destructuredVarRenamed) {
         break;
       }
 
@@ -310,7 +352,11 @@ export default class JsRenamer {
 
     if (j.StringLiteral.check(arg) || j.Literal.check(arg)) {
       if (typeof arg.value === 'string' && cond(arg.value)) {
-        arg.value = replaceClassNames(arg.value, this.renamingMap);
+        if (arg.value.startsWith('--')) {
+          arg.value = renameCssVar(arg.value, this.renamingMap);
+        } else {
+          arg.value = replaceClassNames(arg.value, this.renamingMap);
+        }
       }
     } else if (j.TemplateLiteral.check(arg)) {
       const expressionsWithConditions = getNonPartialClassNameExpressions(
