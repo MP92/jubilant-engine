@@ -1,0 +1,96 @@
+---
+import ExampleAccordion from './ExampleAccordion.astro';
+
+interface Props {
+  class?: string;
+  columns?: number;
+  name: string;
+  items: {
+    title: string;
+    description: string;
+  }[];
+}
+
+const { class: className, columns = 1, name, items, ...rest } = Astro.props;
+
+const detailsId = (index: number) => `${name}-${index}`;
+
+const isBottomItem = (index: number) => {
+  return columns > 1 && (index + 1) % Math.ceil(items.length / columns) === 0;
+};
+---
+
+<div class:list={['example-accordion-group', className]} {...rest}>
+  <ol
+    class:list={[
+      'example-accordion-group__list',
+      columns > 1 && `example-accordion-group__list--${columns}-cols`,
+    ]}
+  >
+    {
+      items.map((item, index) => (
+        <li
+          class:list={[
+            'example-accordion-group__item',
+            isBottomItem(index) && 'example-accordion-group__item--bottom',
+          ]}
+        >
+          <ExampleAccordion
+            name={name}
+            id={detailsId(index)}
+            title={item.title}
+            description={item.description}
+            isOpen={index === 0}
+          />
+        </li>
+      ))
+    }
+  </ol>
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .example-accordion-group {
+    &__list {
+      list-style: none;
+      counter-reset: example-accordion-counter;
+
+      &--2-cols {
+        @include column-gap(80px, 40px $laptop, 20px $tablet);
+
+        @include higher-tablet {
+          column-count: 2;
+        }
+      }
+    }
+
+    &__item {
+      counter-increment: example-accordion-counter;
+
+      break-inside: avoid;
+
+      position: relative;
+
+      &::after {
+        content: '';
+
+        position: absolute;
+        inset: 0;
+        top: unset;
+
+        border-bottom: 1px solid #bbb;
+      }
+
+      &:last-child::after {
+        content: none;
+      }
+
+      &--bottom::after {
+        @include higher-tablet {
+          content: none;
+        }
+      }
+    }
+  }
+</style>

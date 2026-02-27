@@ -1,0 +1,64 @@
+---
+import ExampleLayout from '@/@examples/ExampleLayout.astro';
+import ExampleAccordionGroup from '@/@examples/components/ExampleAccordionGroup.astro';
+import '@/@examples/example.scss';
+
+const accordionName = 'questions';
+
+const accordionItems = [
+  {
+    title: 'What is StreamVibe?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'How much does StreamVibe cost?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand. StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'What content is available on StreamVibe?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'How can I watch StreamVibe?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'How do I sign up for StreamVibe?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'What is the StreamVibe free trial?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'How do I contact StreamVibe customer support?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'What are the StreamVibe payment methods?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+];
+---
+
+<ExampleLayout title="Examples | Accordion">
+  <div class="example">
+    <div class="container">
+      <h1 class="example__title">Accordion</h1>
+
+      <ExampleAccordionGroup
+        columns={2}
+        name={accordionName}
+        items={accordionItems}
+      />
+    </div>
+  </div>
+</ExampleLayout>

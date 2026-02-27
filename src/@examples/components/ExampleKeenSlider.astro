@@ -43,15 +43,15 @@ const nextNavBtnTitle = 'To next slide';
 ---
 
 <div
-  class:list={['slider', className]}
+  class:list={['example-keen-slider', className]}
   data-js-slider
   data-js-slider-visible-bullets="5"
   data-js-slider-options={JSON.stringify(sliderOptions)}
   {...rest}
 >
-  <div class="slider__navigation">
+  <div class="example-keen-slider__navigation">
     <button
-      class="slider__btn"
+      class="example-keen-slider__btn"
       type="button"
       title={prevNavBtnTitle}
       aria-label={prevNavBtnTitle}
@@ -61,11 +61,11 @@ const nextNavBtnTitle = 'To next slide';
     </button>
 
     <div class="keen-slider-bullets" data-js-slider-bullets>
-      <button class="slider__bullet" type="button"></button>
+      <button class="example-keen-slider__bullet" type="button"></button>
     </div>
 
     <button
-      class="slider__btn"
+      class="example-keen-slider__btn"
       type="button"
       title={nextNavBtnTitle}
       aria-label={nextNavBtnTitle}
@@ -75,10 +75,10 @@ const nextNavBtnTitle = 'To next slide';
     </button>
   </div>
 
-  <div class="slider__slides keen-slider" data-js-slider-slides>
+  <div class="example-keen-slider__slides keen-slider" data-js-slider-slides>
     {
       items.map((item) => (
-        <div class="slider__slide keen-slider__slide">
+        <div class="example-keen-slider__slide keen-slider__slide">
           <Item {...item} />
         </div>
       ))
@@ -89,7 +89,7 @@ const nextNavBtnTitle = 'To next slide';
 <style lang="scss" is:global>
   @use '@styles/base' as *;
 
-  .slider {
+  .example-keen-slider {
     --slider-color-blue: #667eea;
 
     &__navigation {

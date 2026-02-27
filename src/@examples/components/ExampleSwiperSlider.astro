@@ -14,13 +14,13 @@ const sliderOptions = {
   spaceBetween: 30,
 
   pagination: {
-    bulletClass: 'slider__bullet',
-    bulletActiveClass: 'slider__bullet--active',
+    bulletClass: 'example-swiper-slider__bullet',
+    bulletActiveClass: 'example-swiper-slider__bullet--active',
     clickable: true,
   },
 
   scrollbar: {
-    dragClass: 'slider__scrollbar-drag',
+    dragClass: 'example-swiper-slider__scrollbar-drag',
   },
 
   breakpoints: {
@@ -48,13 +48,13 @@ const nextNavBtnTitle = 'To next slide';
 ---
 
 <div
-  class:list={['slider', className]}
+  class:list={['example-swiper-slider', className]}
   data-js-slider={JSON.stringify(sliderOptions)}
   {...rest}
 >
-  <div class="slider__navigation">
+  <div class="example-swiper-slider__navigation">
     <button
-      class="slider__btn"
+      class="example-swiper-slider__btn"
       type="button"
       title={prevNavBtnTitle}
       aria-label={prevNavBtnTitle}
@@ -63,10 +63,10 @@ const nextNavBtnTitle = 'To next slide';
       &larr;
     </button>
 
-    <div class="slider__bullets" data-js-slider-bullets></div>
+    <div class="example-swiper-slider__bullets" data-js-slider-bullets></div>
 
     <button
-      class="slider__btn"
+      class="example-swiper-slider__btn"
       type="button"
       title={nextNavBtnTitle}
       aria-label={nextNavBtnTitle}
@@ -76,11 +76,14 @@ const nextNavBtnTitle = 'To next slide';
     </button>
   </div>
 
-  <div class="slider__body swiper" data-js-slider-swiper>
-    <ul class="slider__items swiper-wrapper" data-js-slider-slides>
+  <div class="example-swiper-slider__body swiper" data-js-slider-swiper>
+    <ul
+      class="example-swiper-slider__items swiper-wrapper"
+      data-js-slider-slides
+    >
       {
         items.map((item) => (
-          <li class="swiper-slide slider__item">
+          <li class="swiper-slide example-swiper-slider__item">
             <Item {...item} />
           </li>
         ))
@@ -88,13 +91,13 @@ const nextNavBtnTitle = 'To next slide';
     </ul>
   </div>
 
-  <div class="slider__scrollbar" data-js-slider-scrollbar></div>
+  <div class="example-swiper-slider__scrollbar" data-js-slider-scrollbar></div>
 </div>
 
 <style lang="scss" is:global>
   @use '@styles/base' as *;
 
-  .slider {
+  .example-swiper-slider {
     --slider-color-blue: #667eea;
 
     &__navigation {

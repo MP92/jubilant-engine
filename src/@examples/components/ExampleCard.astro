@@ -10,26 +10,26 @@ interface Props {
 const { class: className, title, description, authorName, url } = Astro.props;
 ---
 
-<div class:list={['card', className]}>
-  <h2 class="card-title">
+<div class:list={['example-card', className]}>
+  <h2 class="example-card-title">
     {title}
   </h2>
 
-  <p class="card-description">
+  <p class="example-card-description">
     {description}
   </p>
 
-  <div class="card-author">
+  <div class="example-card-author">
     {authorName}
   </div>
 
-  <a href={url} class="card-button"> Читать статью → </a>
+  <a href={url} class="example-card-button"> Читать статью → </a>
 </div>
 
 <style lang="scss">
   @use '@styles/base' as *;
 
-  .card {
+  .example-card {
     @include flex-column;
 
     max-width: 380px;
@@ -45,12 +45,12 @@ const { class: className, title, description, authorName, url } = Astro.props;
     border: 1px solid rgb(0 0 0 / 5%);
   }
 
-  .card:hover {
+  .example-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 30px 50px -12px rgb(0 0 0 / 15%);
   }
 
-  .card-title {
+  .example-card-title {
     font-size: 24px;
     font-weight: 700;
     color: #1a1a2c;
@@ -59,7 +59,7 @@ const { class: className, title, description, authorName, url } = Astro.props;
     letter-spacing: -0.02em;
   }
 
-  .card-description {
+  .example-card-description {
     font-size: 15px;
     line-height: 1.5;
     color: #4a4a68;
@@ -67,7 +67,7 @@ const { class: className, title, description, authorName, url } = Astro.props;
     font-weight: 400;
   }
 
-  .card-author {
+  .example-card-author {
     margin-top: auto;
 
     font-size: 14px;
@@ -78,7 +78,7 @@ const { class: className, title, description, authorName, url } = Astro.props;
     border-bottom: 1px solid rgb(0 0 0 / 5%);
   }
 
-  .card-button {
+  .example-card-button {
     background: #667eea;
     color: white;
     border: none;
@@ -94,36 +94,36 @@ const { class: className, title, description, authorName, url } = Astro.props;
     text-align: center;
   }
 
-  .card-button:hover {
+  .example-card-button:hover {
     background: #5a67d8;
     transform: scale(1.02);
   }
 
   @media (max-width: 480px) {
-    .card {
+    .example-card {
       padding: 24px;
     }
 
-    .card-title {
+    .example-card-title {
       font-size: 22px;
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    .card {
+    .example-card {
       background: #1e1e2e;
       border-color: rgb(255 255 255 / 5%);
     }
 
-    .card-title {
+    .example-card-title {
       color: #fff;
     }
 
-    .card-description {
+    .example-card-description {
       color: #b8b8d0;
     }
 
-    .card-author {
+    .example-card-author {
       color: #9f7aea;
       border-bottom-color: rgb(255 255 255 / 5%);
     }
