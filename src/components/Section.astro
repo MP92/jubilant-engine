@@ -1,0 +1,35 @@
+---
+interface Props {
+  class?: string;
+  name: string;
+  title: string;
+}
+
+const { class: className, name, title, ...rest } = Astro.props;
+
+const titleId = name + '-id';
+---
+
+<section
+  class:list={['section', className]}
+  aria-labelledby={titleId}
+  {...rest}
+>
+  <div class="section__inner container">
+    <header class="section__header">
+      <h2 id={titleId} class="section__title">{title}</h2>
+    </header>
+
+    <div class="section__body">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .section {
+    padding-block: 30px;
+  }
+</style>

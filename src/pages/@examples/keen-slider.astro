@@ -1,5 +1,5 @@
 ---
-import Layout from '@/layouts/Layout.astro';
+import ExampleLayout from '@/@examples/ExampleLayout.astro';
 import KeenSliderComponent from '@/@examples/components/KeenSlider.astro';
 import Card from '@/@examples/components/Card.astro';
 import '@/@examples/example.scss';
@@ -11,7 +11,7 @@ import sliderData from '@/@examples/data/slider.json';
   new KeenSliderCollection();
 </script>
 
-<Layout title="Examples | Keen Slider">
+<ExampleLayout title="Examples | Keen Slider">
   <div class="example">
     <div class="container">
       <h1 class="example__title">Keen Slider</h1>
@@ -19,4 +19,4 @@ import sliderData from '@/@examples/data/slider.json';
       <KeenSliderComponent itemComponent={Card} items={sliderData} />
     </div>
   </div>
-</Layout>
+</ExampleLayout>

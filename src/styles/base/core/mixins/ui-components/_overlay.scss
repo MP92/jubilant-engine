@@ -7,20 +7,32 @@
   inset: 0;
   z-index: core-vars.$z-index-overlay;
 
-  @include flex-column-center;
+  @include flex-column-center-x;
 
+  // Данное правило может привести к выползанию контента за границы экрана по вертикали (при переполнении)
+  // Лучше использовать
+  //   margin-block - если один элемент
+  //   margin-top + margin-bottom - если несколько элементов, то у первому margin-top, а к последнему margin-bottom
+  // justify-content: center;
+
+  width: 100%;
+  height: 100%;
   padding: 1rem;
-  row-gap: 40px;
+  row-gap: var(--overlay-row-gap, 40px);
 
   background-color: var(--overlay-bg-color);
+  border: none;
+
   transition-duration: var(
     --overlay-transition-duration,
     var(--transition-duration, 0.2s)
   );
 
-  overflow: auto;
+  // Если несколько элементов внутри overlay блока, например, searchbar и список,
+  // то тогда лучше overflow-y: auto задать для списка
+  // overflow-y: auto;
 
-  &:not(.is-active) {
+  &:not([open]) {
     @include hide;
     translate: if($side == left, -100%, 100%);
   }

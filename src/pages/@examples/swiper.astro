@@ -1,5 +1,5 @@
 ---
-import Layout from '@/layouts/Layout.astro';
+import ExampleLayout from '@/@examples/ExampleLayout.astro';
 import SwiperSlider from '@/@examples/components/SwiperSlider.astro';
 import Card from '@/@examples/components/Card.astro';
 import '@/@examples/example.scss';
@@ -11,7 +11,7 @@ import sliderData from '@/@examples/data/slider.json';
   new SwiperSliderCollection();
 </script>
 
-<Layout title="Examples | Swiper">
+<ExampleLayout title="Examples | Swiper">
   <div class="example">
     <div class="container">
       <h1 class="example__title">Swiper</h1>
@@ -19,4 +19,4 @@ import sliderData from '@/@examples/data/slider.json';
       <SwiperSlider itemComponent={Card} items={sliderData} />
     </div>
   </div>
-</Layout>
+</ExampleLayout>

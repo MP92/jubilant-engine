@@ -1,0 +1,55 @@
+---
+import { SvgIcon } from '@/core';
+
+interface Props {
+  class?: string;
+  href?: string;
+  icon?: string;
+  stretch?: boolean;
+}
+
+const { class: className, href, icon, stretch = false } = Astro.props;
+
+const Tag = href !== undefined ? 'a' : 'button';
+
+const attrs = {} as Record<string, string>;
+
+if (href) {
+  attrs.href = href;
+} else {
+  attrs.type = 'button';
+}
+---
+
+<Tag class:list={['btn', stretch && 'btn--stretch', className]} {...attrs}>
+  {icon && <SvgIcon name={icon} class="btn__icon" />}
+  <slot />
+</Tag>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .btn {
+    @include reset-btn;
+
+    @include inline-flex-center;
+
+    color: var(--color-white);
+
+    background-color: var(--color-black);
+
+    white-space: nowrap;
+
+    @include hover {
+      background-color: #333;
+    }
+
+    &--stretch {
+      width: 100%;
+    }
+
+    &__icon {
+      @include box(28px);
+    }
+  }
+</style>

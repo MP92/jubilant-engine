@@ -35,6 +35,7 @@
     &::before,
     &::after {
       background-color: var(--cross-color-hover, var(--cross-color, #fff));
+      transition-property: rotate;
     }
   }
 }

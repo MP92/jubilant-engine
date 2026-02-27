@@ -3,18 +3,18 @@
 ---
 
 <footer class="footer">
-  <span>FOOTER</span>
+  <div class="footer__inner container">
+    <span>FOOTER</span>
+  </div>
 </footer>
 
 <style lang="scss" is:global>
+  @use '@styles/base' as *;
+
   .footer {
-    display: flex;
-    justify-content: center;
-    padding: 32px;
-
-    font-size: 28px;
+    padding: 20px 0;
+    background-color: black;
     color: white;
-
-    background-color: darkblue;
+    text-align: center;
   }
 </style>

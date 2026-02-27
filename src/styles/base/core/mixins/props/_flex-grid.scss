@@ -25,9 +25,11 @@
 }
 
 @mixin grid-column($args...) {
-  @include utils-mixins.adaptive-props(grid-column, $args) {
-    @content;
-  }
+  @error 'grid-column и grid-row с дробными значениями (1 / span 1) не работают через такие миксины';
+}
+
+@mixin grid-row($args...) {
+  @error 'grid-column и grid-row с дробными значениями (1 / span 1) не работают через такие миксины';
 }
 
 @mixin gap($args...) {

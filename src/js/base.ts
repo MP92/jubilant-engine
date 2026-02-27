@@ -7,7 +7,7 @@ if (import.meta.env.MODE === 'development') {
     './functions/useDevScrollbarWidth.ts'
   );
 
-  useDevScrollbarWidth();
+  await useDevScrollbarWidth();
 }
 
 // defineVwUnitCssVar();

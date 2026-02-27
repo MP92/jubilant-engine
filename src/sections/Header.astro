@@ -1,39 +1,36 @@
 ---
+import SiteMenu from '../components/SiteMenu.astro';
 
+interface Props {
+  currentPageUrl?: string;
+}
+
+const { currentPageUrl } = Astro.props;
 ---
 
-<header class="header" data-js-header>
-  <button
-    class="header__burger burger"
-    data-js-header-burger
-    aria-label="Open navigation menu"
-    type="button"
-  >
-    <span></span>
-  </button>
+<header class:list={['header']} data-js-header>
+  <div class="header__inner container">
+    <dialog class="header__overlay" data-js-header-overlay>
+      <SiteMenu class="header__nav" currentPageUrl={currentPageUrl} />
 
-  <div class="header__overlay" data-js-header-overlay>
-    <nav class="header__nav site-menu" data-js-header-overlay>
-      <ul class="site-menu__list">
-        <li class="site-menu__item site-menu__item--active">
-          <a href="/">home</a>
-        </li>
-        <li class="site-menu__item"><a href="#">activities</a></li>
-        <li class="site-menu__item"><a href="#">pricing plan</a></li>
-        <li class="site-menu__item"><a href="#">contact us</a></li>
-        <li class="site-menu__item"><a href="#">blog</a></li>
-        <li class="site-menu__item"><a href="#">about us</a></li>
-      </ul>
-    </nav>
+      <a href="#" class="header__btn">Contact us</a>
+    </dialog>
 
-    <a href="#" class="header__btn btn">Contact us</a>
+    <button
+      class="header__burger burger"
+      data-js-header-burger
+      aria-label="Open navigation menu"
+      type="button"
+    >
+      <span></span>
+    </button>
   </div>
 </header>
 
 <script>
   function header() {
     const rootEl = document.querySelector<HTMLElement>('[data-js-header]')!;
-    const overlayEl = rootEl.querySelector<HTMLElement>(
+    const overlayDialogEl = rootEl.querySelector<HTMLDialogElement>(
       '[data-js-header-overlay]',
     )!;
     const burgerBtnEl = rootEl.querySelector<HTMLElement>(
@@ -42,10 +39,40 @@
 
     const toggleNavOverlay = () => {
       burgerBtnEl.classList.toggle('is-active');
-      overlayEl.classList.toggle('is-active');
+
+      if (!overlayDialogEl.open) {
+        showDialog();
+      } else {
+        closeDialog();
+      }
+
       document.documentElement.classList.toggle('locked');
 
       scrollToHeaderBar();
+    };
+
+    const showDialog = () => {
+      overlayDialogEl.show();
+
+      document.body.childNodes.forEach((node) => {
+        if (
+          node.nodeType === Node.ELEMENT_NODE &&
+          node !== rootEl &&
+          node !== overlayDialogEl &&
+          node !== burgerBtnEl &&
+          !overlayDialogEl.contains(node)
+        ) {
+          (node as HTMLElement).inert = true;
+        }
+      });
+    };
+
+    const closeDialog = () => {
+      overlayDialogEl.close();
+
+      document.querySelectorAll('[inert]').forEach((el) => {
+        (el as HTMLElement).inert = false;
+      });
     };
 
     const scrollToHeaderBar = () =>
@@ -61,13 +88,17 @@
   @use '@styles/base' as *;
 
   .header {
-    display: flex;
-    justify-content: space-between;
-    padding: 40px;
-    font-size: 36px;
-    color: white;
+    @include sticky-header(animated);
+
+    padding: 20px;
+    font-size: 28px;
     background-color: orangered;
-    align-items: center;
+
+    &__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
     &__burger {
       --line-color: #fff;
@@ -76,6 +107,7 @@
       --cross-color-hover: #111;
 
       @include burger;
+      margin-left: auto;
 
       @include higher-laptop {
         display: none !important;
@@ -85,6 +117,8 @@
     &__overlay {
       display: contents;
 
+      color: white;
+
       @include laptop-and-lower {
         --overlay-bg-color: var(--color-white);
 
@@ -93,21 +127,15 @@
         @include overlay;
       }
     }
-  }
 
-  .site-menu {
-    a {
-      text-decoration: none;
-    }
+    @include laptop-and-lower {
+      &__nav {
+        margin-top: auto;
+      }
 
-    &__list {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      align-items: center;
-      font-size: clamp(14px, 2vw, 20px);
-
-      @include flex-direction(column $laptop);
+      &__btn {
+        margin-bottom: auto;
+      }
     }
   }
 </style>

@@ -6,6 +6,7 @@
   @include var-fluid(
     --container-padding-x,
     $container-padding-l,
-    $container-padding-s $tablet
+    $container-padding-m $laptop,
+    $container-padding-s $tablet-s
   );
 }

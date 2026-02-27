@@ -1,10 +1,10 @@
 ---
-import { MyImage, MyPicture } from '@/core';
+import { MyPicture } from '@/core';
 ---
 
-<section class="hero">
+<section class="hero" aria-labelledby="hero-title">
   <header class="hero__header">
-    <h2 class="hero__title">HERO SECTION</h2>
+    <h2 class="hero__title" id="hero-title">HERO SECTION</h2>
 
     <MyPicture
       class="hero__bg"
@@ -14,18 +14,12 @@ import { MyImage, MyPicture } from '@/core';
       priority
     />
   </header>
-
-  <div class="hero__body">
-    <MyImage class="hero__img" src="@img/hero-card.png" alt="" />
-  </div>
 </section>
 
 <style lang="scss" is:global>
   @use '@styles/base' as *;
 
   .hero {
-    @include padding-block-end-fluid(181px, 90px $tablet-s);
-
     &__header {
       position: relative;
 
@@ -51,25 +45,6 @@ import { MyImage, MyPicture } from '@/core';
     &__bg {
       width: 100%;
       @include border-radius(20px, 0 $tablet-s);
-    }
-
-    &__body {
-      position: relative;
-
-      display: grid;
-      justify-items: center;
-      @include margin-top-fluid(-57px);
-    }
-
-    &__img {
-      img {
-        width: 214px;
-        height: 142px;
-      }
-    }
-
-    &__metrics {
-      @include margin-bottom(69px);
     }
   }
 </style>

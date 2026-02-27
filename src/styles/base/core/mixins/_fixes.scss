@@ -1,0 +1,14 @@
+@mixin fix-gradient-bottom-line($beforeOrAfter: after, $color, $offset-y: 0px) {
+  &::#{$beforeOrAfter} {
+    content: '';
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(100% - #{$offset-y} - 1px);
+
+    height: 2px;
+
+    background-color: $color;
+  }
+}

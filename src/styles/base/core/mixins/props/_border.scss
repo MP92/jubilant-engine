@@ -35,3 +35,9 @@
     @content;
   }
 }
+
+@mixin border-width($args...) {
+  @include utils-mixins.adaptive-props(border-width, $args) {
+    @content;
+  }
+}

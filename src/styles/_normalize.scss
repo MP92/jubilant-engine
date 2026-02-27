@@ -26,6 +26,14 @@ html {
   scrollbar-gutter: stable;
 }
 
+/**
+  Плавный скролл
+ */
+html,
+:has(:target) {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
 

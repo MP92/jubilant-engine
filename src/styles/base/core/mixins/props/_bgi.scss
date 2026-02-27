@@ -1,4 +1,5 @@
 @use 'sass:list';
+@use 'sass:string';
 @use '../../functions' as fns;
 @use '../utils' as utils-mixins;
 
@@ -49,22 +50,30 @@
   }
 }
 
-@mixin _bgi-pseudo($url-str, $args...) {
+@mixin _bgi-pseudo($url-str-or-var, $fluid: false, $args...) {
   content: '';
 
   display: block;
   flex-shrink: 0;
 
-  @if $url-str {
-    background-image: url($url-str);
+  @if string.index($url-str-or-var, 'var(--') {
+    background-image: $url-str-or-var;
+  } @else {
+    background-image: url($url-str-or-var);
   }
 
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
 
-  @include utils-mixins.adaptive-props-fluid(width height, $args...) {
-    @content;
+  @if $fluid {
+    @include utils-mixins.adaptive-props-fluid(width height, $args...) {
+      @content;
+    }
+  } @else {
+    @include utils-mixins.adaptive-props(width height, $args) {
+      @content;
+    }
   }
 }
 
@@ -72,9 +81,17 @@
  * @example
  * @include bgi-before('/img/icons/site-logo.png', 63px 56px, 43px 38px $tablet)
  */
-@mixin bgi-before($url-str, $args...) {
+@mixin bgi-before($url-str-or-var, $args...) {
   &::before {
-    @include _bgi-pseudo($url-str, $args...) {
+    @include _bgi-pseudo($url-str-or-var, false, $args...) {
+      @content;
+    }
+  }
+}
+
+@mixin bgi-before-fluid($url-str-or-var, $args...) {
+  &::before {
+    @include _bgi-pseudo($url-str-or-var, true, $args...) {
       @content;
     }
   }
@@ -84,9 +101,17 @@
  * @example
  * @include bgi-after('/img/icons/site-logo.png', 63px 56px, 43px 38px $tablet)
  */
-@mixin bgi-after($url-str, $args...) {
+@mixin bgi-after($url-str-or-var, $args...) {
   &::after {
-    @include _bgi-pseudo($url-str, $args...) {
+    @include _bgi-pseudo($url-str-or-var, false, $args...) {
+      @content;
+    }
+  }
+}
+
+@mixin bgi-after-fluid($url-str-or-var, $args...) {
+  &::after {
+    @include _bgi-pseudo($url-str-or-var, true, $args...) {
       @content;
     }
   }
@@ -97,7 +122,11 @@
 
   mask: url($url-str) no-repeat center;
 
-  @include utils-mixins.adaptive-props(mask-size, $args) {
+  @include utils-mixins.adaptive-props-fluid(width height, $args...) {
+    @content;
+  }
+
+  @include utils-mixins.adaptive-props-fluid(mask-size, $args) {
     @content;
   }
 }
@@ -308,7 +337,7 @@
   }
 }
 
-@mixin background-position($name, $args) {
+@mixin background-position($args...) {
   @include utils-mixins.adaptive-props(background-position, $args) {
     @content;
   }
@@ -316,4 +345,12 @@
 
 @mixin background-position-fluid($args...) {
   @include utils-mixins.adaptive-props-fluid(background-position, $args...);
+}
+
+@mixin background-size($args...) {
+  @include utils-mixins.adaptive-props(background-size, $args);
+}
+
+@mixin background-size-fluid($args...) {
+  @include utils-mixins.adaptive-props-fluid(background-size, $args...);
 }

@@ -25,10 +25,12 @@ const updateScrollbarWidth = throttle(
   { leading: true, trailing: true },
 );
 
-function useDevScrollbarWidth() {
+async function useDevScrollbarWidth() {
+  document.querySelector('body')!.style.marginRight = `var(${cssVarName})`;
+
   new ResizeObserver(updateScrollbarWidth).observe(document.documentElement);
 
-  document.querySelector('body')!.style.marginRight = `var(${cssVarName})`;
+  return new Promise((resolve) => setTimeout(resolve, 200));
 }
 
 export default useDevScrollbarWidth;

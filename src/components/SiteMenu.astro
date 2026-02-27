@@ -1,0 +1,74 @@
+---
+interface Props {
+  class: string;
+  currentPageUrl?: string;
+}
+
+const { class: className, currentPageUrl } = Astro.props;
+
+const isActive = (href: string) => href === (currentPageUrl ?? '/');
+
+const pages = [
+  {
+    label: 'Home',
+    href: '/',
+  },
+  {
+    label: 'Activities',
+    href: '/activities',
+  },
+  {
+    label: 'Pricing plan',
+    href: '/pricing',
+  },
+  {
+    label: 'Contact us',
+    href: '/contact',
+  },
+  {
+    label: 'Blog',
+    href: '/blog',
+  },
+  {
+    label: 'About us',
+    href: '/about',
+  },
+];
+---
+
+<nav class:list={['site-menu', className]}>
+  <ul class="site-menu__list">
+    {
+      pages.map(({ label, href }) => (
+        <li
+          class:list={[
+            'site-menu__item',
+            isActive(href) && 'site-menu__item--active',
+          ]}
+        >
+          {!isActive(href) ? <a href={href}>{label}</a> : <a>{label}</a>}
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .site-menu {
+    a {
+      text-decoration: none;
+    }
+
+    &__list {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(14px, 2vw, 20px);
+
+      @include flex-direction(column $laptop);
+    }
+  }
+</style>

@@ -1,24 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Header from '../sections/Header.astro';
 import Hero from '../sections/Hero.astro';
-import Footer from '../sections/Footer.astro';
+import Section from '../components/Section.astro';
 ---
 
 <Layout title="My Astro HTML Template | Index Page">
-  <Header />
+  <h1 class="main-title" style="margin-block: 50px 80px; text-align: center;">
+    INDEX PAGE
+  </h1>
 
-  <main class="main">
-    <h1 class="main-title">INDEX PAGE</h1>
-    <Hero />
-  </main>
+  <Hero />
 
-  <Footer />
+  <Section name="example" title="Example section">
+    <div>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam atque
+        consequuntur iste iure rerum voluptates? Amet blanditiis cupiditate nemo
+        odit, porro quidem repudiandae sint tempore. Asperiores est minus omnis
+        sit.
+      </p>
+    </div>
+  </Section>
 </Layout>
-
-<style lang="scss" is:global>
-  .main-title {
-    margin-block: 50px 80px;
-    text-align: center;
-  }
-</style>

@@ -2,12 +2,12 @@
 
 .grid {
   display: grid;
-  @include grid-template-columns(repeat(var(--grid-items-count), 1fr));
+  grid-template-columns: repeat(var(--grid-items-count), 1fr);
+  gap: var(--grid-row-gap, var(--grid-gap)) var(--grid-gap);
   max-width: calc(
     var(--grid-items-count) *
       (var(--grid-item-width) + var(--grid-gap)) - var(--grid-gap)
   );
-  @include gap(var(--grid-gap));
   margin-inline: auto;
 
   &__item {
@@ -15,6 +15,7 @@
     justify-content: center;
 
     & > * {
+      flex-grow: 1;
       max-width: var(--grid-item-width);
     }
   }
