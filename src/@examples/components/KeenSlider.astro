@@ -1,0 +1,131 @@
+---
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import type { KeenSliderOptions } from '@/js/modules/keenSlider/types';
+
+interface Props {
+  class?: string;
+  itemComponent: AstroComponentFactory;
+  items: Record<string, unknown>[];
+}
+
+const { class: className, itemComponent: Item, items, ...rest } = Astro.props;
+
+const sliderOptions = {
+  slides: {
+    spacing: 30,
+    perView: 5,
+  },
+  breakpoints: {
+    '(max-width: 1440px)': {
+      slides: {
+        spacing: 20,
+        perView: 3,
+      },
+    },
+    '(max-width: 1024px)': {
+      slides: {
+        spacing: 20,
+        perView: 2,
+      },
+    },
+    '(max-width: 576px)': {
+      slides: {
+        spacing: 20,
+        perView: 1,
+      },
+    },
+  },
+  // adjacentSlidesScale: 0.9375, // active height / adjacent height
+} as KeenSliderOptions;
+
+const prevNavBtnTitle = 'To previous slide';
+const nextNavBtnTitle = 'To next slide';
+---
+
+<div
+  class:list={['slider', className]}
+  data-js-slider
+  data-js-slider-visible-bullets="5"
+  data-js-slider-options={JSON.stringify(sliderOptions)}
+  {...rest}
+>
+  <div class="slider__navigation">
+    <button
+      class="slider__btn"
+      type="button"
+      title={prevNavBtnTitle}
+      aria-label={prevNavBtnTitle}
+      data-js-slider-arrow-prev
+    >
+      &larr;
+    </button>
+
+    <div class="keen-slider-bullets" data-js-slider-bullets>
+      <button class="slider__bullet" type="button"></button>
+    </div>
+
+    <button
+      class="slider__btn"
+      type="button"
+      title={nextNavBtnTitle}
+      aria-label={nextNavBtnTitle}
+      data-js-slider-arrow-next
+    >
+      &rarr;
+    </button>
+  </div>
+
+  <div class="slider__slides keen-slider" data-js-slider-slides>
+    {
+      items.map((item) => (
+        <div class="slider__slide keen-slider__slide">
+          <Item {...item} />
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .slider {
+    --slider-color-blue: #667eea;
+
+    &__navigation {
+      @include flex-center;
+      column-gap: 16px;
+      max-width: 300px;
+      margin-inline: auto;
+    }
+
+    &__btn {
+      @include reset-btn;
+
+      @include flex-center;
+      @include box(50px);
+      flex-shrink: 0;
+
+      font-size: 20px;
+      color: #fff;
+
+      background-color: var(--slider-color-blue);
+      border: none;
+      border-radius: 8px;
+
+      &[disabled] {
+        opacity: 0.6;
+      }
+    }
+
+    &__slides {
+      padding-block: 50px !important;
+    }
+
+    & &__slide {
+      display: flex;
+      height: auto;
+      overflow: visible;
+    }
+  }
+</style>

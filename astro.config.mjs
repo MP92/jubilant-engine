@@ -62,7 +62,9 @@ export default defineConfig({
         ],
       },
       forceRename: [
-        /*'slider-navigation__bullet', 'slider-navigation__bullet--active', 'slider__scrollbar-drag'*/
+        'slider__bullet',
+        'slider__bullet--active',
+        'slider__scrollbar-drag',
       ],
     }),
     astroCssImages(rootPath),

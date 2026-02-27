@@ -1,5 +1,6 @@
 // import defineVwUnitCssVar from './functions/defineVwUnit.ts';
 // import KeenSliderCollection from './modules/keenSlider';
+// import SwiperSliderCollection from './modules/swiper';
 
 if (import.meta.env.MODE === 'development') {
   const { default: useDevScrollbarWidth } = await import(
@@ -12,3 +13,4 @@ if (import.meta.env.MODE === 'development') {
 // defineVwUnitCssVar();
 
 // new KeenSliderCollection();
+// new SwiperSliderCollection();

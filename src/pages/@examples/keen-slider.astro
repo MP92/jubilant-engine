@@ -1,0 +1,22 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import KeenSliderComponent from '@/@examples/components/KeenSlider.astro';
+import Card from '@/@examples/components/Card.astro';
+import '@/@examples/example.scss';
+import sliderData from '@/@examples/data/slider.json';
+---
+
+<script>
+  import KeenSliderCollection from '@/js/modules/keenSlider';
+  new KeenSliderCollection();
+</script>
+
+<Layout title="Examples | Keen Slider">
+  <div class="example">
+    <div class="container">
+      <h1 class="example__title">Keen Slider</h1>
+
+      <KeenSliderComponent itemComponent={Card} items={sliderData} />
+    </div>
+  </div>
+</Layout>
