@@ -1,0 +1,107 @@
+---
+import ExampleLayout from '@/@examples/ExampleLayout.astro';
+import ExampleTabs from '@/@examples/components/ExampleTabs/ExampleTabs.astro';
+import ExampleCard from '@/@examples/components/ExampleCard.astro';
+import '@/@examples/example.scss';
+
+const tabsData = [
+  {
+    isActive: true,
+    title: 'Design',
+    panelItems: [
+      {
+        title: 'Дизайн-мышление',
+        description:
+          'Инновационный подход к решению сложных задач через эмпатию и креативность. Идеально для команд, которые хотят создавать продукты, нужные людям.',
+        authorName: 'Анна Николаева',
+        buttonUrl: '/blog/design-thinking',
+      },
+      {
+        title: 'UI/UX тренды 2026',
+        description:
+          'Самые актуальные тенденции в дизайне интерфейсов: микро-анимации, 3D элементы и персонализация пользовательского опыта.',
+        authorName: 'Елена Соколова',
+        buttonUrl: '/blog/ui-ux-trends',
+      },
+      {
+        title: 'Эмоциональный дизайн',
+        description:
+          'Как вызвать правильные эмоции у пользователей через интерфейс. Психология цвета, микро-взаимодействия и сторителлинг в UX.',
+        authorName: 'Мария Васильева',
+        buttonUrl: '/blog/emotional-design',
+      },
+    ],
+  },
+  {
+    title: 'Development',
+    panelItems: [
+      {
+        title: 'Скорость разработки',
+        description:
+          'Как ускорить delivery без потери качества. CI/CD, автоматизация тестирования и оптимизация процессов.',
+        authorName: 'Константин Волков',
+        buttonUrl: '/blog/dev-speed',
+      },
+      {
+        title: 'Микросервисная архитектура',
+        description:
+          'Плюсы и минусы перехода на микросервисы. Реальные кейсы компаний, которые успешно масштабировали свои приложения.',
+        authorName: 'Дмитрий Козлов',
+        buttonUrl: '/blog/microservices',
+      },
+      {
+        title: 'Serverless технологии',
+        description:
+          'Полное руководство по serverless архитектуре. AWS Lambda, Cloud Functions и когда это действительно выгодно.',
+        authorName: 'Антон Морозов',
+        buttonUrl: '/blog/serverless',
+      },
+    ],
+  },
+  {
+    title: 'IT Management',
+    panelItems: [
+      {
+        title: 'Продуктовая аналитика',
+        description:
+          'Как использовать данные для принятия решений. От сбора метрик до A/B тестирования и анализа поведения пользователей.',
+        authorName: 'Михаил Петров',
+        buttonUrl: '/blog/product-analytics',
+      },
+      {
+        title: 'Управление командой',
+        description:
+          'Эффективные методы менеджмента для IT-команд. Как мотивировать разработчиков и выстраивать здоровые процессы.',
+        authorName: 'Алексей Иванов',
+        buttonUrl: '/blog/team-management',
+      },
+      {
+        title: 'Управление продуктом',
+        description:
+          'От идеи до релиза: полный цикл разработки продукта. Roadmap, приоритизация и работа с требованиями.',
+        authorName: 'Екатерина Новикова',
+        buttonUrl: '/blog/product-management',
+      },
+    ],
+  },
+];
+---
+
+<script>
+  import TabsCollection from '@/js/modules/tabs';
+
+  new TabsCollection();
+</script>
+<ExampleLayout title="Examples | Tabs">
+  <div class="example">
+    <div class="container">
+      <h1 class="example__title">Tabs</h1>
+
+      <ExampleTabs
+        tabsTitle="IT category"
+        itemComponent={ExampleCard}
+        items={tabsData}
+      />
+    </div>
+  </div>
+</ExampleLayout>

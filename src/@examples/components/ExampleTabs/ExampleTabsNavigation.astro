@@ -1,0 +1,45 @@
+---
+import { strToId, getTabIds } from './utils';
+
+interface Props {
+  tabsTitle: string;
+  items: {
+    isActive?: boolean;
+    title: string;
+    panelItems: Record<string, unknown>[];
+  }[];
+}
+
+const { tabsTitle, items, ...rest } = Astro.props;
+
+const tabsTitleId = strToId(tabsTitle) + '-title';
+---
+
+<div
+  class="example-tabs__navigation"
+  role="tablist"
+  aria-labelledby={tabsTitleId}
+  {...rest}
+>
+  <h3 id={tabsTitleId} class="visually-hidden">{tabsTitle}</h3>
+
+  {
+    items.map(({ isActive, title }) => {
+      const { tabId, contentId } = getTabIds(title);
+
+      return (
+        <div
+          class:list={['example-tabs__btn', isActive && 'is-active']}
+          id={tabId}
+          aria-controls={contentId}
+          aria-selected={isActive ? 'true' : 'false'}
+          tabindex={isActive ? '0' : '-1'}
+          role="tab"
+          data-js-tabs-btn
+        >
+          {title}
+        </div>
+      );
+    })
+  }
+</div>
