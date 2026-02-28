@@ -6,6 +6,19 @@ import bulletsWithTrackPlugin from './plugins/bulletsWithTrackPlugin';
 import arrowsPlugin from './plugins/arrowsPlugin';
 import scaleAdjacentSlides from './plugins/scaleAdjacentSlides';
 import './keen-slider.scss';
+import getDataAttrParams from '@/js/utils/getDataAttrParams';
+
+const selectors = {
+  root: '[data-js-slider]',
+  slides: '[data-js-slider-slides]',
+  bullets: '[data-js-slider-bullets]',
+  arrowPrev: '[data-js-slider-arrow-prev]',
+  arrowNext: '[data-js-slider-arrow-next]',
+};
+
+const resolveVisibleBulletsCount = ({
+  visibleBulletsCount,
+}: KeenSliderOptions) => (visibleBulletsCount ? +visibleBulletsCount : null);
 
 class KeenSliderWrapper {
   slidesEl: HTMLElement;
@@ -15,17 +28,13 @@ class KeenSliderWrapper {
   sliderInstance: KeenSliderInstance;
 
   constructor(private rootEl: HTMLElement) {
-    this.slidesEl = this.rootEl.querySelector<HTMLElement>(
-      '[data-js-slider-slides]',
-    )!;
-    this.bulletsEl = this.rootEl.querySelector<HTMLElement>(
-      '[data-js-slider-bullets]',
-    );
+    this.slidesEl = this.rootEl.querySelector<HTMLElement>(selectors.slides)!;
+    this.bulletsEl = this.rootEl.querySelector<HTMLElement>(selectors.bullets);
     this.arrowPrevEl = this.rootEl.querySelector<HTMLElement>(
-      '[data-js-slider-arrow-prev]',
+      selectors.arrowPrev,
     );
     this.arrowNextEl = this.rootEl.querySelector<HTMLElement>(
-      '[data-js-slider-arrow-next]',
+      selectors.arrowNext,
     );
 
     if (!this.slidesEl) {
@@ -39,25 +48,16 @@ class KeenSliderWrapper {
     this.sliderInstance = this.initSlider();
   }
 
-  resolveSliderOptions() {
-    return {
-      ...JSON.parse(this.rootEl.dataset.jsSliderOptions ?? '{}'),
-    } as KeenSliderOptions;
-  }
-
-  resolveVisibleBulletsCount() {
-    return this.rootEl.dataset.jsSliderVisibleBullets
-      ? +this.rootEl.dataset.jsSliderVisibleBullets
-      : null;
-  }
-
   initSlider() {
-    const sliderOptions = this.resolveSliderOptions();
+    const sliderOptions = getDataAttrParams(
+      this.rootEl,
+      selectors.root,
+    ) as KeenSliderOptions;
 
     const plugins: KeenSliderPlugin[] = [];
 
     if (this.bulletsEl) {
-      const visibleBulletsCount = this.resolveVisibleBulletsCount();
+      const visibleBulletsCount = resolveVisibleBulletsCount(sliderOptions);
       plugins.push(bulletsWithTrackPlugin(this.bulletsEl, visibleBulletsCount));
     }
 
@@ -76,7 +76,7 @@ class KeenSliderWrapper {
 class KeenSliderCollection {
   constructor() {
     document
-      .querySelectorAll<HTMLElement>('[data-js-slider]')
+      .querySelectorAll<HTMLElement>(selectors.root)
       .forEach((sliderEl) => new KeenSliderWrapper(sliderEl));
   }
 }

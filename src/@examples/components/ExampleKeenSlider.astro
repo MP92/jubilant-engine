@@ -35,6 +35,7 @@ const sliderOptions = {
       },
     },
   },
+  visibleBulletsCount: 5,
   // adjacentSlidesScale: 0.9375, // active height / adjacent height
 } as KeenSliderOptions;
 
@@ -44,9 +45,7 @@ const nextNavBtnTitle = 'To next slide';
 
 <div
   class:list={['example-keen-slider', className]}
-  data-js-slider
-  data-js-slider-visible-bullets="5"
-  data-js-slider-options={JSON.stringify(sliderOptions)}
+  data-js-slider={JSON.stringify(sliderOptions)}
   {...rest}
 >
   <div class="example-keen-slider__navigation">
