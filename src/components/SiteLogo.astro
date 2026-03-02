@@ -1,0 +1,18 @@
+---
+import { MyImage } from '@/core';
+
+interface Props {
+  class: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<a
+  class:list={['site-logo', className]}
+  href="/"
+  title="Home"
+  aria-label="Home"
+>
+  <MyImage src="@img/icons/site-logo.svg" alt="" loading="eager" />
+</a>

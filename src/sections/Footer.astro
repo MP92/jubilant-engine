@@ -1,10 +1,148 @@
 ---
+import Socials from '../components/Socials.astro';
 
+const menuColumns = [
+  {
+    label: 'Home',
+    href: '#!',
+    children: [
+      {
+        label: 'Categories',
+        href: '#!',
+      },
+      {
+        label: 'Devices',
+        href: '#!',
+      },
+      {
+        label: 'Pricing',
+        href: '#!',
+      },
+      {
+        label: 'FAQ',
+        href: '#!',
+      },
+    ],
+  },
+  {
+    label: 'Movies',
+    href: '#!',
+    children: [
+      {
+        label: 'Genres',
+        href: '#!',
+      },
+      {
+        label: 'Trending',
+        href: '#!',
+      },
+      {
+        label: 'New Release',
+        href: '#!',
+      },
+      {
+        label: 'Popular',
+        href: '#!',
+      },
+    ],
+  },
+  {
+    label: 'Shows',
+    href: '#!',
+    children: [
+      {
+        label: 'Genres',
+        href: '#!',
+      },
+      {
+        label: 'Trending',
+        href: '#!',
+      },
+      {
+        label: 'New Release',
+        href: '#!',
+      },
+      {
+        label: 'Popular',
+        href: '#!',
+      },
+    ],
+  },
+  {
+    label: 'Support',
+    href: '#!',
+    children: [
+      {
+        label: 'Contact Us',
+        href: '#!',
+      },
+    ],
+  },
+  {
+    label: 'Subscription',
+    href: '#!',
+    children: [
+      {
+        label: 'Plans',
+        href: '#!',
+      },
+      {
+        label: 'Features',
+        href: '#!',
+      },
+    ],
+  },
+];
+
+const currentYear = new Date().getFullYear();
 ---
 
 <footer class="footer">
   <div class="footer__inner container">
-    <span>FOOTER</span>
+    <nav class="footer__nav">
+      {
+        menuColumns.map(({ label, href, children }) => (
+          <div class="footer__col">
+            <h3 class="footer__col-title h-20-18-16">
+              <a class="footer__col-title-link" href={href}>
+                {label}
+              </a>
+            </h3>
+            <ul class="footer__col-menu">
+              {children.map(({ label, href }) => (
+                <li class="footer__col-menu-item">
+                  <a href={href}>{label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+
+      <div class="footer__col">
+        <h3 class="footer__col-title h-20-18-16">Connect With Us</h3>
+        <Socials class="footer__soc1als" />
+      </div>
+    </nav>
+
+    <div class="footer__bottom">
+      <p class="footer__copyright">
+        @<time datetime={'' + currentYear}>{currentYear}</time> streamvibe, All Rights
+        Reserved
+      </p>
+
+      <ul class="footer__legal-list">
+        <li class="footer__legal-item">
+          <a href="#!">Terms of Use</a>
+        </li>
+        <li class="footer__legal-item">
+          <a href="#!">Privacy Policy</a>
+        </li>
+        <li class="footer__legal-item">
+          <a href="#!">Cookie Policy</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </footer>
 
@@ -12,9 +150,73 @@
   @use '@styles/base' as *;
 
   .footer {
-    padding: 20px 0;
-    background-color: black;
-    color: white;
-    text-align: center;
+    @include padding-bottom(50px, 40px $laptop, 20px $tablet-s);
+
+    background-color: var(--black-06);
+
+    a:not([class]) {
+      text-decoration: none;
+
+      @include hover {
+        color: var(--grey-70);
+      }
+    }
+
+    &__nav {
+      @include var(--footer-columns, 6, 3 $laptop-s, 2 $tablet-s);
+
+      display: grid;
+      grid-template-columns: repeat(var(--footer-columns), 1fr);
+      @include column-gap(30px, 20px $laptop, 10px $tablet-s);
+      @include row-gap(40px, 30px $tablet-s);
+      @include padding-block(100px, 80px $laptop, 50px $tablet-s);
+    }
+
+    &__col {
+      @include flex-column;
+      @include row-gap(24px, 20px $laptop, 16px $tablet-s);
+    }
+
+    &__col-title-link {
+      @include hover {
+        color: var(--grey-90);
+      }
+    }
+
+    &__col-menu {
+      @include flex-column;
+      @include row-gap(14px, 10px $laptop, 8px $tablet-s);
+      font-weight: 500;
+    }
+
+    &__bottom {
+      @include padding-top(24px, 20px $laptop);
+      @include flex-between-center;
+
+      @include font-size-fluid(18px, 14px $laptop);
+
+      border-top: 1px solid var(--black-15);
+
+      @include tablet-s-and-lower {
+        flex-direction: column;
+        align-items: start;
+        row-gap: 20px;
+      }
+    }
+
+    &__legal-list {
+      @include var(--footer-legal-list-col-gap, 40px, 32px $laptop);
+
+      @include flex-center-v;
+      column-gap: var(--footer-legal-list-col-gap);
+    }
+
+    &__legal-item {
+      --v-line-color: var(--black-15);
+
+      @include not-last-child {
+        @include v-line($offset: calc(var(--footer-legal-list-col-gap) / 2));
+      }
+    }
   }
 </style>

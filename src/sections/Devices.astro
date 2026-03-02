@@ -1,0 +1,77 @@
+---
+import Section from '../components/Section.astro';
+import DeviceCard from '../components/DeviceCard.astro';
+
+const devicesData = [
+  {
+    title: 'Smartphones',
+    description:
+      'StreamVibe is optimized for both Android and iOS smartphones. Download our app from the Google Play Store or the Apple App Store',
+    icon: '@img/icons/devices/smartphones.svg',
+  },
+  {
+    title: 'Tablet',
+    description:
+      'StreamVibe is optimized for both Android and iOS smartphones. Download our app from the Google Play Store or the Apple App Store',
+    icon: '@img/icons/devices/tablet.svg',
+  },
+  {
+    title: 'Smart TV',
+    description:
+      'StreamVibe is optimized for both Android and iOS smartphones. Download our app from the Google Play Store or the Apple App Store',
+    icon: '@img/icons/devices/smart-tv.svg',
+  },
+  {
+    title: 'Laptops',
+    description:
+      'StreamVibe is optimized for both Android and iOS smartphones. Download our app from the Google Play Store or the Apple App Store',
+    icon: '@img/icons/devices/laptops.svg',
+  },
+  {
+    title: 'Gaming Consoles',
+    description:
+      'StreamVibe is optimized for both Android and iOS smartphones. Download our app from the Google Play Store or the Apple App Store',
+    icon: '@img/icons/devices/consoles.svg',
+  },
+  {
+    title: 'VR Headsets ',
+    description:
+      'StreamVibe is optimized for both Android and iOS smartphones. Download our app from the Google Play Store or the Apple App Store',
+    icon: '@img/icons/devices/vr-headsets.svg',
+  },
+];
+---
+
+<Section
+  class="devices"
+  name="devices"
+  title="We Provide you streaming experience across various devices."
+  descr="With StreamVibe, you can enjoy your favorite movies and TV shows anytime, anywhere. Our platform is designed to be compatible with a wide range of devices, ensuring that you never miss a moment of entertainment."
+>
+  <ul class="devices__list">
+    {
+      devicesData.map((device) => (
+        <li class="devices__item">
+          <DeviceCard {...device} />
+        </li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .devices {
+    @include var(--devices-cols, 3, 2 $tablet, 1 $mobile-l);
+
+    &__list {
+      display: grid;
+      grid-template-columns: repeat(var(--devices-cols), 1fr);
+      @include gap(30px, 20px $laptop);
+    }
+
+    &__item {
+    }
+  }
+</style>

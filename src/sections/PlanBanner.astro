@@ -1,0 +1,111 @@
+---
+import Button from '../components/Button.astro';
+---
+
+<section class="plan-bann3r container">
+  <div class="plan-bann3r__inner">
+    <div class="plan-bann3r__info">
+      <h2 class="plan-bann3r__title h-48-28-24">
+        Start your free trial today!
+      </h2>
+
+      <div class="plan-bann3r__descr">
+        <p>
+          This is a clear and concise call to action that encourages users to
+          sign up for a free trial of StreamVibe.
+        </p>
+      </div>
+    </div>
+
+    <Button class="plan-bann3r__btn" href="#!"> Start a Free Trail </Button>
+  </div>
+</section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .plan-bann3r {
+    padding-block: var(--section-padding-v);
+
+    &__inner {
+      position: relative;
+
+      @include flex-between-center;
+      column-gap: 1rem;
+      @include padding-fluid(
+        100px 80px,
+        80px 60px $laptop,
+        50px 30px $tablet-s
+      );
+
+      border: 1px solid var(--black-15);
+      border-radius: 12px;
+
+      @include tablet-s-and-lower {
+        flex-direction: column;
+        align-items: center;
+        row-gap: 50px;
+      }
+
+      @include bgi-1x2x('@img/plan-bann3r-bg.png?as=webp') {
+        background-size: auto;
+        background-position: left center;
+
+        @include laptop-and-lower {
+          background-size: cover;
+        }
+      }
+
+      @include tablet-s-and-lower {
+        @include bgi-1x2x('@img/plan-bann3r-bg_sm.png?as=webp') {
+          background-size: auto;
+        }
+      }
+
+      &::after {
+        content: '';
+
+        position: absolute;
+        inset: -1px 0;
+
+        background-image: linear-gradient(
+          90deg,
+          var(--black-06) 2.42%,
+          rgb(20 15 15 / 97%) 25.46%,
+          rgb(34 14 14 / 91%) 46.72%,
+          rgb(114 8 8 / 54%) 100%
+        );
+
+        @include tablet-s-and-lower {
+          background-image: linear-gradient(
+            180deg,
+            var(--black-06) 0.18%,
+            rgb(20 15 15 / 97%) 29.35%,
+            rgb(34 14 14 / 91%) 58.53%,
+            rgb(176 4 4 / 25%) 100%
+          );
+        }
+      }
+    }
+
+    &__info {
+      @include flex-column;
+      @include row-gap(14px, 10px $laptop);
+      @include align-items(center $tablet-s);
+
+      @include text-align(center $tablet-s);
+
+      z-index: 1;
+    }
+
+    &__title {
+    }
+
+    &__descr {
+    }
+
+    &__btn {
+      z-index: 1;
+    }
+  }
+</style>

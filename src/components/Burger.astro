@@ -1,0 +1,55 @@
+---
+interface Props {
+  class: string;
+}
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<button
+  class:list={['burger', className]}
+  {...rest}
+  aria-label="Open navigation menu"
+  type="button"
+>
+</button>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .burger {
+    $inner-size: 48px;
+    $border-width: 3px;
+    $full-size: $inner-size + $border-width * 2;
+
+    @include reset-btn;
+
+    @include flex-center;
+    @include box($full-size);
+    padding: 12px;
+
+    color: var(--absolute-white);
+
+    background-color: var(--black-10);
+    border: #{$border-width} solid var(--black-15);
+    border-radius: 6px;
+
+    @include bgi-before('@img/icons/burger.svg', 24px);
+
+    // for transition to cross icon
+    &::after {
+      content: '';
+    }
+
+    @include hover {
+      background-color: var(--black-15);
+    }
+
+    &.is-active {
+      --cross-outer-size: #{$full-size};
+      --cross-size: 50%;
+
+      @include cross;
+    }
+  }
+</style>

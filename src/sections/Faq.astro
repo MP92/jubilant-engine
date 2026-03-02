@@ -1,0 +1,65 @@
+---
+import Section from '../components/Section.astro';
+import Button from '../components/Button.astro';
+import AccordionGroup from '../components/AccordionGroup.astro';
+
+const accordionName = 'questions';
+
+const accordionItems = [
+  {
+    title: 'What is StreamVibe?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'How much does StreamVibe cost?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand. StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'What content is available on StreamVibe?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'How can I watch StreamVibe?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'How do I sign up for StreamVibe?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'What is the StreamVibe free trial?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'How do I contact StreamVibe customer support?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+  {
+    title: 'What are the StreamVibe payment methods?',
+    description:
+      'StreamVibe is a streaming service that allows you to watch movies and shows on demand.',
+  },
+];
+---
+
+<Section
+  name="faq"
+  title="Frequently Asked Questions"
+  descr="Got questions? We've got answers! Check out our FAQ section to find answers to the most common questions about StreamVibe."
+>
+  <Button slot="actions" class="faq__btn"> Ask a Question </Button>
+
+  <AccordionGroup
+    class="faq__accordion"
+    columns={2}
+    name={accordionName}
+    items={accordionItems}
+  />
+</Section>

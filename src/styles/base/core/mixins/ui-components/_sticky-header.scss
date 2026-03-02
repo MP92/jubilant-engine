@@ -15,14 +15,13 @@
 
     @keyframes scrolling-header {
       from {
-        box-shadow: var(--sticky-header-shadow);
       }
 
       to {
-        box-shadow: var(
-          --sticky-header-end-shadow,
-          var(--sticky-header-shadow)
-        );
+        padding-block: 14px;
+
+        background-color: var(--color-bg);
+        box-shadow: 0 0 2px 0 var(--black-15);
       }
     }
   }

@@ -1,0 +1,110 @@
+---
+import { MyImage, SvgIcon } from '@/core';
+
+interface Props {
+  class?: string;
+  url: string;
+  label: string;
+  images: string[];
+}
+
+const { class: className, url, label, images } = Astro.props;
+---
+
+<a class:list={['genre-card', className]} href={url}>
+  <div class="genre-card__images">
+    {
+      images.map((image) => (
+        <MyImage
+          class="genre-card__img"
+          src={image}
+          width="0.5"
+          densities={[1.5, 2]}
+          alt=""
+        />
+      ))
+    }
+  </div>
+
+  <div class="genre-card__title-wrap">
+    <h3 class="genre-card__title">
+      {label}
+    </h3>
+
+    <SvgIcon name="arrow" class="genre-card__icon" />
+  </div>
+</a>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .genre-card {
+    --genre-card-gradient-opacity: 1;
+
+    position: relative;
+
+    @include flex-column;
+    @include padding-fluid(30px, 24px $laptop, 20px $tablet-s);
+
+    background: var(--black-10);
+
+    border: 1px solid var(--black-15);
+    @include border-radius-12-10;
+
+    outline-offset: -2px;
+
+    transition-duration: var(--transition-duration);
+
+    @include hover {
+      --genre-card-gradient-opacity: 0;
+      border-color: var(--black-30);
+    }
+
+    &__images {
+      position: relative;
+
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+
+      &::after {
+        content: '';
+
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+          to bottom,
+          rgb(26 26 26 / 0%) 0%,
+          var(--black-10) 100%
+        );
+        opacity: var(--genre-card-gradient-opacity);
+
+        transition-duration: var(--transition-duration);
+      }
+    }
+
+    &__img {
+      aspect-ratio: 235 / 252;
+      width: 100%;
+      object-fit: cover;
+
+      @include border-radius-10-6;
+    }
+
+    &__title-wrap {
+      @include flex-between-center;
+      column-gap: 1rem;
+      color: var(--absolute-white);
+    }
+
+    &__title {
+      font-size: inherit;
+      font-weight: 600;
+    }
+
+    &__icon {
+      @include box-fluid(30px, 24px $laptop, 20px $tablet-s);
+    }
+  }
+</style>

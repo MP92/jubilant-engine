@@ -5,6 +5,7 @@ import '../styles/base/core/_utils.scss';
 import AstroFont from '@plugins/astro-font/AstroFont.astro';
 import { localizedHTML as favicons } from 'astro-favicons/middleware';
 import Header from '../sections/Header.astro';
+import PlanBanner from '../sections/PlanBanner.astro';
 import Footer from '../sections/Footer.astro';
 
 interface Props {
@@ -33,12 +34,12 @@ const currentPageUrl = Astro.url.pathname;
     <AstroFont
       config={[
         {
-          name: 'Poppins',
+          name: 'Manrope',
           preload: false,
           fallback: 'sans-serif',
-          fallbackName: 'Poppins-fallback',
+          fallbackName: 'Manrope-fallback',
           googleFontsURL:
-            'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600;1,400;1,700&display=swap',
+            'https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap',
           subsets: ['latin'],
         },
         /* {
@@ -88,6 +89,7 @@ const currentPageUrl = Astro.url.pathname;
 
     <main class="main">
       <slot />
+      <PlanBanner />
     </main>
 
     <Footer />
@@ -95,6 +97,10 @@ const currentPageUrl = Astro.url.pathname;
 </html>
 
 <style is:global>
+  .main {
+    margin-bottom: var(--section-padding-v);
+  }
+
   #group-mq {
     top: 0;
   }

@@ -2,8 +2,69 @@
 
 body {
   font-family: var(--font-family);
-  color: var(--color-text);
-  @include font-size-fluid(16px, 14px $tablet-s);
+  color: var(--grey-60);
+  @include font-size-fluid(18px, 16px $laptop, 14px $tablet-s);
   font-weight: 400;
   line-height: 1.5;
+
+  background: var(--black-08);
+}
+
+.h-58-48-28,
+.h-48-38-28,
+.h-48-38-24,
+.h-48-28-24,
+.h-38-30-24,
+.h-38-28-24,
+.h-38-28-20,
+.h-24-20-18,
+.h-22-20-18,
+.h-20-18-16,
+.h-20-16 {
+  font-weight: 700;
+  color: var(--absolute-white);
+}
+
+.h-58-48-28 {
+  @include font-size-fluid(58px, 48px $laptop, 28px $tablet-s);
+}
+
+.h-48-38-28 {
+  @include font-size-fluid(48px, 38px $laptop, 28px $tablet-s);
+}
+
+.h-48-38-24 {
+  @include font-size-fluid(48px, 38px $laptop, 24px $tablet-s);
+}
+
+.h-48-28-24 {
+  @include font-size-fluid(48px, 28px $laptop, 24px $tablet-s);
+}
+
+.h-38-30-24 {
+  @include font-size-fluid(38px, 30px $laptop, 24px $tablet-s);
+}
+
+.h-38-28-24 {
+  @include font-size-fluid(38px, 28px $laptop, 24px $tablet-s);
+}
+
+.h-38-28-20 {
+  @include font-size-fluid(38px, 28px $laptop, 20px $tablet-s);
+}
+
+.h-24-20-18 {
+  @include font-size-fluid(24px, 20px $laptop, 18px $tablet-s);
+}
+
+.h-22-20-18 {
+  @include font-size-fluid(22px, 20px $laptop, 18px $tablet-s);
+}
+
+.h-20-18-16 {
+  @include font-size-fluid(20px, 18px $laptop, 16px $tablet-s);
+}
+
+.h-20-16 {
+  @include font-size-fluid(20px, 16px $laptop);
 }

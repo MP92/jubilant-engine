@@ -1,11 +1,20 @@
 ---
 interface Props {
   class?: string;
-  name: string;
   title: string;
+  name: string;
+  descr: string;
+  hideActionsSm?: boolean;
 }
 
-const { class: className, name, title, ...rest } = Astro.props;
+const {
+  class: className,
+  title,
+  name,
+  descr,
+  hideActionsSm,
+  ...rest
+} = Astro.props;
 
 const titleId = name + '-id';
 ---
@@ -17,7 +26,20 @@ const titleId = name + '-id';
 >
   <div class="section__inner container">
     <header class="section__header">
-      <h2 id={titleId} class="section__title">{title}</h2>
+      <div class="section__info">
+        <h2 id={titleId} class="section__title h-38-28-24">{title}</h2>
+        {
+          descr && (
+            <div class="section__descr">
+              <p>{descr}</p>
+            </div>
+          )
+        }
+      </div>
+
+      <div class:list={['section__actions', hideActionsSm && 'sm-hide']}>
+        <slot name="actions" />
+      </div>
     </header>
 
     <div class="section__body">
@@ -30,6 +52,38 @@ const titleId = name + '-id';
   @use '@styles/base' as *;
 
   .section {
-    padding-block: 30px;
+    @include var(--section-row-gap, 80px, 60px $laptop, 40px $tablet-s);
+
+    padding-block: var(--section-padding-v);
+
+    &__inner {
+      @include flex-column;
+      row-gap: var(--section-row-gap);
+    }
+
+    &__header {
+      @include flex-between;
+      align-items: center;
+      column-gap: 1rem;
+
+      &:has(.section__descr) {
+        align-items: end;
+      }
+
+      @include tablet-s-and-lower {
+        flex-direction: column;
+        row-gap: 20px;
+
+        &#{&} {
+          align-items: start;
+        }
+      }
+    }
+
+    &__info {
+      @include flex-column;
+      @include row-gap(14px, 10px $laptop);
+      @include max-width(1300px, 1130px $laptop);
+    }
   }
 </style>

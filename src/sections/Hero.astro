@@ -1,50 +1,165 @@
 ---
 import { MyPicture } from '@/core';
+import Button from '../components/Button.astro';
 ---
 
 <section class="hero" aria-labelledby="hero-title">
-  <header class="hero__header">
-    <h2 class="hero__title" id="hero-title">HERO SECTION</h2>
-
+  <div class="hero__bg">
     <MyPicture
-      class="hero__bg"
-      src="@img/hero-bg.jpg"
+      class="hero__bg-img"
+      src="@img/hero/bg@2x.png"
+      srcMd="@img/hero/bg_md@2x.png"
+      srcSm="@img/hero/bg_sm@2x.png"
+      width="0.5"
+      maxWidthMd={1440}
+      maxWidthSm={768}
       formats={['avif', 'webp']}
       alt=""
       priority
+      layout="full-width"
     />
-  </header>
+
+    <button class="hero__play-btn" type="button">
+      <span class="visually-hidden">Start Watching Now</span>
+    </button>
+  </div>
+
+  <div class="hero__content container">
+    <h1 id="hero-title" class="hero__title h-58-48-28">
+      The Best Streaming Experience
+    </h1>
+    <div class="hero__descr">
+      <p>
+        StreamVibe is the best streaming experience for watching your favorite
+        movies and shows on demand, anytime, anywhere. <span class="sm-hide"
+          >With StreamVibe, you can enjoy a wide variety of content, including
+          the latest blockbusters, classic movies, popular TV shows, and more.
+          You can also create your own watchlists, so you can easily find the
+          content you want to watch.</span
+        >
+      </p>
+    </div>
+    <Button class="hero__btn" href="#!" icon="play">
+      Start Watching Now
+    </Button>
+  </div>
 </section>
 
 <style lang="scss" is:global>
   @use '@styles/base' as *;
+  @use 'sass:math';
 
   .hero {
-    &__header {
+    $hero-img-height-lg: 860px;
+
+    --hero-gradient-color-start: var(--black-08);
+    --hero-gradient-color-end: rgb(20 20 20 / 0%);
+
+    @include var-fluid(
+      --hero-img-height,
+      $hero-img-height-lg,
+      699px $laptop,
+      500px $tablet-s
+    );
+
+    position: relative;
+
+    padding-bottom: var(--section-padding-v);
+    @include margin-bottom(50px, 30px $laptop, 20px $tablet-s);
+
+    @include fix-gradient-bottom-line(
+      $color: var(--hero-gradient-color-start),
+      $offset-y: var(--hero-img-height)
+    );
+
+    &__bg {
+      $hero-gradient-height-lg: 581px;
+      $hero-gradient-height: math.div(
+          $hero-gradient-height-lg,
+          $hero-img-height-lg
+        ) *
+        100%;
+
+      --hero-gradient-top: linear-gradient(
+          to bottom,
+          var(--hero-gradient-color-start) 0%,
+          var(--hero-gradient-color-end) 100%
+        )
+        center top / 100% #{$hero-gradient-height};
+
+      --hero-gradient-bottom: linear-gradient(
+          to top,
+          var(--hero-gradient-color-start) 0%,
+          var(--hero-gradient-color-end) 100%
+        )
+        center 100% / 100% #{$hero-gradient-height};
+
       position: relative;
 
-      @include margin-inline-fluid(50px, 15px $tablet-s);
-      @include margin-inline(0 $tablet-s);
+      height: var(--hero-img-height);
+
+      background: var(--hero-gradient-top), var(--hero-gradient-bottom);
+      background-repeat: no-repeat;
+
+      overflow: hidden;
+    }
+
+    &__bg-img {
+      position: relative;
+      z-index: -1;
+
+      img {
+        width: 100%;
+        @include height(100%, 845px $laptop, 603px $tablet-s);
+
+        object-position: top center;
+        object-fit: cover;
+      }
+    }
+
+    &__play-btn {
+      @include reset-btn;
+
+      @include pos-center;
+
+      @include bgi-before(
+        '@img/icons/hero-play.svg',
+        470px,
+        300px $laptop,
+        200px $tablet-s
+      );
+
+      &:active {
+        scale: 1.01;
+      }
+    }
+
+    &__content {
+      @include var(--container-width, 57.08%, 79.16% $laptop, 100% $tablet-s);
+
+      position: relative;
+      z-index: 1;
+
+      @include margin-top(-64px, -100px $laptop);
 
       text-align: center;
     }
 
     &__title {
-      position: absolute;
-      inset: 0;
-      @include flex-column-center-x;
-      @include padding-block-start-fluid(104px, 52px $tablet-s);
-      @include padding-block-start-fluid(82px $tablet-s, 42px $mobile-s);
-      @include padding-inline(60px, 1rem $tablet-s);
-      @include row-gap-fluid(32px, 14px $mobile-s);
-
-      font-size: 36px;
-      color: white;
+      @include not-last-child {
+        @include margin-bottom(14px, 10px $laptop);
+      }
     }
 
-    &__bg {
-      width: 100%;
-      @include border-radius(20px, 0 $tablet-s);
+    &__descr {
+      @include font-size-fluid(18px, 14px $laptop);
+
+      @include not-last-child {
+        @include margin-bottom(50px, 40px $laptop, 30px $tablet-s);
+      }
+    }
+
+    &__btn {
     }
   }
 </style>

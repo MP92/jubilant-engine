@@ -1,0 +1,176 @@
+---
+interface Props {
+  class?: string;
+  name: string;
+  id: string;
+  title: string;
+  description: string;
+  isOpen?: boolean;
+}
+
+const {
+  class: className,
+  name,
+  id,
+  title,
+  description,
+  isOpen = false,
+} = Astro.props;
+---
+
+<div class:list={['accordion', className]}>
+  <details class="accordion__details" name={name} open={isOpen}>
+    <summary class="accordion__summary">
+      <h3 class="accordion__title h-22-20-18">
+        <span role="term" aria-details={id}>
+          {title}
+        </span>
+      </h3>
+    </summary>
+  </details>
+  <div id={id} class="accordion__content" role="definition">
+    <div class="accordion__content-inner">
+      <div class="accordion__content-body">
+        <p>
+          {description}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .accordion {
+    @include var(--column-gap, 20px, 16px $laptop);
+
+    position: relative;
+
+    display: grid;
+    grid-template-areas:
+      'counter title'
+      'counter content';
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    column-gap: var(--column-gap);
+    @include padding(34px, 24px $laptop, 20px 10px $tablet-s);
+    width: 100%;
+
+    @include tablet-and-lower {
+      grid-template-areas:
+        'counter title'
+        'content content';
+      align-items: center;
+
+      & &__details {
+        margin-top: 0;
+      }
+    }
+
+    &::before {
+      content: counter(accordion-counter, decimal-leading-zero);
+
+      grid-area: counter;
+
+      @include flex-center;
+      @include box(62px 67px, 50px 54px $laptop, 42px 46px $tablet-s);
+
+      @include font-size(20px, 16px $laptop);
+      font-weight: 600;
+      color: var(--absolute-white);
+
+      background: var(--black-12);
+      border: 1px solid var(--black-15);
+      @include border-radius-10-8-6;
+    }
+
+    &__details {
+      grid-area: title;
+
+      margin-top: auto;
+    }
+
+    &__summary {
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      position: relative;
+
+      @include flex-between-center;
+      column-gap: 1rem;
+
+      color: var(--absolute-white);
+
+      transition-duration: var(--transition-duration);
+      cursor: pointer;
+      user-select: none;
+
+      @include hover {
+        color: var(--grey-90);
+      }
+
+      &::before,
+      &::after {
+        content: '';
+
+        flex-shrink: 0;
+        @include width(20px, 16px $laptop);
+
+        border-bottom: 2.5px solid var(--absolute-white);
+        border-radius: 2px;
+
+        @include border-width(2px $laptop);
+      }
+
+      &::before {
+        @include pos-center-v;
+        right: 0;
+
+        transform-origin: center;
+        rotate: 90deg;
+        transition-duration: var(--transition-duration);
+        visibility: visible;
+      }
+    }
+
+    &__title {
+      color: inherit;
+    }
+
+    &__content {
+      grid-area: content;
+
+      padding-right: calc(2 * var(--column-gap));
+
+      display: grid;
+      grid-template-rows: 0fr;
+
+      transition: var(--transition-duration) ease-in-out;
+    }
+
+    &__details[open] {
+      .accordion__summary {
+        &::before {
+          rotate: none;
+          visibility: hidden;
+        }
+      }
+
+      & + .accordion__content {
+        grid-template-rows: 1fr;
+      }
+    }
+
+    &__content-inner {
+      overflow: hidden;
+    }
+
+    &__content-body {
+      @include margin-top(20px, 14px $laptop, 12px $tablet-s);
+    }
+  }
+</style>

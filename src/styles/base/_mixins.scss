@@ -1,3 +1,27 @@
 /* Project specific mixins */
 @use '@styles/base/core/sass-vars' as *;
 @use '@styles/base/core/mixins' as *;
+
+@mixin border-radius-12-10-8 {
+  @include border-radius(12px, 10px $laptop, 8px $tablet-s);
+}
+
+@mixin border-radius-12-10 {
+  @include border-radius(12px, 10px $laptop);
+}
+
+@mixin border-radius-10-8-6 {
+  @include border-radius(10px, 8px $laptop, 6px $tablet-s);
+}
+
+@mixin border-radius-10-8 {
+  @include border-radius(10px, 8px $laptop);
+}
+
+@mixin border-radius-10-6 {
+  @include border-radius(10px, 6px $laptop);
+}
+
+@mixin border-radius-8-6 {
+  @include border-radius(8px, 6px $laptop);
+}

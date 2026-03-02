@@ -1,24 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../sections/Hero.astro';
-import Section from '../components/Section.astro';
+import Categories from '../sections/Categories.astro';
+import Devices from '../sections/Devices.astro';
+import Faq from '../sections/Faq.astro';
+import Plans from '../sections/Plans.astro';
 ---
 
-<Layout title="My Astro HTML Template | Index Page">
-  <h1 class="main-title" style="margin-block: 50px 80px; text-align: center;">
-    INDEX PAGE
-  </h1>
-
+<Layout title="Stream Vibe | Home">
   <Hero />
-
-  <Section name="example" title="Example section">
-    <div>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam atque
-        consequuntur iste iure rerum voluptates? Amet blanditiis cupiditate nemo
-        odit, porro quidem repudiandae sint tempore. Asperiores est minus omnis
-        sit.
-      </p>
-    </div>
-  </Section>
+  <Categories />
+  <Devices />
+  <Faq />
+  <Plans />
 </Layout>

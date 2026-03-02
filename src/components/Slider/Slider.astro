@@ -1,0 +1,131 @@
+---
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import Section from '../Section.astro';
+import SliderNavigation from './SliderNavigation.astro';
+
+interface Props {
+  class?: string;
+  sectionName: string;
+  title: string;
+  descr: string;
+  hideActionsSm?: boolean;
+  itemComponent: AstroComponentFactory;
+  items: Record<string, unknown>[];
+}
+
+const {
+  class: className,
+  sectionName,
+  itemComponent: Item,
+  items,
+  ...rest
+} = Astro.props;
+
+const sliderOptions = {
+  slidesPerView: 5,
+  slidesPerGroup: 5,
+  spaceBetween: 30,
+
+  pagination: {
+    bulletClass: 'slider-navigation__bullet',
+    bulletActiveClass: 'slider-navigation__bullet--active',
+    clickable: true,
+  },
+
+  scrollbar: {
+    dragClass: 'slider__scrollbar-drag',
+  },
+
+  breakpoints: {
+    1: {
+      slidesPerView: 2,
+      slidesPerGroup: 1,
+      spaceBetween: 20,
+    },
+    577: {
+      slidesPerView: 3,
+      slidesPerGroup: 3,
+      spaceBetween: 20,
+    },
+    769: {
+      slidesPerView: 4,
+      slidesPerGroup: 4,
+      spaceBetween: 20,
+    },
+    1025: {
+      spaceBetween: 20,
+      // allowTouchMove: false,
+    },
+    1441: {
+      spaceBetween: 30,
+      // allowTouchMove: false,
+    },
+  },
+};
+---
+
+<Section
+  class:list={[className]}
+  name={sectionName}
+  data-js-slider={JSON.stringify(sliderOptions)}
+  {...rest}
+>
+  <SliderNavigation
+    slot="actions"
+    prevNavAttrs={{ 'data-js-slider-arrow-prev': true }}
+    nextNavAttrs={{ 'data-js-slider-arrow-next': true }}
+    bulletsAttrs={{ 'data-js-slider-bullets': true }}
+  />
+
+  <div class="slider">
+    <div class="swiper" data-js-slider-swiper>
+      <ul class="slider__items swiper-wrapper" data-js-slider-slides>
+        {
+          items.map((item) => (
+            <li class="slider__item swiper-slide">
+              <Item {...item} />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="slider__scrollbar sm-only" data-js-slider-scrollbar></div>
+  </div>
+</Section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .slider {
+    position: relative;
+
+    &__items {
+    }
+
+    &__item {
+    }
+
+    @include mobile-l-and-lower {
+      width: calc(100vw - var(--container-padding-x));
+    }
+
+    &__scrollbar {
+      @include pos-center-x;
+      top: calc(100% + 24px);
+
+      width: 80px;
+      height: 5px;
+
+      background-color: var(--black-20);
+      border-radius: 20px;
+    }
+
+    &__scrollbar-drag {
+      height: 100%;
+
+      background-color: var(--red-45);
+      border-radius: inherit;
+    }
+  }
+</style>

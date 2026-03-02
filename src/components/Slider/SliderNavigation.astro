@@ -1,0 +1,122 @@
+---
+import { SvgIcon } from '@/core';
+
+interface Props {
+  class?: string;
+  prevNavAttrs?: Record<string, string | boolean>;
+  nextNavAttrs?: Record<string, string | boolean>;
+  bulletsAttrs?: Record<string, string | boolean>;
+}
+
+const {
+  class: className,
+  prevNavAttrs,
+  nextNavAttrs,
+  bulletsAttrs,
+} = Astro.props;
+
+const prevNavBtnTitle = 'To previous slide';
+const nextNavBtnTitle = 'To next slide';
+---
+
+<div class:list={['slider-navigation', className]}>
+  <button
+    class="slider-navigation__btn slider-navigation__btn--prev"
+    type="button"
+    title={prevNavBtnTitle}
+    aria-label={prevNavBtnTitle}
+    {...prevNavAttrs}
+  >
+    <SvgIcon name="arrow" class="slider-navigation__arrow-icon" />
+  </button>
+
+  <div class="slider-navigation__bullets" {...bulletsAttrs}></div>
+
+  <button
+    class="slider-navigation__btn"
+    type="button"
+    title={nextNavBtnTitle}
+    aria-label={nextNavBtnTitle}
+    {...nextNavAttrs}
+  >
+    <SvgIcon name="arrow" class="slider-navigation__arrow-icon" />
+  </button>
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .slider-navigation {
+    @include flex-center-v;
+    @include padding(16px, 12px $laptop);
+    @include column-gap(16px, 12px $laptop);
+
+    background-color: var(--black-06);
+
+    border: 1px solid var(--black-12);
+    @include border-radius-12-10;
+
+    @include tablet-s-and-lower {
+      justify-content: center;
+      padding: 0;
+
+      background: none;
+      border: none;
+    }
+
+    &__btn {
+      @include reset-btn;
+
+      @include flex-center;
+      @include padding(14px, 10px $laptop);
+
+      color: var(--absolute-white);
+
+      background-color: var(--black-10);
+
+      border: 1px solid var(--black-12);
+      @include border-radius-8-6;
+
+      &--prev {
+        .slider-navigation__arrow-icon {
+          scale: -1 1;
+        }
+      }
+
+      &[disabled] {
+        opacity: 0.6;
+      }
+
+      @include tablet-s-and-lower {
+        display: none;
+      }
+    }
+
+    &__arrow-icon {
+      @include box(28px, 24px $laptop);
+    }
+
+    &__bullets {
+      display: flex;
+      column-gap: 3px;
+    }
+
+    &__bullet {
+      @include width(16px, 14px $laptop);
+      height: 4px;
+
+      background-color: var(--black-20);
+
+      border-radius: 100px;
+      outline-offset: -2px;
+
+      transition-duration: var(--transition-duration);
+
+      &--active {
+        @include width(23px, 18px $laptop);
+
+        background-color: var(--red-45);
+      }
+    }
+  }
+</style>

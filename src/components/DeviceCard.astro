@@ -1,0 +1,69 @@
+---
+import { importImg } from '@/core';
+
+interface Props {
+  class?: string;
+  title: string;
+  description: string;
+  icon: string;
+}
+
+const { class: className, title, description, icon, ...rest } = Astro.props;
+
+const { default: iconImg } = await importImg(icon);
+---
+
+<div
+  class:list={['device-card', className]}
+  {...rest}
+  style={`--device-card-icon: url('${iconImg.src}')`}
+>
+  <div class="device-card__header">
+    <h3 class="device-card__title h-24-20-18">{title}</h3>
+  </div>
+  <div class="device-card__description">
+    <p>{description}</p>
+  </div>
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .device-card {
+    @include flex-column;
+    @include row-gap(30px, 24px $laptop, 20px $tablet);
+    @include padding-fluid(50px, 40px $laptop, 24px $tablet-s);
+
+    background-color: var(--black-06);
+    border: 1px solid var(--black-15);
+    @include border-radius-12-10;
+
+    &__header {
+      position: relative;
+
+      @include flex-center-v;
+      @include column-gap(16px, 12px $laptop, 10px $tablet-s);
+
+      @include bgi-before(
+        var(--device-card-icon),
+        72px,
+        54px $laptop,
+        44px $tablet-s
+      ) {
+        @include padding(16px, 12px $laptop, 10px $tablet-s);
+
+        background-color: var(--black-08);
+        border: 1px solid var(--black-12);
+        @include border-radius-12-10-8;
+
+        @include background-size(40px, 30px $laptop, 24px $tablet-s);
+      }
+    }
+
+    &__title {
+    }
+
+    &__description {
+    }
+  }
+</style>

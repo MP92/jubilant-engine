@@ -6,9 +6,16 @@ interface Props {
   href?: string;
   icon?: string;
   stretch?: boolean;
+  dark?: boolean;
 }
 
-const { class: className, href, icon, stretch = false } = Astro.props;
+const {
+  class: className,
+  href,
+  icon,
+  stretch = false,
+  dark = false,
+} = Astro.props;
 
 const Tag = href !== undefined ? 'a' : 'button';
 
@@ -21,7 +28,15 @@ if (href) {
 }
 ---
 
-<Tag class:list={['btn', stretch && 'btn--stretch', className]} {...attrs}>
+<Tag
+  class:list={[
+    'btn',
+    stretch && 'btn--stretch',
+    dark && 'btn--dark',
+    className,
+  ]}
+  {...attrs}
+>
   {icon && <SvgIcon name={icon} class="btn__icon" />}
   <slot />
 </Tag>
@@ -33,23 +48,37 @@ if (href) {
     @include reset-btn;
 
     @include inline-flex-center;
+    @include padding-fluid(18px 24px, 14px 24px $laptop);
+    @include column-gap(4px);
 
-    color: var(--color-white);
+    @include font-size-fluid(18px, 14px $laptop);
+    font-weight: 600;
+    color: var(--absolute-white);
 
-    background-color: var(--color-black);
+    background-color: var(--red-45);
+    border-radius: 8px;
 
     white-space: nowrap;
 
     @include hover {
-      background-color: #333;
+      background-color: var(--red-55);
     }
 
     &--stretch {
       width: 100%;
     }
 
+    &--dark {
+      background-color: var(--black-08);
+      border: 1px solid var(--black-15);
+
+      @include hover {
+        background-color: var(--black-15);
+      }
+    }
+
     &__icon {
-      @include box(28px);
+      @include box(28px, 24px $laptop);
     }
   }
 </style>

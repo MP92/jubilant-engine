@@ -1,0 +1,89 @@
+---
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import Section from '../Section.astro';
+import TabsNavigation from './TabsNavigation.astro';
+import { getTabIds } from './utils';
+
+interface Props {
+  class?: string;
+  sectionName: string;
+  title: string;
+  descr: string;
+  tabsTitle: string;
+  itemComponent: AstroComponentFactory;
+  items: {
+    isActive?: boolean;
+    title: string;
+    panelItems: Record<string, unknown>[];
+  }[];
+}
+
+const {
+  class: className,
+  sectionName,
+  tabsTitle,
+  itemComponent: Item,
+  items,
+  ...rest
+} = Astro.props;
+---
+
+<Section
+  class:list={['tabs', className]}
+  name={sectionName}
+  data-js-tabs
+  {...rest}
+>
+  <TabsNavigation
+    slot="actions"
+    tabsTitle={tabsTitle}
+    items={items}
+    data-js-tabs-navigation
+  />
+
+  <div class="tabs__panels">
+    {
+      items.map(({ isActive, title, panelItems }) => {
+        const { tabId, contentId } = getTabIds(title);
+
+        return (
+          <div
+            class:list={['tabs__panel', isActive && 'is-active']}
+            id={contentId}
+            aria-labelledby={tabId}
+            tabindex="0"
+            role="tabpanel"
+            data-js-tabs-panel
+          >
+            <ul class="tabs__list grid">
+              {panelItems.map((panelItem) => (
+                <li class="grid__item">
+                  <Item {...panelItem} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+      })
+    }
+  </div>
+</Section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .tabs {
+    &__panels {
+    }
+
+    &__panel:not(.is-active) {
+      display: none;
+    }
+
+    &__list {
+      @include var(--grid-items-count, 3, 2 $laptop-s, 1 $tablet-s);
+      @include var(--grid-gap, 30px, 20px $laptop);
+      --grid-row-gap: 20px;
+    }
+  }
+</style>

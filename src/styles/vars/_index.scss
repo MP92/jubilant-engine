@@ -3,8 +3,10 @@
 @use '@styles/base' as *;
 
 :root {
-  --font-family: poppins, sans-serif;
+  --font-family: Manrope, sans-serif;
   --transition-duration: 0.2s;
+
+  @include var(--section-padding-v, 75px, 60px $laptop, 40px $tablet-s);
 
   // --100vw: calc(100vw - var(--scrollbar-width));
 }

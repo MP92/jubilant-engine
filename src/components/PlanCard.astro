@@ -1,0 +1,87 @@
+---
+import Button from './Button.astro';
+
+interface Props {
+  class?: string;
+  title: string;
+  description: string;
+  price: {
+    value: number;
+    period: 'month' | 'year';
+  };
+}
+
+const { class: className, title, description, price, ...rest } = Astro.props;
+---
+
+<div class:list={['plan-card', className]} {...rest}>
+  <div class="plan-card__header">
+    <h3 class="plan-card__title h-24-20-18">{title}</h3>
+    <div class="plan-card__description">
+      <p>{description}</p>
+    </div>
+  </div>
+
+  <div class="plan-card__price">
+    <span class="plan-card__price-value">${price.value}</span>
+    <span class="plan-card__period">/{price.period}</span>
+  </div>
+
+  <div class="plan-card__actions">
+    <Button dark class="plan-card__btn" href="#!">Start Free Trial</Button>
+    <Button class="plan-card__btn" href="#!">Choose Plan</Button>
+  </div>
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .plan-card {
+    @include flex-column;
+    @include row-gap-fluid(50px, 40px $laptop, 30px $tablet-s);
+    @include padding-fluid(50px, 40px $laptop, 24px $tablet-s);
+
+    background: var(--black-10);
+    border: 1px solid var(--black-15);
+    @include border-radius-12-10;
+
+    &__header {
+      @include flex-column-start-x;
+      @include row-gap(16px, 12px $laptop, 10px $tablet-s);
+    }
+
+    &__title {
+    }
+
+    &__description {
+    }
+
+    &__price {
+      display: flex;
+      align-items: end;
+      @include column-gap(4px, 2px $laptop);
+
+      line-height: 0.73;
+      white-space: nowrap;
+    }
+
+    &__price-value {
+      @include font-size(40px, 30px $laptop, 24px $tablet-s);
+      font-weight: 600;
+      color: var(--absolute-white);
+    }
+
+    &__period {
+      font-weight: 500;
+    }
+
+    &__actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      @include column-gap(20px, 12px $laptop);
+    }
+
+    &__btn {
+    }
+  }
+</style>

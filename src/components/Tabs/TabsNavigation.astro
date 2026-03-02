@@ -1,0 +1,104 @@
+---
+import { strToId, getTabIds } from './utils';
+
+interface Props {
+  class?: string;
+  tabsTitle: string;
+  items: { isActive?: boolean; title: string }[];
+}
+
+const { class: className, tabsTitle, items, ...rest } = Astro.props;
+
+const tabsTitleId = strToId(tabsTitle) + '-title';
+---
+
+<div
+  class="tabs-navigation"
+  role="tablist"
+  aria-labelledby={tabsTitleId}
+  {...rest}
+>
+  <h3 id={tabsTitleId} class="visually-hidden">{tabsTitle}</h3>
+
+  {
+    items.map(({ isActive, title }) => {
+      const { tabId, contentId } = getTabIds(title);
+
+      return (
+        <div
+          class:list={['tabs-navigation__btn', isActive && 'is-active']}
+          id={tabId}
+          aria-controls={contentId}
+          aria-selected={isActive ? 'true' : 'false'}
+          tabindex={isActive ? '0' : '-1'}
+          role="tab"
+          data-js-tabs-btn
+        >
+          {title}
+        </div>
+      );
+    })
+  }
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .tabs-navigation {
+    @include var(--tabs-navigation-padding-v, 10px, 8px $laptop);
+
+    position: relative;
+
+    @include flex-center-v;
+    padding: var(--tabs-navigation-padding-v);
+
+    background: var(--black-06);
+    border: 1px solid var(--black-15);
+    @include border-radius-10-8;
+
+    &::after {
+      content: '';
+
+      position: absolute;
+      top: var(--tabs-navigation-padding-v);
+      bottom: var(--tabs-navigation-padding-v);
+      left: var(--tabs-navigation-active-btn-offset, 0);
+
+      width: var(--tabs-navigation-active-btn-width, 0);
+
+      background-color: var(--black-12);
+      @include border-radius-10-6;
+
+      transition-duration: 0.4s;
+    }
+
+    &__btn {
+      @include reset-btn;
+
+      @include padding(14px 24px, 12px 20px $laptop);
+
+      font-weight: 500;
+      @include font-size(18px, 14px $laptop);
+      line-height: 1.5;
+      color: inherit;
+
+      @include border-radius-10-6;
+
+      cursor: pointer;
+      user-select: none;
+
+      z-index: 1;
+
+      transition: var(--transition-duration);
+
+      @include hover {
+        color: var(--absolute-white);
+      }
+
+      &.is-active {
+        color: var(--absolute-white);
+        pointer-events: none;
+      }
+    }
+  }
+</style>

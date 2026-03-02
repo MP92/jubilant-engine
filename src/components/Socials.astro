@@ -1,0 +1,79 @@
+---
+import { SvgIcon } from '@/core';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const socialsData = [
+  {
+    icon: 'soc1al-fb',
+    label: 'Facebook',
+    href: '#!',
+  },
+  {
+    icon: 'soc1al-tw',
+    label: 'Twitter',
+    href: '#!',
+  },
+  {
+    icon: 'soc1al-inst',
+    label: 'Instagram',
+    href: '#!',
+  },
+];
+---
+
+<ul class:list={['soc1als', className]}>
+  {
+    socialsData.map(({ icon, label, href }) => (
+      <li class="soc1als__item">
+        <a
+          class="soc1als__link"
+          href={href}
+          title={label}
+          aria-label={label}
+          target="_blank"
+        >
+          <SvgIcon class="soc1als__icon" name={icon} width={24} height={24} />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .soc1als {
+    @include flex-center-v;
+    flex-wrap: wrap;
+    @include gap-fluid(14px, 10px $laptop);
+
+    &__item {
+    }
+
+    &__link {
+      @include flex-center;
+      @include padding-fluid(16px, 12px $laptop);
+
+      color: var(--absolute-white);
+
+      background-color: var(--black-10);
+
+      border: 1px solid var(--black-15);
+      @include border-radius-8-6;
+
+      @include hover {
+        border-color: var(--black-25);
+        background-color: var(--black-12);
+      }
+    }
+
+    &__icon {
+      @include box-fluid(24px, 20px $laptop);
+    }
+  }
+</style>
