@@ -1,6 +1,7 @@
 import type { OutputBundle, SourceMap } from 'rollup';
 import type { Plugin } from 'vite';
 import { SourceMapConsumer } from 'source-map';
+import c from 'ansi-colors';
 import type Renamer from './Renamer';
 
 type ModuleCodePosition = {
@@ -131,10 +132,17 @@ export default (
           const modulesDistCodePositions =
             await collectModulesDistCodePositions(asset.map);
 
-          asset.code = renameClassesAndVars(
-            asset.code,
-            modulesDistCodePositions,
-          );
+          if (modulesDistCodePositions.length) {
+            asset.code = renameClassesAndVars(
+              asset.code,
+              modulesDistCodePositions,
+            );
+          } else {
+            console.warn(
+              c.bgRed.bold('\n[astro-rename] ▶'),
+              c.red.bold(`Asset '${asset.fileName}' has no sourcemaps`),
+            );
+          }
         }
       }
     },

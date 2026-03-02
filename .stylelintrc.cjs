@@ -35,7 +35,8 @@ module.exports = {
     'value-keyword-case': [
       'lower',
       {
-        ignoreKeywords: ['currentColor'],
+        camelCaseSvgKeywords: true,
+        ignoreProperties: ['font-family', '--font-family'],
       },
     ],
     'custom-property-pattern': [
@@ -49,5 +50,6 @@ module.exports = {
     'scss/operator-no-newline-after': null,
     'declaration-block-no-redundant-longhand-properties': null,
     'media-feature-range-notation': null,
+    'block-no-empty': null,
   },
 };
