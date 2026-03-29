@@ -1,0 +1,18 @@
+@mixin border-gradient-pseudo(
+  $beforeOrAfter: after,
+  $borderGradient,
+  $borderWidth: 1px
+) {
+  position: relative;
+
+  padding: #{$borderWidth};
+
+  &::#{$beforeOrAfter} {
+    content: '';
+
+    position: absolute;
+    inset: -#{$borderWidth};
+    background: #{$borderGradient};
+    z-index: -1;
+  }
+}

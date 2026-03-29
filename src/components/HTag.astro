@@ -1,0 +1,24 @@
+---
+const headerTags = {
+  1: 'h1',
+  2: 'h2',
+  3: 'h3',
+  4: 'h4',
+  5: 'h5',
+  6: 'h6',
+} as const;
+
+type HeaderLvl = keyof typeof headerTags;
+
+interface Props {
+  class?: string;
+  id?: string;
+  lvl: number;
+}
+
+const { class: className, lvl, ...rest } = Astro.props;
+
+const HeaderTag = headerTags[lvl as HeaderLvl] ?? headerTags[1];
+---
+
+<HeaderTag class={className} {...rest}><slot /></HeaderTag>

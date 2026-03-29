@@ -96,6 +96,12 @@
   }
 }
 
+@mixin higher-mobile-l {
+  @include gt(core-vars.$mobile-l * 1px) {
+    @content;
+  }
+}
+
 /******************
 *  Desktop first  *
 *******************/

@@ -18,6 +18,12 @@
   }
 }
 
+@mixin grid-area($args...) {
+  @include utils-mixins.adaptive-props(grid-area, $args) {
+    @content;
+  }
+}
+
 @mixin grid-template-columns($args...) {
   @include utils-mixins.adaptive-props(grid-template-columns, $args) {
     @content;

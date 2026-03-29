@@ -37,17 +37,25 @@
   @return $result;
 }
 
-@mixin bgi($url-str, $args...) {
+@mixin bgi($url-str-or-var, $args...) {
   $args: _expand-size-args($args);
 
-  background-image: url($url-str);
+  @if string.index($url-str-or-var, 'var(--') {
+    background-image: $url-str-or-var;
+  } @else {
+    background-image: url($url-str-or-var);
+  }
+
   background-repeat: no-repeat;
   background-position: center;
-  background-size: contain;
 
-  @include utils-mixins.adaptive-props(background-size, $args) {
-    @content;
+  @if list.length($args) > 0 {
+    @include utils-mixins.adaptive-props(background-size, $args);
+  } @else {
+    background-size: contain;
   }
+
+  @content;
 }
 
 @mixin _bgi-pseudo($url-str-or-var, $fluid: false, $args...) {

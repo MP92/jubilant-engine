@@ -1,0 +1,8 @@
+/* Данный миксин подходит только для блоков с фоновым цветом */
+@mixin border-gradient($bgColor, $borderGradient, $borderWidth: 1px) {
+  background:
+    linear-gradient(#{$bgColor}, #{$bgColor}) padding-box,
+    #{$borderGradient} border-box;
+
+  border: #{$borderWidth} solid transparent;
+}
