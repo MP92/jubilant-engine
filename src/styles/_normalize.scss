@@ -29,8 +29,7 @@ html {
 /**
   Плавный скролл
  */
-html,
-:has(:target) {
+html {
   scroll-behavior: smooth;
 }
 
@@ -240,7 +239,8 @@ body {
 /**
   Обнуляем вертикальные внешние отступы параграфа,
   объявляем локальную переменную для внешнего отступа вниз,
-  чтобы избежать взаимодействие с более сложным селектором
+  чтобы избежать взаимодействия с более сложным селектором
+  при необходимости изменить этот внешний отступ для p без класса
  */
 p {
   --paragraph-margin-bottom: 24px;
@@ -249,7 +249,7 @@ p {
 }
 
 /* stylelint-disable-next-line selector-not-notation */
-:where(p:not([class]):not(:last-child)) {
+p:where(:not([class]):not(:last-child)) {
   margin-bottom: var(--paragraph-margin-bottom);
 }
 
@@ -283,6 +283,13 @@ a:where([class]) {
 button,
 label {
   cursor: pointer;
+}
+
+/**
+  Убирает серую подсветку при тапе на мобильных устройствах (iOS/Android)
+ */
+button {
+  -webkit-tap-highlight-color: transparent;
 }
 
 /**
