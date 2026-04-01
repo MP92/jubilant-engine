@@ -57,6 +57,10 @@ body {
   @include font-size-fluid(24px, 20px $laptop, 18px $tablet-s);
 }
 
+.h-24-20-16 {
+  @include font-size-fluid(24px, 20px $laptop, 16px $tablet-s);
+}
+
 .h-22-20-18 {
   @include font-size-fluid(22px, 20px $laptop, 18px $tablet-s);
 }

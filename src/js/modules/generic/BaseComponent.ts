@@ -15,44 +15,37 @@ abstract class BaseComponent<TState extends BaseState> {
   }
 
   private createProxyState(state: TState): TState {
-    return new Proxy(state, {
-      get: (target, prop: keyof TState) => {
-        return target[prop];
-      },
-      set: (target, prop: keyof TState, newValue: TState[keyof TState]) => {
-        if (target[prop] !== newValue) {
-          target[prop] = newValue;
+    return new Proxy(
+      { data: state },
+      {
+        get: (target, prop: keyof TState) => {
+          return target.data[prop];
+        },
+        set: (
+          target,
+          prop: keyof TState | 'data',
+          newValue: TState[keyof TState] | Partial<TState>,
+        ) => {
+          if (prop === 'data') {
+            target.data = {
+              ...target.data,
+              ...(newValue as Partial<TState>),
+            };
+            this.updateUI();
+          } else if (target.data[prop] !== newValue) {
+            target.data[prop] = newValue as TState[keyof TState];
+            this.updateUI();
+          }
 
-          this.updateUI();
-        }
-
-        return true;
+          return true;
+        },
       },
-    });
+    ) as unknown as TState;
   }
 
-  protected querySelector<T extends HTMLElement = HTMLElement>(
-    selector: string,
-  ) {
-    const element = this.rootEl.querySelector<T>(selector);
-
-    if (!element) {
-      throw Error(`${this.constructor.name}: ${selector} element not found.`);
-    }
-
-    return element;
-  }
-
-  protected querySelectorAll<T extends HTMLElement = HTMLElement>(
-    selector: string,
-  ) {
-    const elements = this.rootEl.querySelectorAll<T>(selector);
-
-    if (!elements.length) {
-      throw Error(`${this.constructor.name}: ${selector} elements not found.`);
-    }
-
-    return [...elements];
+  protected updateState(state: Partial<TState>) {
+    const wrapper = this.state as unknown as { data: TState };
+    wrapper.data = { ...wrapper.data, ...state };
   }
 
   protected abstract updateUI(): void;

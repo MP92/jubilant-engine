@@ -1,0 +1,48 @@
+---
+import EpisodeCard from './EpisodeCard.astro';
+
+export interface SeasonEpisodeProps {
+  title: string;
+  description: string;
+  duration: number;
+  video: {
+    src: string;
+    poster: string;
+    format?: string;
+  };
+}
+
+interface Props {
+  class?: string;
+  items: SeasonEpisodeProps[];
+}
+
+const { class: className, items, ...rest } = Astro.props;
+---
+
+<ol class:list={['season-episodes', className]} {...rest}>
+  {
+    items.map((item, index) => (
+      <li class="season-episodes__item">
+        <EpisodeCard num={index + 1} headerLvl={4} {...item} />
+      </li>
+    ))
+  }
+</ol>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .season-episodes {
+    @include tablet-s-and-lower {
+      @include flex-column;
+      row-gap: 20px;
+    }
+
+    &__item {
+      @include higher-tablet-s {
+        border-top: 1px solid var(--black-15);
+      }
+    }
+  }
+</style>

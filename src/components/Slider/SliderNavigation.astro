@@ -1,43 +1,68 @@
 ---
 import { SvgIcon } from '@/core';
 
-interface Props {
-  class?: string;
-  prevNavAttrs?: Record<string, string | boolean>;
-  nextNavAttrs?: Record<string, string | boolean>;
-  bulletsAttrs?: Record<string, string | boolean>;
+export interface Options {
+  inset?: boolean;
+  bottom?: boolean;
+  stretch?: boolean;
+  noBox?: boolean;
+  rounded?: boolean;
+  noBullets?: boolean;
 }
 
-const {
-  class: className,
-  prevNavAttrs,
-  nextNavAttrs,
-  bulletsAttrs,
-} = Astro.props;
+interface Props {
+  class?: string;
+  id?: string;
+  options?: Options;
+}
+
+const { class: className, options = {}, ...attrs } = Astro.props;
 
 const prevNavBtnTitle = 'To previous slide';
 const nextNavBtnTitle = 'To next slide';
 ---
 
-<div class:list={['slider-navigation', className]}>
+<div
+  class:list={[
+    'slider-navigation',
+    options.bottom && 'slider-navigation--bottom',
+    options.inset && 'slider-navigation--inset',
+    options.stretch && 'slider-navigation--stretch',
+    options.noBox && 'slider-navigation--no-box',
+    className,
+  ]}
+  data-js-slider-navigation
+  {...attrs}
+>
   <button
-    class="slider-navigation__btn slider-navigation__btn--prev"
+    class:list={[
+      'slider-navigation__btn',
+      'slider-navigation__btn--prev',
+      options.rounded && 'slider-navigation__btn--rounded',
+    ]}
     type="button"
     title={prevNavBtnTitle}
     aria-label={prevNavBtnTitle}
-    {...prevNavAttrs}
+    data-js-slider-arrow-prev
   >
     <SvgIcon name="arrow" class="slider-navigation__arrow-icon" />
   </button>
 
-  <div class="slider-navigation__bullets" {...bulletsAttrs}></div>
+  {
+    !options.noBullets && (
+      <div class="slider-navigation__bullets" data-js-slider-bullets />
+    )
+  }
 
   <button
-    class="slider-navigation__btn"
+    class:list={[
+      'slider-navigation__btn',
+      options.rounded && 'slider-navigation__btn--rounded',
+    ]}
     type="button"
     title={nextNavBtnTitle}
     aria-label={nextNavBtnTitle}
-    {...nextNavAttrs}
+    data-js-slider-arrow-next
   >
     <SvgIcon name="arrow" class="slider-navigation__arrow-icon" />
   </button>
@@ -48,20 +73,43 @@ const nextNavBtnTitle = 'To next slide';
 
   .slider-navigation {
     @include flex-center-v;
-    @include padding(16px, 12px $laptop);
     @include column-gap(16px, 12px $laptop);
 
-    background-color: var(--black-06);
+    &--inset {
+      position: absolute;
+      z-index: 2;
 
-    border: 1px solid var(--black-12);
-    @include border-radius-12-10;
+      @include margin-block(20px, 16px $laptop);
+      @include margin-inline(50px, 40px $laptop);
+    }
 
-    @include tablet-s-and-lower {
-      justify-content: center;
-      padding: 0;
+    &--bottom:not(&--inset) {
+      order: 2;
+    }
 
-      background: none;
-      border: none;
+    &--bottom#{&}--inset {
+      bottom: 0;
+    }
+
+    &:not(&--no-box) {
+      @include padding(16px, 12px $laptop, 0 $tablet-s);
+      background-color: var(--black-06);
+
+      border: 1px solid var(--black-12);
+      @include border-radius-12-10;
+    }
+
+    &--stretch {
+      justify-content: space-between;
+    }
+
+    &--stretch:not(&--inset) {
+      align-self: stretch;
+    }
+
+    &--stretch#{&}--inset {
+      left: 0;
+      right: 0;
     }
 
     &__btn {
@@ -83,17 +131,28 @@ const nextNavBtnTitle = 'To next slide';
         }
       }
 
+      &--rounded {
+        background-color: var(--black-08);
+        border-color: var(--black-15);
+        border-radius: 50%;
+      }
+
       &[disabled] {
         opacity: 0.6;
       }
+    }
 
-      @include tablet-s-and-lower {
-        display: none;
-      }
+    &--stretch &__btn {
+      background-color: var(--black-06);
     }
 
     &__arrow-icon {
       @include box(28px, 24px $laptop);
+    }
+
+    &__btn--rounded &__arrow-icon {
+      color: var(--grey-60);
+      @include box(24px, 20px $laptop);
     }
 
     &__bullets {

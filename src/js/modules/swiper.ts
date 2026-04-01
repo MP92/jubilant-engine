@@ -6,9 +6,15 @@ import 'swiper/css';
 import type { SwiperOptions } from 'swiper/types';
 import getDataAttrParams from '../utils/getDataAttrParams';
 
+type Params = {
+  sliderOptions: SwiperOptions;
+  navigationElementId?: string;
+};
+
 const selectors = {
   root: '[data-js-slider]',
   swiper: '[data-js-slider-swiper]',
+  navigation: '[data-js-slider-navigation]',
   bullets: '[data-js-slider-bullets]',
   arrowPrev: '[data-js-slider-arrow-prev]',
   arrowNext: '[data-js-slider-arrow-next]',
@@ -17,21 +23,34 @@ const selectors = {
 
 class SwiperSlider {
   swiperEl: HTMLElement;
+  navigationEl: HTMLElement | null = null;
   bulletsEl: HTMLElement | null = null;
   arrowPrevEl: HTMLElement | null = null;
   arrowNextEl: HTMLElement | null = null;
   scrollbarEl: HTMLElement | null = null;
   sliderInstance: Swiper;
+  params: Params;
 
   constructor(private rootEl: HTMLElement) {
+    this.params = getDataAttrParams(this.rootEl, selectors.root);
+
     this.swiperEl = this.rootEl.querySelector<HTMLElement>(selectors.swiper)!;
-    this.bulletsEl = this.rootEl.querySelector<HTMLElement>(selectors.bullets);
-    this.arrowPrevEl = this.rootEl.querySelector<HTMLElement>(
-      selectors.arrowPrev,
-    );
-    this.arrowNextEl = this.rootEl.querySelector<HTMLElement>(
-      selectors.arrowNext,
-    );
+    this.navigationEl = this.params.navigationElementId
+      ? document.getElementById(this.params.navigationElementId)
+      : this.rootEl.querySelector<HTMLElement>(selectors.navigation);
+
+    if (this.navigationEl) {
+      this.bulletsEl = this.navigationEl.querySelector<HTMLElement>(
+        selectors.bullets,
+      );
+      this.arrowPrevEl = this.navigationEl.querySelector<HTMLElement>(
+        selectors.arrowPrev,
+      );
+      this.arrowNextEl = this.navigationEl.querySelector<HTMLElement>(
+        selectors.arrowNext,
+      );
+    }
+
     this.scrollbarEl = this.rootEl.querySelector<HTMLElement>(
       selectors.scrollbar,
     );
@@ -48,10 +67,7 @@ class SwiperSlider {
   }
 
   initSlider() {
-    const sliderOptions = getDataAttrParams(
-      this.rootEl,
-      selectors.root,
-    ) as SwiperOptions;
+    const { sliderOptions } = this.params;
 
     if (this.bulletsEl) {
       sliderOptions.modules = [...(sliderOptions.modules ?? []), Pagination];

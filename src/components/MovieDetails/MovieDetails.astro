@@ -1,0 +1,418 @@
+---
+import { MyImage } from '@/core';
+import type { SwiperOptions } from 'swiper/types';
+import { slugify } from '../../js/utils/slugify';
+import SliderNavigation from '../Slider/SliderNavigation.astro';
+import Slider from '../Slider/Slider.astro';
+import Button from '../Button.astro';
+import ReviewCard from '../ReviewCard.astro';
+import Rating from '../Rating.astro';
+import PersonCard from '../PersonCard.astro';
+import Seasons, { type Season } from './Seasons.astro';
+
+export interface MovieDetailsData {
+  seasons?: Season[];
+  description: string;
+  cast: {
+    navigationId: string;
+    sliderOptions: SwiperOptions;
+    items: {
+      name: string;
+      photo: string;
+    }[];
+  };
+  reviews: {
+    sliderOptions: SwiperOptions;
+    items: {
+      hLvl: number;
+      author: string;
+      country: string;
+      grade: number;
+      text: string;
+    }[];
+  };
+  languages: string[];
+  ratings: {
+    source: string;
+    grade: number;
+  }[];
+  genres: string[];
+  persons: { position: string; name: string; country: string; photo: string }[];
+}
+
+interface Props extends MovieDetailsData {
+  class?: string;
+}
+
+const {
+  class: className,
+  seasons,
+  description,
+  cast,
+  reviews,
+  languages,
+  ratings,
+  genres,
+  persons,
+  ...rest
+} = Astro.props;
+
+const title = `Detailed ${seasons ? 'show' : 'movie'} information`;
+const titleId = slugify(title);
+---
+
+<section
+  class:list={['movie-details', className]}
+  aria-labelledby={titleId}
+  {...rest}
+>
+  <h2 class="visually-hidden" id={titleId}>{title}</h2>
+
+  <div class="movie-details__inner container">
+    {
+      seasons && (
+        <Seasons
+          class="movie-details__panel movie-details__panel--seasons"
+          items={seasons}
+        />
+      )
+    }
+
+    <section class="movie-details__panel">
+      <div class="movie-details__group">
+        <h3 class="movie-details__title">Description</h3>
+        <div class="movie-details__descr">
+          <p>{description}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="movie-details__panel movie-details__panel--persons">
+      <header class="movie-details__header">
+        <h3 class="movie-details__title">Cast</h3>
+
+        <SliderNavigation
+          id={cast.navigationId}
+          options={{ rounded: true, noBullets: true, noBox: true }}
+        />
+      </header>
+
+      <Slider
+        class="movie-details__person-slider"
+        options={cast.sliderOptions}
+        itemComponent={MyImage}
+        items={cast.items.map(({ name, photo }) => ({
+          src: photo,
+          title: name,
+          alt: name,
+          width: '0.5',
+        }))}
+        fitViewportSm={true}
+        navigationElementId={cast.navigationId}
+        hideNavSm={false}
+        showScrollbarSm={false}
+      />
+    </section>
+
+    <section class="movie-details__panel">
+      <header class="movie-details__header">
+        <h3 class="movie-details__title">Reviews</h3>
+
+        <Button class="movie-details__btn" href="#!" icon="plus" dark>
+          Add Your Review
+        </Button>
+      </header>
+
+      <Slider
+        class="movie-details__reviews-slider"
+        options={reviews.sliderOptions}
+        navOptions={{ bottom: true, rounded: true, noBox: true }}
+        itemComponent={ReviewCard}
+        items={reviews.items}
+        fitViewportSm={true}
+        hideNavSm={false}
+        showScrollbarSm={false}
+      />
+    </section>
+
+    <div class="movie-details__panel movie-details__panel--side">
+      <div class="movie-details__groups">
+        <div class="movie-details__group">
+          <h3 class="movie-details__title">
+            <MyImage
+              class="movie-details__title-icon"
+              src="@img/icons/calendar.svg"
+              alt=""
+            />
+            Released Year
+          </h3>
+          <time class="movie-details__year" datetime="2022">2022</time>
+        </div>
+
+        {
+          languages?.length && (
+            <div class="movie-details__group">
+              <h3 class="movie-details__title">
+                <MyImage
+                  class="movie-details__title-icon"
+                  src="@img/icons/translate.svg"
+                  alt=""
+                />
+                Available Languages
+              </h3>
+              <ul class="movie-details__tag-list">
+                {languages.map((language) => (
+                  <li class="movie-details__tag-item">
+                    <span class="movie-details__tag">{language}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        {
+          ratings?.length && (
+            <div class="movie-details__group">
+              <h3 class="movie-details__title">
+                <MyImage
+                  class="movie-details__title-icon"
+                  src="@img/icons/title-star.svg"
+                  alt=""
+                />
+                Ratings
+              </h3>
+              <ul class="movie-details__rating-list">
+                {ratings.map(({ source, grade }) => (
+                  <li class="movie-details__rating-item">
+                    <div class="movie-details__rating">
+                      <span class="movie-details__rating-source">{source}</span>
+                      <Rating grade={grade} />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        {
+          genres?.length && (
+            <div class="movie-details__group">
+              <h3 class="movie-details__title">
+                <MyImage
+                  class="movie-details__title-icon"
+                  src="@img/icons/tiles.svg"
+                  alt=""
+                />
+                Genres
+              </h3>
+              <ul class="movie-details__tag-list">
+                {genres.map((genre) => (
+                  <li class="movie-details__tag-item">
+                    <span class="movie-details__tag">{genre}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        {
+          persons.map((person) => (
+            <div class="movie-details__group">
+              <h3 class="movie-details__title">{person.position}</h3>
+
+              <PersonCard class="movie-details__person" {...person} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .movie-details {
+    &__inner {
+      display: grid;
+      @include grid-template-columns(
+        1fr 32.52%,
+        1fr 32.35% $laptop,
+        auto $tablet
+      );
+      @include gap(30px 20px, 20px $laptop);
+      align-items: start;
+    }
+
+    &__panel {
+      @include flex-column;
+      @include row-gap(40px, 30px $laptop, 20px $tablet-s);
+      @include padding(50px);
+      @include padding-fluid(40px $laptop, 24px $tablet-s);
+
+      &--persons {
+        @include row-gap(30px, 20px $laptop, 16px $tablet-s);
+      }
+
+      &--seasons {
+        @include padding(40px);
+        @include padding-fluid(30px $laptop, 24px $tablet-s);
+      }
+
+      background-color: var(--black-10);
+      border: 1px solid var(--black-15);
+      @include border-radius-12-10;
+
+      @include higher-tablet {
+        grid-column-start: 1;
+
+        &--side {
+          grid-row: 1 / span 3;
+          grid-column-start: 2;
+        }
+      }
+
+      @include tablet-and-lower {
+        &:first-child {
+          order: -2;
+        }
+
+        &--side {
+          order: -1;
+        }
+      }
+    }
+
+    &__title {
+      font-weight: 500;
+      font-size: inherit;
+
+      &:has(.movie-details__title-icon) {
+        @include flex-center-v;
+        @include column-gap(4px, 2px $laptop);
+      }
+    }
+
+    &__title-icon {
+      @include box(24px, 20px $laptop);
+    }
+
+    &__descr {
+      font-weight: 500;
+      color: var(--absolute-white);
+    }
+
+    &__header {
+      @include flex-between-center;
+    }
+
+    &__person-slider {
+      img {
+        width: 100%;
+        object-fit: cover;
+        @include border-radius-12-10;
+      }
+    }
+
+    &__reviews-slider {
+      .slider-navigation {
+        @include margin-top(40px, 30px $laptop, 24px $tablet-s);
+        margin-inline: auto;
+      }
+
+      .slider__item {
+        height: auto;
+
+        .review-card {
+          height: 100%;
+        }
+      }
+    }
+
+    &__btn {
+      @include var(--btn-padding, 14px 16px, 12px $laptop);
+      @include border-radius-8-6;
+    }
+
+    &__groups {
+      @include flex-column;
+      @include row-gap(30px, 24px $laptop, 20px $tablet-s);
+    }
+
+    &__group {
+      @include flex-column;
+      @include row-gap(14px, 10px $laptop);
+    }
+
+    &__year {
+      font-weight: 600;
+      @include font-size(20px, 16px $laptop);
+      color: var(--absolute-white);
+    }
+
+    &__tag-list {
+      @include flex-center-v;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    &__tag-item {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    &__tag {
+      display: block;
+      @include padding(8px 14px, 6px 12px $laptop);
+
+      font-weight: 500;
+      @include font-size(18px, 14px $laptop);
+      color: var(--absolute-white);
+
+      background-color: var(--black-08);
+      border: 1px solid var(--black-15);
+      @include border-radius-8-6;
+    }
+
+    &__rating-list {
+      display: flex;
+      flex-wrap: wrap;
+      @include gap(20px, 16px $laptop);
+    }
+
+    &__rating-item {
+      flex-basis: 0;
+      flex-grow: 1;
+      flex-shrink: 0;
+    }
+
+    &__rating {
+      @include flex-column;
+      @include row-gap(4px, 4px $laptop, 2px $tablet-s);
+      @include padding(16px, 14px $laptop, 12px $tablet-s);
+
+      background: var(--black-08);
+      border: 1px solid var(--black-15);
+      border-radius: 8px;
+
+      .rating {
+        @include var(--rating-star-size, 24px, 18px $laptop);
+        @include var(--rating-col-gap, 4px, 2px $laptop);
+        @include var(--rating-font-size, 20px, 14px $laptop);
+        @include var(--rating-label-color, var(--absolute-white));
+      }
+    }
+
+    &__rating-source {
+      font-weight: 600;
+      @include font-size(20px, 16px $laptop, 14px $tablet-s);
+      color: var(--absolute-white);
+    }
+
+    &__person {
+    }
+  }
+</style>

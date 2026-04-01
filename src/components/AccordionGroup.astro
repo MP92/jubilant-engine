@@ -5,23 +5,47 @@ interface Props {
   class?: string;
   columns?: number;
   name: string;
+  titleClass?: string;
+  titleIcon?: '' | 'arrow-down';
+  ordered?: boolean;
+  theme?: '' | 'dark';
   items: {
     title: string;
-    description: string;
+    subtitle?: string;
+    data: string | string[] | Record<string, unknown>;
   }[];
 }
 
-const { class: className, columns = 1, name, items, ...rest } = Astro.props;
+const {
+  class: className,
+  columns = 1,
+  name,
+  titleClass,
+  titleIcon = '',
+  ordered = false,
+  theme,
+  items,
+  ...rest
+} = Astro.props;
 
 const detailsId = (index: number) => `${name}-${index}`;
 
 const isBottomItem = (index: number) => {
   return columns > 1 && (index + 1) % Math.ceil(items.length / columns) === 0;
 };
+
+const ListTag = ordered ? 'ol' : 'ul';
 ---
 
-<div class:list={['accordion-group', className]} {...rest}>
-  <ol
+<div
+  class:list={[
+    'accordion-group',
+    theme === 'dark' && 'accordion-group--dark',
+    className,
+  ]}
+  {...rest}
+>
+  <ListTag
     class:list={[
       'accordion-group__list',
       columns > 1 && `accordion-group__list--${columns}-cols`,
@@ -38,14 +62,17 @@ const isBottomItem = (index: number) => {
           <Accordion
             name={name}
             id={detailsId(index)}
-            title={item.title}
-            description={item.description}
+            titleClass={titleClass}
+            titleIcon={titleIcon}
+            ordered={ordered}
+            theme={theme}
+            {...item}
             isOpen={index === 0}
           />
         </li>
       ))
     }
-  </ol>
+  </ListTag>
 </div>
 
 <style lang="scss" is:global>
@@ -54,7 +81,6 @@ const isBottomItem = (index: number) => {
   .accordion-group {
     &__list {
       list-style: none;
-      counter-reset: accordion-counter;
 
       &--2-cols {
         @include column-gap(80px, 40px $laptop, 20px $tablet);
@@ -66,37 +92,54 @@ const isBottomItem = (index: number) => {
     }
 
     &__item {
-      counter-increment: accordion-counter;
-
       break-inside: avoid;
+    }
 
-      position: relative;
+    ol#{&}__list {
+      counter-reset: accordion-counter;
 
-      &::after {
-        content: '';
-
-        position: absolute;
-        inset: 0;
-        top: unset;
-
-        height: 1px;
-
-        background-image: linear-gradient(
-          90deg,
-          rgb(229 0 0 / 0%) 0%,
-          var(--red-45) 16.67%,
-          rgb(229 0 0 / 0%) 100%
-        );
+      .accordion-group__item {
+        counter-increment: accordion-counter;
       }
+    }
 
-      &:last-child::after {
-        content: none;
-      }
+    &:not(&--dark) {
+      .accordion-group__item {
+        position: relative;
 
-      &--bottom::after {
-        @include higher-tablet {
+        &::after {
+          content: '';
+
+          position: absolute;
+          inset: 0;
+          top: unset;
+
+          height: 1px;
+
+          background-image: linear-gradient(
+            90deg,
+            rgb(229 0 0 / 0%) 0%,
+            var(--red-45) 16.67%,
+            rgb(229 0 0 / 0%) 100%
+          );
+        }
+
+        &:last-child::after {
           content: none;
         }
+
+        &--bottom::after {
+          @include higher-tablet {
+            content: none;
+          }
+        }
+      }
+    }
+
+    &--dark {
+      .accordion-group__list {
+        @include flex-column;
+        @include row-gap(20px, 16px $laptop);
       }
     }
   }

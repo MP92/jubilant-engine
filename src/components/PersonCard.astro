@@ -1,0 +1,57 @@
+---
+import { MyImage } from '@/core';
+
+interface Props {
+  class?: string;
+  name: string;
+  country: string;
+  photo: string;
+}
+
+const { class: className, name, country, photo, ...rest } = Astro.props;
+---
+
+<div class:list={['person-card', className]} {...rest}>
+  <MyImage class="person-card__photo" src={photo} width="0.5" alt="" />
+  <div class="person-card__info">
+    <h3 class="person-card__name">{name}</h3>
+    <span class="person-card__country">
+      From {country}
+    </span>
+  </div>
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .person-card {
+    @include flex-center-v;
+    @include column-gap(10px);
+    @include padding(14px);
+
+    background: var(--black-08);
+    border: 1px solid var(--black-15);
+    border-radius: 8px;
+
+    &__photo {
+      @include box(57px 60px, 47px 50px $laptop);
+      object-fit: cover;
+
+      @include border-radius-8-6;
+    }
+
+    &__info {
+      @include flex-column;
+    }
+
+    &__name {
+      @include font-size-fluid(18px, 16px $laptop);
+      font-weight: 500;
+      color: var(--absolute-white);
+    }
+
+    &__country {
+      @include font-size-fluid(16px, 14px $laptop);
+    }
+  }
+</style>

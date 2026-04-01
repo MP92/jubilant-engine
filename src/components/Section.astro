@@ -1,15 +1,19 @@
 ---
+import HTag from './HTag.astro';
+
 interface Props {
   class?: string;
   title: string;
+  headerLvl?: number;
   name: string;
-  descr: string;
+  descr?: string;
   hideActionsSm?: boolean;
 }
 
 const {
   class: className,
   title,
+  headerLvl = 2,
   name,
   descr,
   hideActionsSm,
@@ -27,7 +31,10 @@ const titleId = name + '-id';
   <div class="section__inner container">
     <header class="section__header">
       <div class="section__info">
-        <h2 id={titleId} class="section__title h-38-28-24">{title}</h2>
+        <HTag id={titleId} class="section__title h-38-28-24" lvl={headerLvl}
+          >{title}</HTag
+        >
+
         {
           descr && (
             <div class="section__descr">
@@ -53,6 +60,10 @@ const titleId = name + '-id';
 
   .section {
     @include var(--section-row-gap, 80px, 60px $laptop, 40px $tablet-s);
+
+    &:not(:has(&__descr)) {
+      @include var(--section-row-gap, 50px, 40px $laptop, 20px $tablet-s);
+    }
 
     padding-block: var(--section-padding-v);
 

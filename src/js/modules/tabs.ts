@@ -1,5 +1,15 @@
 import BaseComponent from './generic/BaseComponent';
-import pxToRem from '../functions/pxToRem';
+import pxToRem from '../utils/pxToRem';
+import getDataAttrParams from '../utils/getDataAttrParams';
+import {
+  getElementByIdRequired,
+  querySelectorAllRequired,
+  querySelectorRequired,
+} from '../utils/querySelectors';
+
+interface TabsOptions {
+  navElementId?: string;
+}
 
 const selectors = {
   root: '[data-js-tabs]',
@@ -29,11 +39,20 @@ class Tabs extends BaseComponent<TabsState> {
       activeTabIndex: -1,
     });
 
-    this.navigation = this.querySelector(selectors.navigation);
-    this.tabButtons = this.querySelectorAll<HTMLButtonElement>(
+    const { navElementId } = getDataAttrParams(
+      this.rootEl,
+      selectors.root,
+    ) as TabsOptions;
+
+    this.navigation = navElementId
+      ? getElementByIdRequired(navElementId)
+      : querySelectorRequired(selectors.navigation, this.rootEl);
+
+    this.tabButtons = querySelectorAllRequired<HTMLButtonElement>(
       selectors.tabBtn,
+      this.navigation,
     );
-    this.tabPanels = this.querySelectorAll(selectors.tabPanel);
+    this.tabPanels = querySelectorAllRequired(selectors.tabPanel, this.rootEl);
 
     this.init();
   }
@@ -138,7 +157,14 @@ class TabsWithNavigation extends Tabs {
     })[key];
 
   initNavigation() {
-    this.rootEl.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', (e) => {
+      if (
+        !this.rootEl.contains(e.target as HTMLElement) &&
+        !this.tabButtons.some((tabBtn) => tabBtn === e.target)
+      ) {
+        return;
+      }
+
       const { key, metaKey } = e;
 
       const action =
@@ -162,10 +188,10 @@ class TabsWithNavigation extends Tabs {
   };
 
   nextTab = () => {
-    const nextTabIndex = (this.state.activeTabIndex =
+    const nextTabIndex =
       this.state.activeTabIndex + 1 < this.tabButtons.length
         ? this.state.activeTabIndex + 1
-        : 0);
+        : 0;
 
     this.setActiveTab(nextTabIndex);
   };

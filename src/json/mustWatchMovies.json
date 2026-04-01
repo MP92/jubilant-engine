@@ -1,0 +1,178 @@
+[
+  {
+    "url": "#!",
+    "name": "Morbius",
+    "img": "@img/movies/1@2x.jpg",
+    "durationSec": 7020,
+    "rating": {
+      "grade": 4.5,
+      "quantity": 20225
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Bhai Jaan",
+    "img": "@img/movies/2@2x.jpg",
+    "durationSec": 5400,
+    "rating": {
+      "grade": 4.4,
+      "quantity": 20575
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Suraj pe Mangal Bhari",
+    "img": "@img/movies/3@2x.jpg",
+    "durationSec": 6120,
+    "rating": {
+      "grade": 4.9,
+      "quantity": 20351
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Pathan",
+    "img": "@img/movies/4@2x.jpg",
+    "durationSec": 7800,
+    "rating": {
+      "grade": 4.3,
+      "quantity": 20659
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Morbius",
+    "img": "@img/movies/1@2x.jpg",
+    "durationSec": 7020,
+    "rating": {
+      "grade": 4.5,
+      "quantity": 20225
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Bhai Jaan",
+    "img": "@img/movies/2@2x.jpg",
+    "durationSec": 5400,
+    "rating": {
+      "grade": 4.4,
+      "quantity": 20575
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Suraj pe Mangal Bhari",
+    "img": "@img/movies/3@2x.jpg",
+    "durationSec": 6120,
+    "rating": {
+      "grade": 4.9,
+      "quantity": 20351
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Pathan",
+    "img": "@img/movies/4@2x.jpg",
+    "durationSec": 7800,
+    "rating": {
+      "grade": 4.3,
+      "quantity": 20659
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Morbius",
+    "img": "@img/movies/1@2x.jpg",
+    "durationSec": 7020,
+    "rating": {
+      "grade": 4.5,
+      "quantity": 20225
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Bhai Jaan",
+    "img": "@img/movies/2@2x.jpg",
+    "durationSec": 5400,
+    "rating": {
+      "grade": 4.4,
+      "quantity": 20575
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Suraj pe Mangal Bhari",
+    "img": "@img/movies/3@2x.jpg",
+    "durationSec": 6120,
+    "rating": {
+      "grade": 4.9,
+      "quantity": 20351
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Pathan",
+    "img": "@img/movies/4@2x.jpg",
+    "durationSec": 7800,
+    "rating": {
+      "grade": 4.3,
+      "quantity": 20659
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Morbius",
+    "img": "@img/movies/1@2x.jpg",
+    "durationSec": 7020,
+    "rating": {
+      "grade": 4.5,
+      "quantity": 20225
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Bhai Jaan",
+    "img": "@img/movies/2@2x.jpg",
+    "durationSec": 5400,
+    "rating": {
+      "grade": 4.4,
+      "quantity": 20575
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Suraj pe Mangal Bhari",
+    "img": "@img/movies/3@2x.jpg",
+    "durationSec": 6120,
+    "rating": {
+      "grade": 4.9,
+      "quantity": 20351
+    },
+    "large": true
+  },
+  {
+    "url": "#!",
+    "name": "Pathan",
+    "img": "@img/movies/4@2x.jpg",
+    "durationSec": 7800,
+    "rating": {
+      "grade": 4.3,
+      "quantity": 20659
+    },
+    "large": true
+  }
+]

@@ -1,0 +1,244 @@
+---
+import { SvgIcon } from '@/core';
+import HTag from '../HTag.astro';
+import TimeDuration from '../TimeDuration.astro';
+import { importImg } from '@/core';
+
+interface Props {
+  class?: string;
+  num: number;
+  headerLvl: number;
+  title: string;
+  description: string;
+  duration: number;
+  video: {
+    src: string;
+    poster: string;
+    format?: string;
+  };
+}
+
+const {
+  class: className,
+  num,
+  headerLvl,
+  title,
+  description,
+  duration,
+  video,
+  ...rest
+} = Astro.props;
+
+const formattedNum = num.toString().padStart(2, '0');
+
+const importedVideoPoster = await importImg(video.poster);
+
+const playBtnTitle = 'Play video';
+---
+
+<div class:list={['episode-card', className]} {...rest}>
+  <div class="episode-card__num">{formattedNum}</div>
+
+  <div class="episode-card__player" data-js-video-player>
+    <video
+      class="episode-card__video"
+      poster={importedVideoPoster.default.src}
+      width="172"
+      height="118"
+      data-js-video-player-video
+    >
+      <source src={video.src} type={video.format} />
+    </video>
+
+    <button
+      class="episode-card__player-btn is-active"
+      type="button"
+      title={playBtnTitle}
+      aria-label={playBtnTitle}
+      data-js-video-player-play-btn
+    >
+      <SvgIcon
+        class="episode-card__player-btn-icon"
+        name="play-episode"
+        width="30"
+        height="30"
+      />
+    </button>
+  </div>
+
+  <div class="episode-card__info">
+    <HTag class="episode-card__title h-20-18-16" lvl={headerLvl}>
+      {title}
+    </HTag>
+    <div class="episode-card__description">
+      <p>{description}</p>
+    </div>
+    <div class="episode-card__duration">
+      <SvgIcon
+        class="episode-card__duration-icon"
+        name="clock-2"
+        width="24"
+        height="24"
+      />
+      <TimeDuration
+        class="episode-card__duration-time"
+        durationSec={duration}
+      />
+    </div>
+  </div>
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .episode-card {
+    @include flex-center-v;
+    @include gap(20px, 18px $laptop);
+    @include padding-block(40px, 30px 40px $laptop, 20px $tablet-s);
+    @include padding-inline(20px $tablet-s);
+
+    @include tablet-s-and-lower {
+      max-width: 400px;
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-areas:
+        'player num'
+        'info info';
+
+      background-color: var(--black-08);
+      border-radius: 8px;
+    }
+
+    &__num {
+      @include grid-area(num $tablet-s);
+
+      flex-shrink: 0;
+      @include width(60px, 30px $laptop);
+
+      font-weight: 600;
+      @include font-size(30px, 24px $laptop);
+    }
+
+    &__player {
+      @include grid-area(player $tablet-s);
+
+      flex-shrink: 0;
+
+      position: relative;
+
+      @include box(172px 118px);
+
+      border: 1px solid var(--black-15);
+      border-radius: 12px;
+
+      overflow: hidden;
+
+      @include tablet-s-and-lower {
+        width: auto;
+        min-width: 182px;
+        @include flex-center-v;
+      }
+
+      &::before {
+        content: '';
+
+        position: absolute;
+        inset: 0;
+
+        background-color: rgb(0 0 0 / 50%);
+
+        transition-duration: var(--transition-duration);
+      }
+
+      @include hover {
+        &::before {
+          opacity: 0;
+        }
+      }
+    }
+
+    &__video {
+      @include width(auto $tablet-s);
+    }
+
+    &__player-btn {
+      @include reset-btn;
+
+      @include pos-center;
+      @include flex-center;
+      @include box(50px);
+
+      background-color: rgb(0 0 0 / 60%);
+      border-radius: 50%;
+
+      &:active {
+        scale: 1.05;
+      }
+
+      @include hover {
+        scale: 1.05;
+      }
+
+      &:not(.is-active) {
+        display: none;
+      }
+    }
+
+    &__player-btn-icon {
+      @include box(30px);
+
+      color: var(--absolute-white);
+    }
+
+    &__info {
+      @include grid-area(info $tablet-s);
+
+      @include flex-column-reverse;
+      align-items: start;
+
+      @include higher-tablet-s {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+          'title duration'
+          'description description';
+        align-items: center;
+      }
+
+      @include gap(14px 10px, 10px $laptop);
+    }
+
+    &__title {
+      grid-area: title;
+      font-weight: 600;
+    }
+
+    &__description {
+      grid-area: description;
+
+      @include display(none $tablet-s);
+    }
+
+    &__duration {
+      grid-area: duration;
+
+      @include flex-center-v;
+      @include column-gap(4px);
+      @include padding(8px 10px, 6px $laptop);
+
+      background-color: var(--black-08);
+      border: 1px solid var(--black-15);
+      @include border-radius-8-6;
+    }
+
+    &__duration-icon {
+      @include box(24px, 20px $laptop);
+    }
+
+    &__duration-time {
+      font-weight: 500;
+      @include font-size(16px, 14px $laptop, 12px $tablet-s);
+    }
+  }
+</style>

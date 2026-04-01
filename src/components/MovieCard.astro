@@ -1,0 +1,172 @@
+---
+import { MyImage } from '@/core';
+import Badge from './Badge.astro';
+import RatingBadge from './RatingBadge.astro';
+import TimeDuration from './TimeDuration.astro';
+
+interface Props {
+  class?: string;
+  name: string;
+  url: string;
+  img: string;
+  durationSec?: number;
+  views?: number;
+  season?: number;
+  rating?: {
+    grade: number;
+    quantity: number | string;
+  };
+  releaseDate?: Date;
+  large?: boolean;
+}
+
+const {
+  class: className,
+  name,
+  url,
+  img,
+  durationSec,
+  views,
+  season,
+  rating,
+  releaseDate,
+  large = false,
+  ...rest
+} = Astro.props;
+
+const formatViews = (views: number) => {
+  if (typeof views !== 'number' || isNaN(views) || views < 0) {
+    return '0';
+  }
+
+  if (views >= 1000) {
+    const thousands = Math.floor(views / 1000);
+    const decimal = Math.floor((views % 1000) / 100);
+    return decimal > 0 ? thousands + '.' + decimal + 'K' : thousands + 'K';
+  }
+
+  return views.toString();
+};
+
+const dateAttr = (date: Date) => date.toISOString().split('T')[0];
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }) ?? '';
+---
+
+<a
+  class:list={['movie-card', large && 'movie-card--lg', className]}
+  href={url}
+  title={name}
+  {...rest}
+>
+  <h3 class="visually-hidden">{name}</h3>
+
+  <MyImage
+    class="movie-card__img"
+    src={img}
+    width="0.5"
+    densities={[1.5, 2]}
+    alt=""
+  />
+
+  <div class="movie-card__details">
+    {
+      durationSec && (
+        <Badge icon="clock">
+          <TimeDuration durationSec={durationSec} />
+        </Badge>
+      )
+    }
+
+    {
+      views && (
+        <Badge icon="eye">
+          <span class="visually-hidden">Views</span>
+          {formatViews(views)}
+        </Badge>
+      )
+    }
+
+    {season && <Badge icon="slides">{season} Season</Badge>}
+
+    {rating && <RatingBadge grade={rating.grade} quantity={rating.quantity} />}
+
+    {
+      releaseDate && (
+        <Badge wide>
+          Released at{' '}
+          <time
+            class="movie-card__release-date"
+            datetime={dateAttr(releaseDate)}
+          >
+            {formatDate(releaseDate)}
+          </time>
+        </Badge>
+      )
+    }
+  </div>
+</a>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .movie-card {
+    @include var-fluid(
+      --movie-card-padding,
+      20px,
+      16px $laptop,
+      12px $tablet-s
+    );
+
+    --mc-img-aspect-ratio: 243 / 281;
+
+    @include laptop-and-lower {
+      --mc-img-aspect-ratio: 192 / 232;
+    }
+
+    @include tablet-s-and-lower {
+      --mc-img-aspect-ratio: 158 / 195;
+    }
+
+    &--lg {
+      --mc-img-aspect-ratio: 320 / 404;
+
+      @include laptop-and-lower {
+        --mc-img-aspect-ratio: 253 / 324;
+      }
+
+      @include tablet-s-and-lower {
+        --mc-img-aspect-ratio: 207 / 235;
+      }
+    }
+
+    @include flex-column;
+    padding: var(--movie-card-padding);
+    row-gap: var(--movie-card-padding);
+
+    background-color: var(--black-10);
+    border: 1px solid var(--black-15);
+    @include border-radius-12-10;
+
+    &__img {
+      aspect-ratio: var(--mc-img-aspect-ratio);
+      width: 100%;
+      object-fit: cover;
+
+      border-radius: 12px;
+    }
+
+    &__details {
+      @include flex-between-center;
+    }
+
+    &__release-date {
+      color: var(--grey-75);
+    }
+  }
+</style>

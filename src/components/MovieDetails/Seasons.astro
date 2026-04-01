@@ -1,0 +1,55 @@
+---
+import AccordionGroup from '../AccordionGroup.astro';
+import SeasonEpisodes, {
+  type SeasonEpisodeProps,
+} from './SeasonEpisodes.astro';
+
+export interface Season {
+  season: number;
+  episodes: SeasonEpisodeProps[];
+}
+
+interface Props {
+  class?: string;
+  items: Season[];
+}
+
+const { class: className, items, ...rest } = Astro.props;
+
+const accordionName = 'seasons';
+
+const accordionItems = items.map(({ season, episodes }) => {
+  const title = `Season ${season.toString().padStart(2, '0')}`;
+  const subtitle = `${episodes.length} Episodes`;
+
+  return {
+    title,
+    subtitle,
+    component: SeasonEpisodes,
+    data: {
+      items: episodes,
+    },
+  };
+});
+---
+
+<section class:list={['seasons', className]} {...rest}>
+  <h3 class="seasons__title h-24-20-18">Seasons and Episodes</h3>
+
+  <AccordionGroup
+    class="seasons__accordion"
+    columns={1}
+    name={accordionName}
+    titleClass="h-24-20-16"
+    titleIcon="arrow-down"
+    theme="dark"
+    items={accordionItems}
+  />
+</section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .seasons {
+  }
+</style>

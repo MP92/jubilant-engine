@@ -4,14 +4,15 @@ import { MyImage, SvgIcon } from '@/core';
 interface Props {
   class?: string;
   url: string;
-  label: string;
+  name: string;
   images: string[];
+  top?: boolean;
 }
 
-const { class: className, url, label, images } = Astro.props;
+const { class: className, url, name, images, top = false } = Astro.props;
 ---
 
-<a class:list={['genre-card', className]} href={url}>
+<a class:list={['genre-card', top && 'genre-card--top', className]} href={url}>
   <div class="genre-card__images">
     {
       images.map((image) => (
@@ -28,7 +29,7 @@ const { class: className, url, label, images } = Astro.props;
 
   <div class="genre-card__title-wrap">
     <h3 class="genre-card__title">
-      {label}
+      {name}
     </h3>
 
     <SvgIcon name="arrow" class="genre-card__icon" />
@@ -40,6 +41,17 @@ const { class: className, url, label, images } = Astro.props;
 
   .genre-card {
     --genre-card-gradient-opacity: 1;
+    --gc-images-gap: 5px;
+    --gc-img-aspect-ratio: 235 / 252;
+    @include var(--gc-img-radius, 10px, 6px $laptop);
+    --gc-title-fz: inherit;
+
+    &--top {
+      --gc-images-gap: 10px;
+      --gc-img-aspect-ratio: 141 / 121;
+      --gc-img-radius: 4px;
+      @include var(--gc-title-fz, 20px, 16px $laptop);
+    }
 
     position: relative;
 
@@ -66,7 +78,7 @@ const { class: className, url, label, images } = Astro.props;
       width: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 5px;
+      gap: var(--gc-images-gap);
 
       &::after {
         content: '';
@@ -85,11 +97,11 @@ const { class: className, url, label, images } = Astro.props;
     }
 
     &__img {
-      aspect-ratio: 235 / 252;
+      aspect-ratio: var(--gc-img-aspect-ratio);
       width: 100%;
       object-fit: cover;
 
-      @include border-radius-10-6;
+      border-radius: var(--gc-img-radius);
     }
 
     &__title-wrap {
@@ -99,8 +111,29 @@ const { class: className, url, label, images } = Astro.props;
     }
 
     &__title {
-      font-size: inherit;
+      font-size: var(--gc-title-fz);
       font-weight: 600;
+    }
+
+    &--top &__title {
+      position: relative;
+
+      @include flex-column-start-x;
+      @include row-gap(4px, 2px $laptop);
+
+      &::before {
+        content: 'Top 10 In';
+
+        @include padding(10px, 8px $laptop);
+
+        font-weight: 600;
+        @include font-size(16px, 12px $laptop);
+        line-height: 0.75;
+        color: var(--absolute-white);
+
+        background: var(--red-45);
+        @include border-radius(5px, 4px $laptop);
+      }
     }
 
     &__icon {

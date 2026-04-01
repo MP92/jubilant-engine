@@ -1,0 +1,233 @@
+---
+import { slugify } from '../js/utils/slugify';
+
+interface Props {
+  class?: string;
+  btnClass?: string;
+  id?: string;
+  label: string;
+  hiddenLabel?: boolean;
+  options: { selected?: boolean; value: string }[];
+}
+
+const {
+  class: className,
+  btnClass,
+  label,
+  id = slugify(label),
+  hiddenLabel = true,
+  options,
+  ...rest
+} = Astro.props;
+
+const IDs = {
+  origControl: id,
+  label: `${id}-label`,
+  dropdown: `${id}-dropdown`,
+};
+
+const selectedOption = options.find(({ selected }) => !!selected) ?? options[0];
+---
+
+<div class:list={['select', className]} {...rest} data-js-select>
+  <label
+    class:list={['select__label', hiddenLabel && 'visually-hidden']}
+    id={IDs.label}
+    for={IDs.origControl}>{label}</label
+  >
+
+  <select
+    class:list={['select__orig-control', btnClass]}
+    id={IDs.origControl}
+    default-value={selectedOption.value}
+    tabindex="-1"
+    data-js-select-orig-control
+  >
+    {options.map(({ value }) => <option value={value}>{value}</option>)}
+  </select>
+
+  <div class="select__body">
+    <div
+      class:list={['select__btn', btnClass]}
+      role="combobox"
+      aria-expanded={false}
+      aria-haspopup="listbox"
+      aria-controls={IDs.dropdown}
+      aria-labelledby={IDs.label}
+      tab-index={0}
+      data-js-select-btn
+    >
+      {selectedOption.value}
+    </div>
+
+    <div
+      class="select__dropdown is-expanded"
+      id={IDs.dropdown}
+      role="listbox"
+      aria-labelledby={IDs.label}
+      data-js-select-dropdown
+    >
+      {
+        options.map(({ value, selected }, index) => (
+          <div
+            class:list={[
+              'select__option',
+              selected && ['is-selected', 'is-current'],
+            ]}
+            id={`${id}-option-${index}`}
+            role="option"
+            aria-selected={selected}
+            data-js-select-option
+          >
+            {value}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .select {
+    --select-arrow-icon-url: url('@img/icons/select-arrow.svg');
+    @include var(--select-btn-padding-x, 12px, 8px $laptop);
+    @include var(--select-btn-column-gap, 6px, 4px $laptop);
+
+    $select-arrow-icon-sizes:
+      24px,
+      20px $laptop;
+
+    flex-shrink: 0;
+
+    &__orig-control,
+    &__btn {
+      min-width: 94px;
+    }
+
+    &__btn,
+    &__option {
+      user-select: none;
+      cursor: pointer;
+
+      * {
+        pointer-events: none;
+      }
+    }
+
+    & &__orig-control {
+      appearance: none;
+
+      padding-inline: var(--select-btn-padding-x);
+
+      @include bgi(var(--select-arrow-icon-url), $select-arrow-icon-sizes...) {
+        background-position: calc(100% - var(--select-btn-padding-x)) 50%;
+      }
+
+      &:disabled {
+        & + .select__body {
+          @include disabled;
+
+          * {
+            pointer-events: none;
+          }
+        }
+      }
+
+      @include higher-tablet-s {
+        @include visually-hidden;
+      }
+    }
+
+    &__body {
+      position: relative;
+    }
+
+    & &__btn {
+      position: relative;
+
+      @include flex-between-center;
+      padding-inline: var(--select-btn-padding-x);
+      column-gap: var(--select-btn-column-gap);
+
+      transition-duration: var(--transition-duration);
+
+      @include bgi-after(
+        var(--select-arrow-icon-url),
+        $select-arrow-icon-sizes...
+      ) {
+        transition-duration: inherit;
+      }
+
+      &.is-expanded::after {
+        scale: -1;
+      }
+
+      @include tablet-s-and-lower {
+        @include visually-hidden;
+      }
+    }
+
+    &__dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      z-index: 1;
+
+      @include flex-column;
+      row-gap: 4px;
+      min-width: 300px;
+      max-height: 250px;
+      padding: 4px;
+
+      background-color: var(--black-06);
+      border: 1px solid var(--black-15);
+      border-radius: 6px;
+
+      overflow-y: auto;
+      overscroll-behavior: none;
+      transition-duration: var(--transition-duration);
+
+      &.left {
+        left: 0;
+        transform-origin: 0 0;
+      }
+
+      &.right {
+        right: 0;
+        transform-origin: 100% 0;
+      }
+
+      &:not(.is-expanded) {
+        @include hide;
+        scale: 1 0;
+      }
+    }
+
+    &__option {
+      @include flex-between-center;
+      padding: 10px;
+      column-gap: 10px;
+
+      border: 1px solid var(--black-15);
+      border-radius: inherit;
+
+      @include hover {
+        color: var(--absolute-white);
+        border-color: var(--absolute-white);
+      }
+
+      &.is-selected {
+        color: var(--absolute-white);
+
+        &::after {
+          content: '✓';
+        }
+      }
+
+      &.is-current {
+        border-color: var(--absolute-white);
+      }
+    }
+  }
+</style>

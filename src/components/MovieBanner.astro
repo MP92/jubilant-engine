@@ -1,0 +1,196 @@
+---
+import { MyPicture } from '@/core';
+import Button from './Button.astro';
+import { slugify } from '../js/utils/slugify';
+import HTag from './HTag.astro';
+
+interface Props {
+  class?: string;
+  img: string;
+  title: string;
+  description: string;
+  initial?: boolean;
+  isSection?: boolean;
+  headerLvl?: number;
+}
+
+const {
+  class: className,
+  img,
+  title,
+  description,
+  initial = false,
+  isSection = false,
+  headerLvl = 2,
+  ...rest
+} = Astro.props;
+
+const BlockTag = isSection ? 'section' : 'div';
+const titleId = isSection ? `movie-banner-${slugify(title)}` : null;
+---
+
+<BlockTag
+  class:list={['movie-banner', className]}
+  {...titleId && { 'aria-labelledby': titleId }}
+  {...rest}
+>
+  <MyPicture
+    class="movie-banner__img"
+    src={img}
+    width="0.5"
+    formats={['avif', 'webp']}
+    alt=""
+    {...initial && { priority: true }}
+  />
+
+  <div class="movie-banner__content">
+    <HTag
+      class="movie-banner__title h-38-30-24"
+      lvl={headerLvl}
+      {...titleId && { id: titleId }}>{title}</HTag
+    >
+
+    <div class="movie-banner__descr">
+      <p>
+        {description}
+      </p>
+    </div>
+
+    <div class="movie-banner__actions">
+      <Button class="movie-banner__play-btn" href="#!" icon="play">
+        Play Now
+      </Button>
+
+      <div class="movie-banner__btns">
+        <Button
+          class="movie-banner__btn"
+          href="#!"
+          icon="plus"
+          dark
+          label="Add to playlist"
+        />
+        <Button
+          class="movie-banner__btn"
+          href="#!"
+          icon="like"
+          dark
+          label="Like"
+        />
+        <Button
+          class="movie-banner__btn"
+          href="#!"
+          icon="volume"
+          dark
+          label="Mute"
+        />
+      </div>
+    </div>
+  </div>
+</BlockTag>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  section.movie-banner {
+    @include var(--movie-banner-padding-bottom, 20px, 16px $laptop);
+    @include var(
+      --movie-banner-margin-bottom,
+      100px,
+      80px $laptop,
+      60px $tablet-s
+    );
+  }
+
+  .movie-banner {
+    @include var(--movie-banner-radius, 12px);
+    @include var(
+      --movie-banner-padding-bottom,
+      126px,
+      104px $laptop,
+      16px $tablet-s
+    );
+    --movie-banner-margin-bottom: 0;
+
+    position: relative;
+
+    margin-bottom: var(--movie-banner-margin-bottom);
+
+    background-image: linear-gradient(
+      to top,
+      var(--black-08) 0%,
+      transparent 100%
+    );
+    border-radius: var(--movie-banner-radius);
+
+    @include border-gradient-pseudo(
+      before,
+      $borderGradient: linear-gradient(
+          to bottom,
+          var(--black-15) 0%,
+          transparent 100%
+        )
+    );
+    @include fix-gradient-bottom-line(after, $color: var(--black-08));
+
+    overflow: hidden;
+
+    &__img {
+      position: relative;
+      z-index: -1;
+
+      img {
+        width: 100%;
+        object-fit: cover;
+        @include height(835px, 709px $laptop, 468px $tablet-s);
+
+        border-radius: var(--movie-banner-radius);
+      }
+    }
+
+    &__content {
+      position: absolute;
+      inset: 0;
+      top: unset;
+
+      @include flex-column-center-x;
+      max-width: 73.7%;
+      margin-inline: auto;
+      padding-bottom: var(--movie-banner-padding-bottom);
+    }
+
+    &__title {
+      @include margin-bottom(4px, 2px $laptop, 20px $tablet-s);
+    }
+
+    &__descr {
+      @include display(none $tablet-s);
+
+      @include margin-bottom(30px, 24px $laptop);
+
+      text-align: center;
+    }
+
+    &__actions {
+      @include flex-center-v;
+      @include gap(20px);
+
+      @include tablet-s-and-lower {
+        width: 100%;
+        flex-direction: column;
+      }
+    }
+
+    &__play-btn {
+      @include var-fluid(--btn-padding, 14px 24px, 14px 20px $laptop);
+      @include width(100% $tablet-s);
+    }
+
+    &__btns {
+      @include flex-center-v;
+      @include column-gap(10px, 8px $laptop);
+    }
+
+    &__btn {
+    }
+  }
+</style>

@@ -1,0 +1,353 @@
+---
+import Tabs from '../components/Tabs/Tabs.astro';
+import Collection, {
+  type CollectionGroup,
+} from '@/components/Collection.astro';
+import GenreCard from '../components/GenreCard.astro';
+import MovieCard from '../components/MovieCard.astro';
+import genresData from '@/json/genres.json';
+import topGenresData from '@/json/topGenres.json';
+import trendingMovies from '@/json/trendingMovies.json';
+import trendingShows from '@/json/trendingShows.json';
+import newMovies from '@/json/newMovies.json';
+import mustWatchMovies from '@/json/mustWatchMovies.json';
+import { parseDateFields } from '../js/utils/date';
+
+const collectionsTitle = 'Collection types';
+
+const moviesCollections = [
+  {
+    title: 'Our Genres',
+    items: {
+      component: GenreCard,
+      data: genresData,
+    },
+  },
+  {
+    title: 'Popular Top 10 In Genres',
+    items: {
+      component: GenreCard,
+      data: topGenresData,
+    },
+    sliderOptions: {
+      slidesPerView: 4,
+      slidesPerGroup: 4,
+      spaceBetween: 30,
+      breakpoints: {
+        1: {
+          slidesPerView: 1.58,
+          slidesPerGroup: 1,
+          spaceBetween: 20,
+        },
+        577: {
+          slidesPerView: 2,
+          slidesPerGroup: 1,
+          spaceBetween: 20,
+        },
+        769: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 20,
+        },
+        1025: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+          // allowTouchMove: false,
+        },
+        1441: {
+          spaceBetween: 30,
+          // allowTouchMove: false,
+        },
+      },
+    },
+  },
+  {
+    title: 'Trending Now',
+    items: {
+      component: MovieCard,
+      data: trendingMovies,
+    },
+    sliderOptions: {
+      slidesPerView: 5,
+      slidesPerGroup: 5,
+      spaceBetween: 20,
+      breakpoints: {
+        1: {
+          slidesPerView: 2,
+          slidesPerGroup: 1,
+          spaceBetween: 16,
+        },
+        769: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 20,
+        },
+        1025: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+        },
+        1281: {
+          slidesPerView: 5,
+          slidesPerGroup: 5,
+          spaceBetween: 20,
+        },
+      },
+    },
+  },
+  {
+    title: 'New Releases',
+    items: {
+      component: MovieCard,
+      data: parseDateFields(newMovies, ['releaseDate']),
+    },
+    sliderOptions: {
+      slidesPerView: 5,
+      slidesPerGroup: 5,
+      spaceBetween: 20,
+      breakpoints: {
+        1: {
+          slidesPerView: 2,
+          slidesPerGroup: 1,
+          spaceBetween: 16,
+        },
+        769: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 20,
+        },
+        1025: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+        },
+        1281: {
+          slidesPerView: 5,
+          slidesPerGroup: 5,
+          spaceBetween: 20,
+        },
+      },
+    },
+  },
+  {
+    title: 'Must - Watch Movies',
+    items: {
+      component: MovieCard,
+      data: mustWatchMovies,
+    },
+    sliderOptions: {
+      slidesPerView: 4,
+      slidesPerGroup: 4,
+      spaceBetween: 20,
+      breakpoints: {
+        1: {
+          slidesPerView: 1.55,
+          slidesPerGroup: 1,
+          spaceBetween: 16,
+        },
+        769: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 20,
+        },
+        1025: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+        },
+        1281: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+        },
+      },
+    },
+  },
+] as CollectionGroup[];
+
+const showsCollections = [
+  {
+    title: 'Our Genres 2',
+    items: {
+      component: GenreCard,
+      data: genresData,
+    },
+  },
+  {
+    title: 'Popular Top 10 In Genres',
+    items: {
+      component: GenreCard,
+      data: topGenresData,
+    },
+    sliderOptions: {
+      slidesPerView: 4,
+      slidesPerGroup: 4,
+      spaceBetween: 30,
+      breakpoints: {
+        1: {
+          slidesPerView: 1.58,
+          slidesPerGroup: 1,
+          spaceBetween: 20,
+        },
+        577: {
+          slidesPerView: 2,
+          slidesPerGroup: 1,
+          spaceBetween: 20,
+        },
+        769: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 20,
+        },
+        1025: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+          // allowTouchMove: false,
+        },
+        1441: {
+          spaceBetween: 30,
+          // allowTouchMove: false,
+        },
+      },
+    },
+  },
+  {
+    title: 'Trending Shows Now',
+    items: {
+      component: MovieCard,
+      data: trendingShows,
+    },
+    sliderOptions: {
+      slidesPerView: 4,
+      slidesPerGroup: 4,
+      spaceBetween: 20,
+      breakpoints: {
+        1: {
+          slidesPerView: 1.55,
+          slidesPerGroup: 1,
+          spaceBetween: 16,
+        },
+        769: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 20,
+        },
+        1025: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+        },
+        1281: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+        },
+      },
+    },
+  },
+  {
+    title: 'New Released Shows',
+    items: {
+      component: MovieCard,
+      data: trendingShows,
+    },
+    sliderOptions: {
+      slidesPerView: 4,
+      slidesPerGroup: 4,
+      spaceBetween: 20,
+      breakpoints: {
+        1: {
+          slidesPerView: 1.55,
+          slidesPerGroup: 1,
+          spaceBetween: 16,
+        },
+        769: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 20,
+        },
+        1025: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+        },
+        1281: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+        },
+      },
+    },
+  },
+  {
+    title: 'Must - Watch Shows',
+    items: {
+      component: MovieCard,
+      data: mustWatchMovies,
+    },
+    sliderOptions: {
+      slidesPerView: 4,
+      slidesPerGroup: 4,
+      spaceBetween: 20,
+      breakpoints: {
+        1: {
+          slidesPerView: 1.55,
+          slidesPerGroup: 1,
+          spaceBetween: 16,
+        },
+        769: {
+          slidesPerView: 3,
+          slidesPerGroup: 3,
+          spaceBetween: 20,
+        },
+        1025: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+        },
+        1281: {
+          slidesPerView: 4,
+          slidesPerGroup: 4,
+          spaceBetween: 20,
+        },
+      },
+    },
+  },
+] as CollectionGroup[];
+
+const collectionsTabsData = [
+  {
+    isActive: true,
+    title: 'Movies',
+    componentData: {
+      title: 'Movies',
+      data: moviesCollections,
+    },
+  },
+  {
+    title: 'Shows',
+    componentData: {
+      title: 'Shows',
+      data: showsCollections,
+    },
+  },
+];
+---
+
+<Tabs
+  class="collections container"
+  title={collectionsTitle}
+  itemComponent={Collection}
+  items={collectionsTabsData}
+  onlySm={true}
+/>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .collections {
+    @include var(--tabs-panels-gap, 150px, 120px $laptop, 0 $tablet-s);
+  }
+</style>

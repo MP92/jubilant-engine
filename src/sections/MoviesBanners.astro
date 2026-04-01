@@ -1,0 +1,72 @@
+---
+import MovieBanner from '../components/MovieBanner.astro';
+import Slider from '../components/Slider/Slider.astro';
+
+const sliderOptions = {
+  slidesPerView: 1,
+};
+
+const sliderNavigationOptions = {
+  bottom: true,
+  inset: true,
+  stretch: true,
+  noBox: true,
+};
+
+const moviesData = [
+  {
+    img: '@img/movie-banners/1@2x.jpg',
+    title: 'Avengers : Endgame',
+    description: `With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos's actions and
+        undo the chaos to the universe, no matter what consequences may be in store, and no matter who they face...
+        Avenge the fallen.`,
+    initial: true,
+  },
+  {
+    img: '@img/movie-banners/1@2x.jpg',
+    title: 'Avengers : Endgame',
+    description: `With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos's actions and
+        undo the chaos to the universe, no matter what consequences may be in store, and no matter who they face...
+        Avenge the fallen.`,
+  },
+  {
+    img: '@img/movie-banners/1@2x.jpg',
+    title: 'Avengers : Endgame',
+    description: `With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos's actions and
+        undo the chaos to the universe, no matter what consequences may be in store, and no matter who they face...
+        Avenge the fallen.`,
+  },
+  {
+    img: '@img/movie-banners/1@2x.jpg',
+    title: 'Avengers : Endgame',
+    description: `With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos's actions and
+        undo the chaos to the universe, no matter what consequences may be in store, and no matter who they face...
+        Avenge the fallen.`,
+  },
+];
+---
+
+<section class="movies-banners" aria-labelledby="movies-banners-title">
+  <h1 id="movies-banners-title" class="visually-hidden">Movies & Shows</h1>
+
+  <div class="container">
+    <Slider
+      itemComponent={MovieBanner}
+      items={moviesData}
+      fitViewportSm={true}
+      options={sliderOptions}
+      navOptions={sliderNavigationOptions}
+      showScrollbarSm={false}
+    />
+  </div>
+</section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .movies-banners {
+    @include padding-top(50px, 40px $laptop);
+
+    @include margin-bottom(180px, 100px $laptop, 80px $tablet-s);
+  }
+</style>

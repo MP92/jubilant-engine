@@ -1,10 +1,19 @@
 ---
+import { SvgIcon, type AstroComponent } from '@/core';
+import { slugify } from '../js/utils/slugify';
+
 interface Props {
   class?: string;
   name: string;
   id: string;
   title: string;
-  description: string;
+  subtitle?: string;
+  titleClass?: string;
+  titleIcon?: '' | 'arrow-down';
+  ordered?: boolean;
+  theme?: '' | 'dark';
+  component?: AstroComponent;
+  data: string | string[] | Record<string, unknown>;
   isOpen?: boolean;
 }
 
@@ -13,27 +22,77 @@ const {
   name,
   id,
   title,
-  description,
+  subtitle,
+  titleClass,
+  titleIcon,
+  ordered = false,
+  theme,
+  component: Component,
+  data,
   isOpen = false,
 } = Astro.props;
+
+const titleId = slugify(title) + '-title';
+
+if (Component && typeof data !== 'object') {
+  throw new Error("Data for provided component must be of 'object' type.");
+}
+
+if (!Component && typeof data === 'object') {
+  throw new Error(
+    "Data without component must be of 'string' or 'string[]' type.",
+  );
+}
 ---
 
-<div class:list={['accordion', className]}>
-  <details class="accordion__details" name={name} open={isOpen}>
-    <summary class="accordion__summary">
-      <h3 class="accordion__title h-22-20-18">
-        <span role="term" aria-details={id}>
-          {title}
-        </span>
+<div
+  class:list={[
+    'accordion',
+    ordered && 'accordion--ordered',
+    theme === 'dark' && 'accordion--dark',
+    className,
+  ]}
+  data-js-accordion
+>
+  <details
+    class="accordion__details"
+    name={name}
+    open={isOpen}
+    data-js-accordion-details
+  >
+    <summary
+      class="accordion__summary"
+      aria-expanded={isOpen}
+      aria-controls={id}
+      aria-details={id}
+      data-js-accordion-summary
+    >
+      <h3 class:list={['accordion__title', titleClass]}>
+        <span id={titleId} role="term">{title}</span>
+        {subtitle && <span class="accordion__subtitle">{subtitle}</span>}
       </h3>
+
+      {
+        titleIcon && (
+          <div class="accordion__title-icon">
+            <SvgIcon name={titleIcon} />
+          </div>
+        )
+      }
     </summary>
   </details>
-  <div id={id} class="accordion__content" role="definition">
+
+  <div
+    id={id}
+    class="accordion__content"
+    role="definition"
+    aria-labelledby={titleId}
+  >
     <div class="accordion__content-inner">
       <div class="accordion__content-body">
-        <p>
-          {description}
-        </p>
+        {Component && typeof data === 'object' && <Component {...data} />}
+
+        {!Component && [data].flat().map((item) => <p>{item}</p>)}
       </div>
     </div>
   </div>
@@ -49,18 +108,13 @@ const {
 
     display: grid;
     grid-template-areas:
-      'counter title'
-      'counter content';
-    grid-template-columns: auto 1fr;
+      'title'
+      'content';
     align-items: start;
-    column-gap: var(--column-gap);
-    @include padding(34px, 24px $laptop, 20px 10px $tablet-s);
     width: 100%;
+    @include padding(34px, 24px $laptop, 20px 10px $tablet-s);
 
     @include tablet-and-lower {
-      grid-template-areas:
-        'counter title'
-        'content content';
       align-items: center;
 
       & &__details {
@@ -68,21 +122,43 @@ const {
       }
     }
 
-    &::before {
-      content: counter(accordion-counter, decimal-leading-zero);
+    &--ordered {
+      grid-template-areas:
+        'counter title'
+        'counter content';
+      grid-template-columns: auto 1fr;
+      column-gap: var(--column-gap);
 
-      grid-area: counter;
+      @include tablet-and-lower {
+        grid-template-areas:
+          'counter title'
+          'content content';
+      }
 
-      @include flex-center;
-      @include box(62px 67px, 50px 54px $laptop, 42px 46px $tablet-s);
+      &::before {
+        content: counter(accordion-counter, decimal-leading-zero);
 
-      @include font-size(20px, 16px $laptop);
-      font-weight: 600;
-      color: var(--absolute-white);
+        grid-area: counter;
 
-      background: var(--black-12);
+        @include flex-center;
+        @include box(62px 67px, 50px 54px $laptop, 42px 46px $tablet-s);
+
+        @include font-size(20px, 16px $laptop);
+        font-weight: 600;
+        color: var(--absolute-white);
+
+        background: var(--black-12);
+        border: 1px solid var(--black-15);
+        @include border-radius-10-8-6;
+      }
+    }
+
+    &--dark {
+      @include padding(24px 50px, 20px 40px $laptop, 16px 20px $tablet-s);
+
+      background-color: var(--black-06);
       border: 1px solid var(--black-15);
-      @include border-radius-10-8-6;
+      border-radius: 12px;
     }
 
     &__details {
@@ -113,32 +189,62 @@ const {
         color: var(--grey-90);
       }
 
-      &::before,
-      &::after {
-        content: '';
+      &:not(:has(.accordion__title-icon)) {
+        &::before,
+        &::after {
+          content: '';
 
-        flex-shrink: 0;
-        @include width(20px, 16px $laptop);
+          flex-shrink: 0;
+          @include width(20px, 16px $laptop);
 
-        border-bottom: 2.5px solid var(--absolute-white);
-        border-radius: 2px;
+          border-bottom: 2.5px solid var(--absolute-white);
+          border-radius: 2px;
 
-        @include border-width(2px $laptop);
+          @include border-width(2px $laptop);
+        }
+
+        &::before {
+          @include pos-center-v;
+          right: 0;
+
+          transform-origin: center;
+          rotate: 90deg;
+          transition-duration: var(--transition-duration);
+          visibility: visible;
+        }
       }
+    }
 
-      &::before {
-        @include pos-center-v;
-        right: 0;
+    &__title-icon {
+      @include box(52px, 44px $laptop);
+      @include flex-center;
 
-        transform-origin: center;
-        rotate: 90deg;
-        transition-duration: var(--transition-duration);
-        visibility: visible;
+      color: var(--grey-60);
+
+      background-color: var(--black-08);
+      border: 1px solid var(--black-15);
+      border-radius: 50%;
+
+      transition-duration: var(--transition-duration);
+
+      svg {
+        @include box(24px, 20px $laptop);
       }
     }
 
     &__title {
       color: inherit;
+    }
+
+    &--dark &__title {
+      @include flex-center-v;
+      @include column-gap(10px, 8px $laptop, 6px $tablet-s);
+    }
+
+    &__subtitle {
+      @include font-size(0.75em, 0.8em $laptop, 0.875em $tablet-s);
+      font-weight: 500;
+      color: var(--grey-60);
     }
 
     &__content {
@@ -149,20 +255,7 @@ const {
       display: grid;
       grid-template-rows: 0fr;
 
-      transition: var(--transition-duration) ease-in-out;
-    }
-
-    &__details[open] {
-      .accordion__summary {
-        &::before {
-          rotate: none;
-          visibility: hidden;
-        }
-      }
-
-      & + .accordion__content {
-        grid-template-rows: 1fr;
-      }
+      transition-duration: 0.4s;
     }
 
     &__content-inner {
@@ -171,6 +264,33 @@ const {
 
     &__content-body {
       @include margin-top(20px, 14px $laptop, 12px $tablet-s);
+    }
+
+    &--dark {
+      .accordion__content {
+        padding-right: 0;
+      }
+
+      .accordion__content-body {
+        @include margin-top(30px, 24px $laptop, 20px $tablet-s);
+      }
+    }
+
+    &__details[open] {
+      .accordion__summary:not(:has(.accordion__title-icon)) {
+        &::before {
+          rotate: none;
+          visibility: hidden;
+        }
+      }
+
+      .accordion__title-icon {
+        rotate: -180deg;
+      }
+
+      & + .accordion__content {
+        grid-template-rows: 1fr;
+      }
     }
   }
 </style>

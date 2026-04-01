@@ -1,0 +1,48 @@
+---
+import { SvgIcon } from '@/core';
+
+interface Props {
+  class?: string;
+  icon?: string;
+  wide?: boolean;
+}
+
+const { class: className, icon, wide = false, ...rest } = Astro.props;
+---
+
+<div class:list={['badge', wide && 'badge--wide', className]} {...rest}>
+  {icon && <SvgIcon class="badge__icon" name={icon} width="24" height="24" />}
+  {
+    icon && (
+      <span>
+        <slot />
+      </span>
+    )
+  }
+  {!icon && <slot />}
+</div>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .badge {
+    @include badge;
+
+    @include padding-fluid(6px, 4px $laptop);
+    @include padding-right-fluid(10px, 8px $laptop);
+
+    @include font-size-fluid(16px, 12px $laptop);
+    line-height: 0.75;
+
+    &--wide {
+      width: 100%;
+      justify-content: center;
+
+      line-height: 1.5;
+    }
+
+    &__icon {
+      @include box-fluid(24px, 20px $laptop);
+    }
+  }
+</style>

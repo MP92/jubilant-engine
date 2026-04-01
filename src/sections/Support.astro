@@ -1,0 +1,309 @@
+---
+import { MyPicture } from '@/core';
+import Button from '../components/Button.astro';
+import Select from '../components/Select.astro';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<section class:list={['support', 'container', className]} {...rest}>
+  <div class="support__intro">
+    <h1 class="support__title h-48-38-28">Welcome to our support page!</h1>
+    <div class="support__descr">
+      <p>
+        We're here to help you with any problems you may be having with our
+        product.
+      </p>
+    </div>
+    <MyPicture
+      class="support__picture"
+      src="@img/support@2x.png"
+      width="0.5"
+      alt=""
+      priority
+    />
+  </div>
+
+  <div class="support__form-wrap">
+    <form class="support__form" method="POST" action="/">
+      <div class="support__form-entry">
+        <label class="support__form-label" for="first-name">First Name</label>
+        <div class="support__form-field-wrap">
+          <input
+            class="support__form-field"
+            id="first-name"
+            name="first-name"
+            type="text"
+            placeholder="Enter First Name"
+            required
+          />
+        </div>
+      </div>
+      <div class="support__form-entry">
+        <label class="support__form-label" for="last-name">Last Name</label>
+        <div class="support__form-field-wrap">
+          <input
+            class="support__form-field"
+            id="last-name"
+            name="last-name"
+            type="text"
+            placeholder="Enter Last Name"
+          />
+        </div>
+      </div>
+      <div class="support__form-entry">
+        <label class="support__form-label" for="email">Email</label>
+        <div class="support__form-field-wrap">
+          <input
+            class="support__form-field"
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Enter your Email"
+            required
+          />
+        </div>
+      </div>
+      <div class="support__form-entry">
+        <label class="support__form-label" for="tel">Phone Number</label>
+        <div class="support__form-field-wrap">
+          <Select
+            btnClass="support__form-field"
+            label="Phone number prefix"
+            options={[
+              { value: '+7', selected: true },
+              { value: '+1' },
+              { value: '+2' },
+              { value: '+3' },
+            ]}
+          />
+
+          <input
+            class="support__form-field"
+            id="tel"
+            name="tel"
+            type="tel"
+            inputmode="tel"
+            placeholder="(999) 999 99-99"
+            required
+          />
+        </div>
+      </div>
+      <div class="support__form-entry support__form-entry--wide">
+        <label class="support__form-label" for="message">Message</label>
+        <div class="support__form-field-wrap">
+          <textarea
+            class="support__form-field"
+            id="message"
+            name="message"
+            placeholder="Enter your Message"
+            required></textarea>
+        </div>
+      </div>
+      <div class="support__form-entry">
+        <div class="support__agreement">
+          <input
+            class="support__checkbox"
+            type="checkbox"
+            id="agreement"
+            name="agreement"
+            required
+          />
+          <label class="support__agreement-label" for="agreement"
+            >I agree with Terms of Use and Privacy Policy</label
+          >
+        </div>
+      </div>
+      <div class="support__form-entry">
+        <Button class="support__form-btn" type="submit" id="submit">
+          Send Message
+        </Button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .support {
+    display: grid;
+    @include grid-template-columns(33.4% 1fr, 33.52% 1fr $laptop, auto $tablet);
+    @include gap(80px, 50px $laptop);
+    @include margin-block-start(115px, 100px $laptop, 40px $tablet-s);
+    margin-block-end: var(--section-padding-v);
+
+    &__intro {
+      @include tablet-and-lower {
+        display: grid;
+        justify-content: center;
+      }
+    }
+
+    &__title {
+      @include not-last-child {
+        @include margin-bottom(14px, 10px $laptop);
+      }
+    }
+
+    &__descr {
+      @include not-last-child {
+        @include margin-bottom(50px, 40px $laptop, 30px $tablet-s);
+      }
+    }
+
+    &__picture {
+      border-radius: 6px;
+
+      img {
+        width: 100%;
+        @include height(477px, 380px $laptop, 344px $tablet-s);
+        object-fit: cover;
+        object-position: center;
+
+        background-color: var(--black-06);
+
+        border: 6px solid var(--black-15);
+        border-radius: inherit;
+      }
+    }
+
+    &__form-wrap {
+      @include padding(50px, 40px $laptop, 24px $tablet-s);
+
+      background: var(--black-06);
+      border: 1px solid var(--black-15);
+      @include border-radius-12-10;
+    }
+
+    &__form {
+      display: grid;
+      @include grid-template-columns(1fr 1fr, auto $tablet-s);
+      @include gap(50px, 40px 20px $laptop, 20px $tablet-s);
+    }
+
+    &__form-entry {
+      @include flex-column;
+      @include row-gap(16px, 12px $laptop);
+
+      &--wide {
+        grid-column: 1 / -1;
+      }
+    }
+
+    &__form-label {
+      font-weight: 600;
+      @include font-size(18px, 16px $laptop);
+      color: var(--absolute-white);
+    }
+
+    &__form-entry:has(&__form-field:required) > &__form-label::after {
+      content: ' *' / '';
+      color: var(--red-45);
+    }
+
+    &__form-field-wrap {
+      display: flex;
+      @include column-gap(16px, 12px $laptop);
+    }
+
+    &__form-field {
+      flex-grow: 1;
+      @include height(67px, 53px $laptop);
+      @include padding-inline(20px, 16px $laptop);
+
+      @include font-size(18px, 14px $laptop);
+      color: var(--absolute-white);
+
+      background-color: var(--black-08);
+      border: 1px solid var(--black-15);
+      @include border-radius-8-6;
+
+      @include hover {
+        border-color: var(--black-25);
+      }
+
+      &:user-invalid {
+        border-color: var(--red-45);
+      }
+
+      &:disabled {
+        @include disabled;
+      }
+
+      &::placeholder {
+        color: var(--grey-60);
+      }
+    }
+
+    textarea#{&}__form-field {
+      @include min-height(163px, 129px $laptop, 109px $tablet-s);
+      @include padding-block(20px, 16px $laptop);
+      resize: vertical;
+    }
+
+    &__agreement {
+      margin-block: auto;
+      @include flex-center-v;
+      @include column-gap(10px, 8px $laptop);
+    }
+
+    &__checkbox {
+      @include flex-center;
+      @include box(28px, 24px $laptop);
+      flex-shrink: 0;
+
+      background-color: var(--black-06);
+      border: 1px solid var(--black-15);
+      border-radius: 4px;
+
+      appearance: none;
+      cursor: pointer;
+      transition-duration: var(--transition-duration);
+
+      &:not(:disabled) {
+        @include hover {
+          border-color: var(--black-25);
+        }
+      }
+
+      &:user-invalid {
+        border-color: var(--red-45);
+      }
+
+      &::after {
+        content: '✓';
+        color: var(--absolute-white);
+        transition-duration: inherit;
+      }
+
+      &:not(:checked)::after {
+        @include hide;
+      }
+    }
+
+    &__agreement-label {
+      @include font-size(18px, 16px $laptop);
+    }
+
+    &__checkbox:disabled,
+    &__checkbox:disabled + &__agreement-label {
+      @include disabled;
+    }
+
+    &__checkbox:required + &__agreement-label::after {
+      content: ' *' / '';
+      color: var(--red-45);
+    }
+
+    &__form-btn {
+      @include higher-mobile-l {
+        margin-left: auto;
+      }
+    }
+  }
+</style>

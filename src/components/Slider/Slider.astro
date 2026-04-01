@@ -1,41 +1,37 @@
 ---
-import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import Section from '../Section.astro';
-import SliderNavigation from './SliderNavigation.astro';
+import type { AstroComponent } from '@/core';
+import SliderNavigation, {
+  type Options as NavigationOptions,
+} from './SliderNavigation.astro';
+import type { SwiperOptions } from 'swiper/types';
 
 interface Props {
   class?: string;
-  sectionName: string;
-  title: string;
-  descr: string;
-  hideActionsSm?: boolean;
-  itemComponent: AstroComponentFactory;
+  options?: SwiperOptions;
+  itemComponent: AstroComponent;
   items: Record<string, unknown>[];
+  fitViewportSm?: boolean;
+  navigationElementId?: string;
+  navOptions?: NavigationOptions;
+  hideNavSm?: boolean;
+  showScrollbarSm?: boolean;
 }
 
-const {
-  class: className,
-  sectionName,
-  itemComponent: Item,
-  items,
-  ...rest
-} = Astro.props;
-
-const sliderOptions = {
-  slidesPerView: 5,
-  slidesPerGroup: 5,
-  spaceBetween: 30,
-
+const commonOptions = {
   pagination: {
     bulletClass: 'slider-navigation__bullet',
     bulletActiveClass: 'slider-navigation__bullet--active',
     clickable: true,
   },
-
   scrollbar: {
     dragClass: 'slider__scrollbar-drag',
   },
+};
 
+const defaultOptions = {
+  slidesPerView: 5,
+  slidesPerGroup: 5,
+  spaceBetween: 30,
   breakpoints: {
     1: {
       slidesPerView: 2,
@@ -61,38 +57,71 @@ const sliderOptions = {
       // allowTouchMove: false,
     },
   },
+} as SwiperOptions;
+
+const {
+  class: className,
+  options,
+  itemComponent: Item,
+  items,
+  fitViewportSm = false,
+  navigationElementId,
+  navOptions,
+  hideNavSm = true,
+  showScrollbarSm = true,
+} = Astro.props;
+
+const customOptions = options ?? defaultOptions;
+
+const sliderOptions = {
+  ...commonOptions,
+  ...(options ?? defaultOptions),
+  pagination: {
+    ...commonOptions.pagination,
+    ...(typeof customOptions.pagination === 'object'
+      ? customOptions.pagination
+      : {}),
+  },
+  scrollbar: {
+    ...commonOptions.scrollbar,
+    ...(typeof customOptions.scrollbar === 'object'
+      ? customOptions.scrollbar
+      : {}),
+  },
 };
 ---
 
-<Section
-  class:list={[className]}
-  name={sectionName}
-  data-js-slider={JSON.stringify(sliderOptions)}
-  {...rest}
+<div
+  class:list={['slider', fitViewportSm && 'slider--fit-viewport', className]}
+  data-js-slider={JSON.stringify({ sliderOptions, navigationElementId })}
 >
-  <SliderNavigation
-    slot="actions"
-    prevNavAttrs={{ 'data-js-slider-arrow-prev': true }}
-    nextNavAttrs={{ 'data-js-slider-arrow-next': true }}
-    bulletsAttrs={{ 'data-js-slider-bullets': true }}
-  />
+  {
+    !navigationElementId && (
+      <SliderNavigation
+        class:list={[hideNavSm && 'sm-hide']}
+        options={navOptions}
+      />
+    )
+  }
 
-  <div class="slider">
-    <div class="swiper" data-js-slider-swiper>
-      <ul class="slider__items swiper-wrapper" data-js-slider-slides>
-        {
-          items.map((item) => (
-            <li class="slider__item swiper-slide">
-              <Item {...item} />
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-
-    <div class="slider__scrollbar sm-only" data-js-slider-scrollbar></div>
+  <div class="slider__body swiper" data-js-slider-swiper>
+    <ul class="swiper-wrapper" data-js-slider-slides>
+      {
+        items.map((item) => (
+          <li class="slider__item swiper-slide">
+            <Item {...item} />
+          </li>
+        ))
+      }
+    </ul>
   </div>
-</Section>
+
+  {
+    showScrollbarSm && (
+      <div class="slider__scrollbar sm-only" data-js-slider-scrollbar />
+    )
+  }
+</div>
 
 <style lang="scss" is:global>
   @use '@styles/base' as *;
@@ -100,14 +129,20 @@ const sliderOptions = {
   .slider {
     position: relative;
 
-    &__items {
+    @include flex-column-start-x;
+
+    &__body {
+      width: 100%;
+    }
+
+    &:not(&--fit-viewport) &__body {
+      @include mobile-l-and-lower {
+        width: calc(100vw - var(--container-padding-x));
+      }
     }
 
     &__item {
-    }
-
-    @include mobile-l-and-lower {
-      width: calc(100vw - var(--container-padding-x));
+      width: auto;
     }
 
     &__scrollbar {

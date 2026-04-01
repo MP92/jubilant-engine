@@ -1,49 +1,46 @@
 ---
-import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import Section from '../Section.astro';
+import type { AstroComponent } from '@/core';
 import TabsNavigation from './TabsNavigation.astro';
 import { getTabIds } from './utils';
 
 interface Props {
   class?: string;
-  sectionName: string;
   title: string;
-  descr: string;
-  tabsTitle: string;
-  itemComponent: AstroComponentFactory;
+  itemComponent: AstroComponent;
   items: {
     isActive?: boolean;
     title: string;
-    panelItems: Record<string, unknown>[];
+    componentData: Record<string, unknown>;
   }[];
+  navElementId?: string;
+  onlySm?: boolean;
 }
 
 const {
   class: className,
-  sectionName,
-  tabsTitle,
-  itemComponent: Item,
+  title,
+  itemComponent: Component,
   items,
+  navElementId,
+  onlySm = false,
   ...rest
 } = Astro.props;
 ---
 
-<Section
-  class:list={['tabs', className]}
-  name={sectionName}
-  data-js-tabs
+<div
+  class:list={['tabs', onlySm && 'tabs--sm-only', className]}
+  data-js-tabs={JSON.stringify({ navElementId })}
   {...rest}
 >
-  <TabsNavigation
-    slot="actions"
-    tabsTitle={tabsTitle}
-    items={items}
-    data-js-tabs-navigation
-  />
+  {
+    !navElementId && (
+      <TabsNavigation title={title} items={items} onlySm={onlySm} />
+    )
+  }
 
   <div class="tabs__panels">
     {
-      items.map(({ isActive, title, panelItems }) => {
+      items.map(({ isActive, title, componentData }) => {
         const { tabId, contentId } = getTabIds(title);
 
         return (
@@ -55,35 +52,33 @@ const {
             role="tabpanel"
             data-js-tabs-panel
           >
-            <ul class="tabs__list grid">
-              {panelItems.map((panelItem) => (
-                <li class="grid__item">
-                  <Item {...panelItem} />
-                </li>
-              ))}
-            </ul>
+            <Component {...componentData} />
           </div>
         );
       })
     }
   </div>
-</Section>
+</div>
 
 <style lang="scss" is:global>
   @use '@styles/base' as *;
 
   .tabs {
+    --tabs-panels-gap: 0;
+
     &__panels {
+      @include flex-column;
+      row-gap: var(--tabs-panels-gap);
     }
 
     &__panel:not(.is-active) {
       display: none;
     }
 
-    &__list {
-      @include var(--grid-items-count, 3, 2 $laptop-s, 1 $tablet-s);
-      @include var(--grid-gap, 30px, 20px $laptop);
-      --grid-row-gap: 20px;
+    &--sm-only &__panel:not(.is-active) {
+      @include higher-tablet-s {
+        display: block;
+      }
     }
   }
 </style>

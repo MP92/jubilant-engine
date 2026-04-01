@@ -1,26 +1,118 @@
 ---
-const { class: className, rating, ...rest } = Astro.props;
+import { SvgIcon } from '@/core';
+
+interface Props {
+  class?: string;
+  grade: number;
+  quantity?: number | string;
+}
+
+const { class: className, grade, quantity, ...rest } = Astro.props;
+
+const ariaLabel = `Rating: ${grade} stars`;
+
+const isFilled = (index: number) => grade >= index + 1;
+
+const isHalf = (index: number) => grade >= index + 0.5;
+
+const formattedQuantity = () => {
+  if (!quantity || isNaN(+quantity)) {
+    return quantity;
+  }
+
+  const quantityNum = +quantity;
+
+  return quantityNum > 999 ? Math.floor(quantityNum / 1000) + 'K' : quantityNum;
+};
 ---
 
-<div class:list={['rating', className]} {...rest}>
-  {rating >= 1 && <div class="rating__star" />}
-  {rating >= 2 && <div class="rating__star" />}
-  {rating >= 3 && <div class="rating__star" />}
-  {rating >= 4 && <div class="rating__star" />}
-  {rating >= 5 && <div class="rating__star" />}
+<div
+  class:list={['rating', className]}
+  aria-label={ariaLabel}
+  title={ariaLabel}
+  {...rest}
+>
+  <div class="rating__stars">
+    {
+      [...Array(5).keys()].map((i) => {
+        if (isHalf(i) && !isFilled(i)) {
+          return (
+            <div class="rating__star-wrap">
+              <SvgIcon
+                class="rating__star rating__star--half"
+                name="rating-star"
+                width="18"
+                height="18"
+              />
+              <SvgIcon
+                class="rating__star"
+                name="rating-star"
+                width="18"
+                height="18"
+              />
+            </div>
+          );
+        }
+
+        return (
+          <SvgIcon
+            class:list={['rating__star', isFilled(i) && 'rating__star--filled']}
+            name="rating-star"
+            width="18"
+            height="18"
+          />
+        );
+      })
+    }
+  </div>
+
+  {quantity && <span class="rating__quantity">{formattedQuantity()}</span>}
+  {!quantity && <span class="rating__quantity">{grade}</span>}
 </div>
 
 <style lang="scss" is:global>
   @use '@styles/base' as *;
 
   .rating {
+    @include var(--rating-star-size, 18px, 14px $laptop);
+    @include var(--rating-col-gap, 4px);
+    --rating-font-size: inherit;
+    --rating-label-color: inherit;
+
     @include flex-center-v;
-    @include column-gap(2px);
+    column-gap: var(--rating-col-gap);
+
+    @include font-size(14px, 12px $laptop);
+    white-space: nowrap;
+
+    &__stars {
+      @include flex-center-v;
+      @include column-gap(2px, 1px $laptop);
+    }
+
+    &__star-wrap {
+      display: inline-flex;
+    }
 
     &__star {
-      @include box(16px);
+      width: var(--rating-star-size);
+      height: var(--rating-star-size);
 
-      @include bgi('@img/icons/star.svg', 14px);
+      &--half {
+        position: absolute;
+        color: var(--red-45);
+        clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+      }
+
+      &--filled {
+        color: var(--red-45);
+      }
+    }
+
+    &__quantity {
+      font-size: var(--rating-font-size);
+      @include line-height(1 $tablet-s);
+      color: var(--rating-label-color);
     }
   }
 </style>

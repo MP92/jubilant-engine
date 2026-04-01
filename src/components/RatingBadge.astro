@@ -1,0 +1,27 @@
+---
+import Badge from './Badge.astro';
+import Rating from './Rating.astro';
+
+interface Props {
+  class?: string;
+  grade: number;
+  quantity?: number | string;
+}
+
+const { class: className, grade, quantity, ...rest } = Astro.props;
+---
+
+<Badge class:list={['rating-badge', className]} {...rest}>
+  <Rating grade={grade} quantity={quantity} />
+</Badge>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .rating-badge {
+    @include padding(6px 10px, 6px 10px $laptop, 6px 8px $tablet-s);
+
+    @include font-size(14px, 12px $laptop);
+    line-height: 1.5;
+  }
+</style>

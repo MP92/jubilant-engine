@@ -25,3 +25,16 @@
 @mixin border-radius-8-6 {
   @include border-radius(8px, 6px $laptop);
 }
+
+@mixin badge {
+  @include flex-center-v;
+  @include column-gap(4px);
+
+  font-weight: 500;
+
+  background: var(--black-08);
+  border: 1px solid var(--black-15);
+  border-radius: 51px;
+
+  white-space: nowrap;
+}

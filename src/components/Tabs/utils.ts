@@ -1,7 +1,6 @@
-export const strToId = (str: string) =>
-  str.toLocaleLowerCase().trim().replace(/\s/g, '-');
+import { slugify } from '@/js/utils/slugify';
 
 export const getTabIds = (title: string) => ({
-  tabId: strToId(title) + '-tab',
-  contentId: strToId(title) + '-tabpanel',
+  tabId: slugify(title) + '-tab',
+  contentId: slugify(title) + '-tabpanel',
 });

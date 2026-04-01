@@ -1,0 +1,105 @@
+---
+import type { AstroComponent } from '@/core';
+import type { SwiperOptions } from 'swiper/types';
+import Section from './Section.astro';
+import SliderNavigation from './Slider/SliderNavigation.astro';
+import Slider from './Slider/Slider.astro';
+import { slugify } from '../js/utils/slugify';
+
+export interface CollectionGroup {
+  title: string;
+  items: {
+    component: AstroComponent;
+    data: Record<string, unknown>[];
+  };
+  sliderOptions?: SwiperOptions;
+}
+
+interface Props {
+  class?: string;
+  title: string;
+  data: CollectionGroup[];
+}
+
+const { class: className, title, data, ...rest } = Astro.props;
+---
+
+<section class:list={['collection', /*'container',*/ className]} {...rest}>
+  <div class="collection__inner">
+    <p class="collection__title">{title}</p>
+
+    <div class="collection__body">
+      {
+        data.map(({ title: sectionTitle, items, sliderOptions }) => {
+          const sectionName = slugify(`${title} ${sectionTitle}`);
+          const sliderNavigationId = slugify(`${title} ${sectionTitle} nav`);
+
+          return (
+            <Section
+              class="collection__section"
+              name={sectionName}
+              title={sectionTitle}
+              hideActionsSm={true}
+            >
+              <SliderNavigation slot="actions" id={sliderNavigationId} />
+
+              <Slider
+                options={sliderOptions}
+                itemComponent={items.component}
+                items={items.data}
+                navigationElementId={sliderNavigationId}
+              />
+            </Section>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .collection {
+    @include var(--section-padding-v, 50px, 40px $laptop, 38px $tablet-s);
+    @include var(--title-offset-v, 20px, 18px $laptop, 0 $tablet-s);
+
+    padding-top: var(--title-offset-v);
+
+    &__inner {
+      position: relative;
+
+      @include padding-inline(50px, 40px $laptop, 0 $tablet-s);
+
+      @include border(1px solid var(--black-15), none $tablet-s);
+      border-radius: 12px;
+    }
+
+    &__section {
+      .container {
+        padding: 0;
+      }
+    }
+
+    &__title {
+      position: absolute;
+      margin-top: calc(-1 * var(--title-offset-v));
+
+      @include padding(10px 24px, 8px 20px $laptop);
+
+      font-weight: 600;
+      @include font-size(20px, 16px $laptop);
+      color: var(--absolute-white);
+
+      background: var(--red-45);
+      @include border-radius-8-6;
+
+      @include tablet-s-and-lower {
+        display: none;
+      }
+    }
+
+    &__body {
+    }
+  }
+</style>

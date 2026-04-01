@@ -3,18 +3,24 @@ import { SvgIcon } from '@/core';
 
 interface Props {
   class?: string;
+  id?: string;
   href?: string;
   icon?: string;
+  label?: string;
   stretch?: boolean;
   dark?: boolean;
+  type?: 'button' | 'submit';
 }
 
 const {
   class: className,
   href,
   icon,
+  label,
   stretch = false,
   dark = false,
+  type,
+  ...rest
 } = Astro.props;
 
 const Tag = href !== undefined ? 'a' : 'button';
@@ -24,8 +30,15 @@ const attrs = {} as Record<string, string>;
 if (href) {
   attrs.href = href;
 } else {
-  attrs.type = 'button';
+  attrs.type = type ?? 'button';
 }
+
+if (label) {
+  attrs.title = label;
+  attrs['aria-label'] = label;
+}
+
+const hasText = Astro.slots.has('default');
 ---
 
 <Tag
@@ -36,9 +49,16 @@ if (href) {
     className,
   ]}
   {...attrs}
+  {...rest}
 >
   {icon && <SvgIcon name={icon} class="btn__icon" />}
-  <slot />
+  {
+    hasText && (
+      <span>
+        <slot />
+      </span>
+    )
+  }
 </Tag>
 
 <style lang="scss" is:global>
@@ -47,9 +67,18 @@ if (href) {
   .btn {
     @include reset-btn;
 
+    @include var-fluid(--btn-padding, 18px 24px, 14px 24px $laptop);
+
     @include inline-flex-center;
-    @include padding-fluid(18px 24px, 14px 24px $laptop);
     @include column-gap(4px);
+
+    &:has(> span) {
+      padding: var(--btn-padding);
+    }
+
+    &:not(:has(> span)) {
+      @include box-fluid(56px, 48px $laptop);
+    }
 
     @include font-size-fluid(18px, 14px $laptop);
     font-weight: 600;

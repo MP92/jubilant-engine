@@ -14,4 +14,6 @@ declare module '@/core' {
   export const { importImg }: Functions;
 
   export type { ImgSrc } from '../core/types';
+
+  export type { AstroComponent } from '../core';
 }

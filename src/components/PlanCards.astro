@@ -1,0 +1,30 @@
+---
+import PlanCard, { type PlanCardProps } from '../components/PlanCard.astro';
+
+interface Props {
+  class?: string;
+  items: PlanCardProps[];
+}
+
+const { class: className, items, ...rest } = Astro.props;
+---
+
+<ul class:list={['plan-cards', 'grid', className]} {...rest}>
+  {
+    items.map((item) => (
+      <li class="grid__item">
+        <PlanCard {...item} />
+      </li>
+    ))
+  }
+</ul>
+
+<style lang="scss" is:global>
+  @use '@styles/base' as *;
+
+  .plan-cards {
+    @include var(--grid-items-count, 3, 2 $laptop-s, 1 $tablet-s);
+    @include var(--grid-gap, 30px, 20px $laptop);
+    --grid-row-gap: 20px;
+  }
+</style>

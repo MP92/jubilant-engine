@@ -1,14 +1,17 @@
 ---
 import Button from './Button.astro';
 
-interface Props {
-  class?: string;
+export interface PlanCardProps {
   title: string;
   description: string;
   price: {
     value: number;
     period: 'month' | 'year';
   };
+}
+
+interface Props extends PlanCardProps {
+  class?: string;
 }
 
 const { class: className, title, description, price, ...rest } = Astro.props;

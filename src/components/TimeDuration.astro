@@ -1,0 +1,38 @@
+---
+interface Props {
+  class?: string;
+  durationSec: number;
+  hideSeconds?: boolean;
+}
+
+const { class: className, durationSec, hideSeconds = true } = Astro.props;
+
+if (durationSec <= 0) {
+  throw new Error('Duration must be positive');
+}
+
+const getDurationData = () => {
+  const h = Math.floor(durationSec / 3600);
+  const m = Math.floor((durationSec % 3600) / 60);
+  const s = durationSec % 60;
+
+  const dur = (val: number, suffix: string) =>
+    val > 0 ? `${val}${suffix}` : '';
+
+  // ISO 8601 duration
+  const machineFormat = 'PT' + dur(h, 'H') + dur(m, 'M') + dur(s, 'S');
+
+  const humanFormat = (
+    dur(h, 'h ') +
+    dur(m, 'min ') +
+    (!hideSeconds ? dur(s, 's') : '')
+  ).trim();
+
+  return [machineFormat, humanFormat];
+};
+
+const [machineFormat, humanFormat] = getDurationData();
+---
+
+<span class="visually-hidden">Duration</span>
+<time class:list={[className]} datetime={machineFormat}>{humanFormat}</time>
