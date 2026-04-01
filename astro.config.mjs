@@ -17,11 +17,14 @@ import { siteName, cacheDir } from './astro/config';
 
 const rootPath = slash(path.resolve('.'));
 
-const isProd = process.env.NODE_ENV === 'production';
+const PROD_BASE_URL = '/jubilant-engine/';
+
+const resolveBaseUrl = () =>
+  process.env.NODE_ENV === 'production' ? PROD_BASE_URL : '/';
 
 // https://astro.build/config
 export default defineConfig({
-  base: isProd ? '/jubilant-engine/' : '/',
+  base: resolveBaseUrl(),
   cacheDir,
   output: 'static',
   build: {

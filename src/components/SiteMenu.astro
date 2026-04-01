@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../js/utils/withBase';
+
 interface Props {
   class: string;
   currentPageUrl?: string;
@@ -11,19 +13,19 @@ const isActive = (href: string) => href === (currentPageUrl ?? '/');
 const pages = [
   {
     label: 'Home',
-    href: '/',
+    href: withBase(),
   },
   {
     label: 'Movies & Shows',
-    href: '/movies',
+    href: withBase('movies'),
   },
   {
     label: 'Support',
-    href: '/support',
+    href: withBase('support'),
   },
   {
     label: 'Subscriptions',
-    href: '/subscription',
+    href: withBase('subscription'),
   },
 ];
 ---
