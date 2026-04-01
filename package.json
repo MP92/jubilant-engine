@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
+    "build:gh": "astro build",
     "astro": "astro",
     "eslint": "npx eslint --cache --cache-location ./node_modules/.cache/eslint/.eslintcache ./",
     "eslint:fix": "npx eslint --fix --cache --cache-location ./node_modules/.cache/eslint/.eslintcache ./",
