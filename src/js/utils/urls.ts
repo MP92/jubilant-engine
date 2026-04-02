@@ -3,3 +3,6 @@ export const withBase = (path = '') => {
 
   return `${base}${path}`.replace(/\/\//g, '/');
 };
+
+export const normalize = (path = '') =>
+  path !== '/' ? path.replace(/\/+$/, '') : path;

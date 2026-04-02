@@ -3,6 +3,7 @@ import { SvgIcon } from '@/core';
 import SiteLogo from '../components/SiteLogo.astro';
 import SiteMenu from '../components/SiteMenu.astro';
 import Burger from '../components/Burger.astro';
+import { withBase } from '../js/utils/urls';
 
 interface Props {
   currentPageUrl?: string;
@@ -10,7 +11,7 @@ interface Props {
 
 const { currentPageUrl } = Astro.props;
 
-const isHomePage = !currentPageUrl || currentPageUrl === '/';
+const isHomePage = !currentPageUrl || currentPageUrl === withBase('/');
 ---
 
 <header class:list={['header', isHomePage && 'header--fixed']} data-js-header>

@@ -3,7 +3,7 @@ import path from 'node:path';
 import slash from 'slash';
 import { defineConfig } from 'astro/config';
 import compressor from 'astro-compressor';
-import favicons from 'astro-favicons';
+import astroFavicons from './astro/plugins/astro-favicons';
 import icon from 'astro-icon';
 import astroCssImages from './astro/plugins/astro-css-images';
 import astroRename from './astro/plugins/astro-rename';
@@ -19,12 +19,11 @@ const rootPath = slash(path.resolve('.'));
 
 const PROD_BASE_URL = '/jubilant-engine/';
 
-const resolveBaseUrl = () =>
-  process.env.NODE_ENV === 'production' ? PROD_BASE_URL : '/';
+const base = process.env.NODE_ENV === 'production' ? PROD_BASE_URL : '/';
 
 // https://astro.build/config
 export default defineConfig({
-  base: resolveBaseUrl(),
+  base,
   cacheDir,
   output: 'static',
   build: {
@@ -40,7 +39,7 @@ export default defineConfig({
   },
   integrations: [
     astroFont(),
-    favicons({
+    astroFavicons({
       name: siteName,
       short_name: siteName,
       icons: {

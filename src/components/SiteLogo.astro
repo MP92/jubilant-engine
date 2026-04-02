@@ -1,5 +1,6 @@
 ---
 import { MyImage } from '@/core';
+import { withBase } from '../js/utils/urls';
 
 interface Props {
   class: string;
@@ -10,7 +11,7 @@ const { class: className } = Astro.props;
 
 <a
   class:list={['site-logo', className]}
-  href="/"
+  href={withBase('/')}
   title="Home"
   aria-label="Home"
 >

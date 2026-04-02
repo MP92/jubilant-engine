@@ -4,6 +4,7 @@ import type { Config } from './types';
 import { getFallbackFont } from './fallback';
 import { getFontBuffer, getFS, ifFSOSWrites } from './common-utils';
 import { getGoogleFontsParams } from './google-fonts';
+import { withBase } from '@/js/utils/urls';
 
 const extToPreload = {
   ttf: 'font/ttf',
@@ -19,7 +20,7 @@ function getBasePath(src?: string) {
 
 export function getRelativePath(from: string, to: string) {
   if (to.includes('https:') || to.includes('http:')) return to;
-  return '/' + relative(from, to);
+  return withBase('/' + relative(from, to));
 }
 
 // Compute the preload type for the <link tag

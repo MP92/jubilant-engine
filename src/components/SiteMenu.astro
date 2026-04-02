@@ -1,5 +1,5 @@
 ---
-import { withBase } from '../js/utils/withBase';
+import { withBase, normalize } from '../js/utils/urls';
 
 interface Props {
   class: string;
@@ -8,7 +8,8 @@ interface Props {
 
 const { class: className, currentPageUrl } = Astro.props;
 
-const isActive = (href: string) => href === (currentPageUrl ?? '/');
+const isActive = (href: string) =>
+  normalize(href) === normalize(currentPageUrl ?? '/');
 
 const pages = [
   {
