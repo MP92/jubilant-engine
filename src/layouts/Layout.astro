@@ -7,6 +7,7 @@ import { localizedHTML as favicons } from 'astro-favicons/middleware';
 import Header from '../sections/Header.astro';
 import PlanBanner from '../sections/PlanBanner.astro';
 import Footer from '../sections/Footer.astro';
+import ViewportWidth from '../components/ViewportWidth.astro';
 
 interface Props {
   title: string;
@@ -85,6 +86,8 @@ const currentPageUrl = Astro.url.pathname;
     <script src="../js/base.ts"></script>
   </head>
   <body>
+    <ViewportWidth />
+
     <Header currentPageUrl={currentPageUrl} />
 
     <main class="main">

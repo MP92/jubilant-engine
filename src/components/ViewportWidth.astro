@@ -1,0 +1,37 @@
+---
+
+---
+
+<div id="viewport-width" class="viewport-indicator">
+  Ширина viewport: <span id="width-value">—</span> px
+</div>
+
+<script>
+  function updateViewportWidth() {
+    const widthEl = document.getElementById('width-value');
+    if (widthEl) {
+      widthEl.textContent = window.innerWidth + '';
+    }
+  }
+
+  // Обновляем при загрузке
+  updateViewportWidth();
+
+  // Обновляем при изменении размера окна
+  window.addEventListener('resize', updateViewportWidth);
+</script>
+
+<style>
+  .viewport-indicator {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgb(0 0 0 / 70%);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    z-index: 9999;
+    pointer-events: none; /* чтобы не мешал кликам */
+  }
+</style>
